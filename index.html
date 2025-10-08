@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funil Pro RSI - Resende Soluções Imobiliárias</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4A574A; /* Verde mais escuro para melhor contraste */
+            --secondary-color: #606C60; /* Tom correspondente */
+            --accent-color: #B4846C;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #D32F2F;
+            
+            --bg-color: #F4F2EE;
+            --card-bg-color: #FFFFFF; /* Fundo do card sólido para legibilidade */
+            --text-color: #333333;
+            --text-muted-color: #666;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+
+            --body-bg-image: linear-gradient(to top right, #F4F2EE, #f8f6f2);
+            --modal-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        body.dark-mode {
+            --primary-color: #EAE8E1;
+            --secondary-color: #ffffff;
+            --accent-color: #B4846C;
+            --success-color: #81C784;
+            --warning-color: #FFD54F;
+            --danger-color: #E57373;
+
+            --bg-color: #404a40;
+            --card-bg-color: rgba(90, 102, 90, 0.8);
+            --text-color: #EAE8E1;
+            --text-muted-color: #b0b8b0;
+            --border-color: #788578;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+
+            --body-bg-image: linear-gradient(to top right, #404a40, #5A665A);
+            --modal-bg: rgba(64, 74, 64, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            background-image: var(--body-bg-image);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1600px; margin: auto; padding: 0 20px; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        header h1 { color: var(--primary-color); font-weight: 700; font-size: 2.2rem; margin: 0; }
+        
+        .theme-switch-wrapper { display: flex; align-items: center; gap: 10px; }
+        .theme-switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        #configuracao-metas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        #configuracao-metas .modal-content {
+            background: var(--modal-bg);
+            padding: 30px 40px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%; max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        .form-group label { color: var(--primary-color); }
+        .form-group input, .edit-meta-group input { 
+            background-color: rgba(255, 255, 255, 0.1); border: 1px solid var(--border-color);
+            color: var(--text-color); padding: 12px; border-radius: 8px; width: 100%; font-size: 1rem;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white; padding: 12px 25px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1rem; font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.3s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+        button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
+
+        body.dark-mode button { color: #404a40; }
+        body.dark-mode button#btnResetar { color: white; }
+
+        .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .funnel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .analysis-sidebar { display: flex; flex-direction: column; gap: 25px; }
+
+        .funnel-stage, .analysis-card {
+            background: var(--card-bg-color); 
+            padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .funnel-stage:hover { transform: translateY(-5px); box-shadow: 0 8px 30px var(--shadow-color); }
+        
+        .stage-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .stage-header i { font-size: 1.8rem; color: var(--primary-color); width: 40px; text-align: center; }
+        .stage-header h2 { margin: 0; font-size: 1.4rem; color: var(--text-color); }
+        
+        .metric-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; margin-bottom: 10px; }
+        .metric-item span:first-child { font-weight: 500; color: var(--text-muted-color); }
+        .metric-item span:last-child { font-weight: 600; background-color: var(--bg-color); padding: 2px 8px; border-radius: 6px; }
+
+        .progress-bar { width: 100%; background-color: var(--border-color); border-radius: 10px; height: 8px; overflow: hidden; margin-top: 4px; }
+        .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); border-radius: 10px; transition: width 0.5s ease-in-out; }
+        
+        .analysis-card h3 { 
+            margin-top: 0; color: var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;
+        }
+        .analysis-card .button-group { display: flex; flex-direction: column; gap: 10px; }
+
+        .edit-meta-group { display: flex; gap: 10px; align-items: center; }
+        .edit-meta-group input { flex-grow: 1; }
+        .edit-meta-group button { padding: 12px 15px; font-size: 0.9rem; width: auto; }
+
+        #toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background-color: #333; color: white; padding: 12px 25px;
+            border-radius: 8px; z-index: 2000; font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            visibility: hidden; opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
+        }
+        #toast.show { visibility: visible; opacity: 1; transform: translate(-50%, -10px); }
+
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to: { opacity: 1; } }
+
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; text-align: center; }
+            body { padding: 10px; }
+            .container { padding: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="configuracao-metas">
+        <div class="modal-content">
+             <h2><i class="fas fa-bullseye"></i> Configurar Metas Mensais</h2>
+            <p>Defina suas metas para começar. Estes dados ficarão salvos no seu navegador.</p>
+            <div class="form-group"><label for="metaLeads">Meta Mensal de Leads</label><input type="number" id="metaLeads" placeholder="Ex: 100" min="1"></div>
+            <div class="form-group"><label for="convLeadsVisitas">Conversão: Leads para Visitas (%)</label><input type="number" id="convLeadsVisitas" placeholder="Ex: 40" min="0" max="100"></div>
+            <div class="form-group"><label for="convVisitasDocs">Conversão: Visitas para Docs. Analisados (%)</label><input type="number" id="convVisitasDocs" placeholder="Ex: 50" min="0" max="100"></div>
+            <div class="form-group"><label for="convDocsAprovacoes">Conversão: Docs. para Aprovações (%)</label><input type="number" id="convDocsAprovacoes" placeholder="Ex: 80" min="0" max="100"></div>
+            <div class="form-group"><label for="convAprovacoesVendas">Conversão: Aprovações para Vendas (%)</label><input type="number" id="convAprovacoesVendas" placeholder="Ex: 75" min="0" max="100"></div>
+            <button id="btnSalvarMetas"><i class="fas fa-save"></i> Salvar e Iniciar</button>
+        </div>
+    </div>
+    
+    <div id="toast"></div>
+
+    <div class="container hidden" id="main-content">
+        <header>
+            <h1><i class="fas fa-filter"></i> Funil Pro RSI</h1>
+            <div class="theme-switch-wrapper">
+                <i class="fas fa-sun"></i>
+                <label class="theme-switch"><input type="checkbox" id="theme-toggle"><span class="slider"></span></label>
+                <i class="fas fa-moon"></i>
+            </div>
+        </header>
+        
+        <div class="main-layout">
+            <main class="funnel-grid" id="funnel-dashboard"></main>
+
+            <aside class="analysis-sidebar">
+                <div class="analysis-card">
+                     <h3><i class="fas fa-chart-bar"></i> Visão Geral do Funil</h3>
+                     <canvas id="funnelChart"></canvas>
+                </div>
+                <div class="analysis-card">
+                    <h3><i class="fas fa-edit"></i> Ajuste Rápido de Meta</h3>
+                    <div class="edit-meta-group">
+                        <input type="number" id="editMetaLeads" placeholder="Nova meta de leads">
+                        <button id="btnUpdateMeta" title="Atualizar Meta"><i class="fas fa-check"></i></button>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                     <h3><i class="fas fa-hdd"></i> Backup & Relatórios</h3>
+                     <div class="button-group">
+                        <button id="btnExportBackup"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
+                        <button id="btnImportBackup"><i class="fas fa-upload"></i> Importar Backup</button>
+                        <input type="file" id="importFile" accept=".json" class="hidden">
+                        <hr style="border-color: var(--border-color); opacity: 0.5;">
+                        <button id="btnPdfGeneral"><i class="fas fa-file-pdf"></i> Relatório Geral (PDF)</button>
+                        <button id="btnPdfStages"><i class="fas fa-file-alt"></i> Relatórios por Etapa (PDF)</button>
+                     </div>
+                </div>
+                <div class="analysis-card">
+                     <h3><i class="fas fa-calendar-alt"></i> Resumo Mensal</h3>
+                     <div id="resumo-mensal"></div>
+                </div>
+                <div class="analysis-card">
+                     <h3><i class="fas fa-calendar-week"></i> Resumo Semanal</h3>
+                     <div id="resumo-semanal"></div>
+                </div>
+                <div class="analysis-card">
+                    <button id="btnResetar" style="width:100%; background: var(--danger-color);"><i class="fas fa-trash-alt"></i> Resetar Dados</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const { jsPDF } = window.jspdf;
+            
+            const stages = [
+                { id: 'leads', name: 'Leads', icon: 'fa-users' },
+                { id: 'visitas', name: 'Visitas', icon: 'fa-handshake' },
+                { id: 'docs', name: 'Docs. Analisados', icon: 'fa-file-contract' },
+                { id: 'aprovacoes', name: 'Aprovações', icon: 'fa-stamp' },
+                { id: 'vendas', name: 'Vendas', icon: 'fa-key' }
+            ];
+
+            // --- Elementos do DOM ---
+            const configModal = document.getElementById('configuracao-metas');
+            const mainContent = document.getElementById('main-content');
+            const btnSalvarMetas = document.getElementById('btnSalvarMetas');
+            const btnResetar = document.getElementById('btnResetar');
+            const dashboard = document.getElementById('funnel-dashboard');
+            const themeToggle = document.getElementById('theme-toggle');
+            const toast = document.getElementById('toast');
+            const btnUpdateMeta = document.getElementById('btnUpdateMeta');
+            const editMetaLeadsInput = document.getElementById('editMetaLeads');
+            const btnExportBackup = document.getElementById('btnExportBackup');
+            const btnImportBackup = document.getElementById('btnImportBackup');
+            const importFileInput = document.getElementById('importFile');
+            const btnPdfGeneral = document.getElementById('btnPdfGeneral');
+            const btnPdfStages = document.getElementById('btnPdfStages');
+            
+            let data = { 
+                goals: null, 
+                conversions: null, 
+                funnel: { leads: [], visitas: [], docs: [], aprovacoes: [], vendas: [] } 
+            };
+            const today = new Date();
+            const currentDayOfMonth = today.getDate();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            let funnelChartInstance = null;
+            
+            // --- Funções Auxiliares ---
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+
+            function getPercentageColor(percentage) {
+                if (percentage >= 100) return 'var(--success-color)';
+                if (percentage >= 75) return 'var(--warning-color)';
+                return 'var(--danger-color)';
+            }
+            
+            // --- Funções de Tema ---
+            function applyTheme(theme) {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                themeToggle.checked = theme === 'dark';
+                if (funnelChartInstance) renderFunnelChart();
+            }
+            function toggleTheme() {
+                const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                localStorage.setItem('imobTheme', newTheme);
+                applyTheme(newTheme);
+            }
+            
+            // --- Funções de Dados e Backup ---
+            function saveData() { localStorage.setItem('imobFunnelDataModern', JSON.stringify(data)); }
+            function loadData() {
+                const savedData = localStorage.getItem('imobFunnelDataModern');
+                if (savedData) { data = JSON.parse(savedData); return true; }
+                return false;
+            }
+            function resetData() {
+                if (confirm('Tem certeza? Esta ação apagará TODOS os dados salvos.')) {
+                    localStorage.removeItem('imobFunnelDataModern');
+                    location.reload();
+                }
+            }
+
+            function exportBackup() {
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], {type: "application/json"});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                const date = new Date().toISOString().slice(0, 10);
+                link.download = `backup-funil-rsi-${date}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                showToast("Backup exportado com sucesso!");
+            }
+
+            function importBackup(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (importedData.goals && importedData.conversions && importedData.funnel) {
+                            data = importedData;
+                            saveData();
+                            renderDashboard();
+                            showToast("Backup restaurado com sucesso!");
+                        } else {
+                            throw new Error("Estrutura do arquivo de backup inválida.");
+                        }
+                    } catch (error) {
+                        alert("Erro ao ler o arquivo de backup. Verifique se o arquivo está no formato correto.\n" + error.message);
+                    }
+                };
+                reader.readAsText(file);
+                importFileInput.value = '';
+            }
+
+            // --- Lógica Principal do Funil ---
+            function calculateGoals(baseLeadGoal) {
+                if (!data.conversions) return;
+                data.goals = {
+                    leads: baseLeadGoal,
+                    visitas: baseLeadGoal * data.conversions.leadsToVisitas,
+                    docs: (baseLeadGoal * data.conversions.leadsToVisitas) * data.conversions.visitasToDocs,
+                    aprovacoes: ((baseLeadGoal * data.conversions.leadsToVisitas) * data.conversions.visitasToDocs) * data.conversions.docsToAprovacoes,
+                    vendas: (((baseLeadGoal * data.conversions.leadsToVisitas) * data.conversions.visitasToDocs) * data.conversions.docsToAprovacoes) * data.conversions.aprovacoesToVendas
+                };
+            }
+
+            function setupInitialGoals() {
+                const inputs = {
+                    metaLeads: parseFloat(document.getElementById('metaLeads').value),
+                    convLeadsVisitas: parseFloat(document.getElementById('convLeadsVisitas').value) / 100,
+                    convVisitasDocs: parseFloat(document.getElementById('convVisitasDocs').value) / 100,
+                    convDocsAprovacoes: parseFloat(document.getElementById('convDocsAprovacoes').value) / 100,
+                    convAprovacoesVendas: parseFloat(document.getElementById('convAprovacoesVendas').value) / 100,
+                };
+                if (Object.values(inputs).some(isNaN)) {
+                    alert('Por favor, preencha todos os campos corretamente.'); return;
+                }
+                data.conversions = {
+                    leadsToVisitas: inputs.convLeadsVisitas,
+                    visitasToDocs: inputs.convVisitasDocs,
+                    docsToAprovacoes: inputs.convDocsAprovacoes,
+                    aprovacoesToVendas: inputs.convAprovacoesVendas
+                };
+                calculateGoals(inputs.metaLeads);
+                saveData();
+                showToast('Metas salvas com sucesso!');
+                init();
+            }
+            
+            function updateLeadGoal() {
+                if (!data.conversions) {
+                    alert("Para usar esta função, por favor, resete seus dados e configure as metas novamente.");
+                    return;
+                }
+                const newLeadGoal = parseFloat(editMetaLeadsInput.value);
+                if (isNaN(newLeadGoal) || newLeadGoal <= 0) {
+                    alert("Por favor, insira um valor numérico válido e maior que zero.");
+                    return;
+                }
+                calculateGoals(newLeadGoal);
+                saveData();
+                showToast("Meta principal atualizada com sucesso!");
+                renderDashboard();
+            }
+
+            function addItemToStage(stageId) {
+                data.funnel[stageId].push({ id: Date.now(), date: new Date().toISOString() });
+                saveData();
+                showToast(`+1 ${stages.find(s=>s.id === stageId).name} adicionado!`);
+                renderDashboard();
+            }
+
+            function addMultipleLeads() {
+                const input = document.getElementById('leads-input');
+                if (!input) return;
+
+                const quantity = parseInt(input.value, 10);
+
+                if (isNaN(quantity) || quantity <= 0) {
+                    showToast("Por favor, insira uma quantidade válida.");
+                    return;
+                }
+
+                for (let i = 0; i < quantity; i++) {
+                    data.funnel.leads.push({ id: Date.now() + i, date: new Date().toISOString() });
+                }
+
+                saveData();
+                showToast(`${quantity} lead(s) adicionado(s)!`);
+                renderDashboard();
+            }
+
+            // --- Funções de Geração de PDF ---
+            function generateGeneralPDF() {
+                const doc = new jsPDF();
+                const tableData = [];
+                
+                doc.setFontSize(18);
+                doc.text("Relatório Geral do Funil de Vendas - RSI", 14, 22);
+                doc.setFontSize(11);
+                doc.setTextColor(100);
+                doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 29);
+
+                stages.forEach(stage => {
+                    const metaMensal = data.goals[stage.id];
+                    const realizado = data.funnel[stage.id].length;
+                    const tendencia = (currentDayOfMonth > 0) ? (realizado / currentDayOfMonth) * daysInMonth : 0;
+                    const percRealizadoMeta = metaMensal > 0 ? (realizado / metaMensal) * 100 : 0;
+                    
+                    tableData.push([
+                        stage.name,
+                        Math.ceil(metaMensal),
+                        realizado,
+                        Math.round(tendencia),
+                        `${percRealizadoMeta.toFixed(1)}%`
+                    ]);
+                });
+
+                doc.autoTable({
+                    head: [['Etapa do Funil', 'Meta Mensal', 'Realizado', 'Tendência', '% Meta Atingida']],
+                    body: tableData,
+                    startY: 40,
+                    theme: 'grid'
+                });
+
+                doc.save(`relatorio-geral-funil-rsi-${new Date().toISOString().slice(0, 10)}.pdf`);
+                showToast("Relatório geral em PDF gerado!");
+            }
+
+            function generateStagesPDF() {
+                const doc = new jsPDF();
+                
+                stages.forEach((stage, index) => {
+                    if (index > 0) doc.addPage();
+                    doc.setFontSize(18);
+                    doc.text(`Relatório da Etapa: ${stage.name}`, 14, 22);
+                    doc.setFontSize(11);
+                    doc.setTextColor(100);
+                    doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 29);
+                    
+                    const items = data.funnel[stage.id];
+                    if (items.length > 0) {
+                        const tableBody = items.map(item => [
+                            item.id,
+                            new Date(item.date).toLocaleString('pt-BR')
+                        ]);
+                        doc.autoTable({
+                            head: [['ID do Item', 'Data de Criação']],
+                            body: tableBody,
+                            startY: 40,
+                            theme: 'striped'
+                        });
+                    } else {
+                        doc.text("Nenhum item cadastrado nesta etapa.", 14, 45);
+                    }
+                });
+
+                doc.save(`relatorios-etapas-funil-rsi-${new Date().toISOString().slice(0, 10)}.pdf`);
+                showToast("Relatórios por etapa em PDF gerados!");
+            }
+
+            // --- Funções de Renderização ---
+            function renderDashboard() {
+                if (!data.goals) return;
+                editMetaLeadsInput.value = data.goals.leads;
+                dashboard.innerHTML = '';
+                stages.forEach(stage => {
+                    const metaMensal = data.goals[stage.id];
+                    const metaDiaria = metaMensal / daysInMonth;
+                    const realizado = data.funnel[stage.id].length;
+                    const tendencia = (currentDayOfMonth > 0) ? (realizado / currentDayOfMonth) * daysInMonth : 0;
+                    const percRealizadoMeta = metaMensal > 0 ? (realizado / metaMensal) * 100 : 0;
+                    const percTendenciaMeta = metaMensal > 0 ? (tendencia / metaMensal) * 100 : 0;
+                    
+                    let actionHtml = '';
+                    if (stage.id === 'leads') {
+                        actionHtml = `
+                            <div class="edit-meta-group" style="margin-top: 15px; gap: 5px;">
+                                <input type="number" id="leads-input" placeholder="Adicionar qtd." min="1" style="flex-grow: 3;">
+                                <button id="btn-add-leads" title="Adicionar Leads" style="flex-grow: 1; padding: 12px 10px;"><i class="fas fa-plus"></i> Adicionar</button>
+                            </div>
+                        `;
+                    } else {
+                        actionHtml = `<button class="add-button" data-stage="${stage.id}" style="margin-top: 15px;"><i class="fas fa-plus"></i> Adicionar</button>`;
+                    }
+
+                    const stageElement = document.createElement('div');
+                    stageElement.className = 'funnel-stage';
+                    stageElement.innerHTML = `
+                        <div class="stage-header"><i class="fas ${stage.icon}"></i><h2>${stage.name}</h2></div>
+                        <div class="metric-item"><span>Meta Mensal:</span><span>${Math.ceil(metaMensal)}</span></div>
+                        <div class="metric-item"><span>Objetivo Diário:</span><span>${metaDiaria.toFixed(2)}</span></div>
+                        <div class="metric-item"><span>Realizado:</span><span>${realizado}</span></div>
+                        <div class="metric-item"><span>Tendência Mês:</span><span>${Math.round(tendencia)}</span></div>
+                        <hr style="border-color: var(--border-color); opacity: 0.5; margin: 10px 0;">
+                        <div class="metric-item">
+                           <span>% Realizado / Meta</span>
+                           <span style="color: ${getPercentageColor(percRealizadoMeta)}; font-weight: bold;">${percRealizadoMeta.toFixed(1)}%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-bar-inner" style="width: ${Math.min(percRealizadoMeta, 100)}%;"></div></div>
+                        <div class="metric-item" style="margin-top: 10px;">
+                           <span>% Tendência / Meta</span>
+                           <span style="color: ${getPercentageColor(percTendenciaMeta)}; font-weight: bold;">${percTendenciaMeta.toFixed(1)}%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-bar-inner" style="width: ${Math.min(percTendenciaMeta, 100)}%; background: ${getPercentageColor(percTendenciaMeta)}"></div></div>
+                        ${actionHtml}
+                    `;
+                    dashboard.appendChild(stageElement);
+                });
+                renderSummaries();
+                renderFunnelChart();
+            }
+
+            function renderSummaries() {
+                const monthlySummary = document.getElementById('resumo-mensal');
+                const weeklySummary = document.getElementById('resumo-semanal');
+                monthlySummary.innerHTML = '';
+                weeklySummary.innerHTML = '';
+                const now = new Date();
+                const firstDayOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+                firstDayOfWeek.setHours(0, 0, 0, 0);
+                const lastDayOfWeek = new Date(firstDayOfWeek);
+                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                lastDayOfWeek.setHours(23, 59, 59, 999);
+                stages.forEach(stage => {
+                    monthlySummary.innerHTML += `<div class="metric-item"><span>${stage.name}</span><span>${data.funnel[stage.id].length}</span></div>`;
+                    const totalSemana = data.funnel[stage.id].filter(item => {
+                        const itemDate = new Date(item.date);
+                        return itemDate >= firstDayOfWeek && itemDate <= lastDayOfWeek;
+                    }).length;
+                    weeklySummary.innerHTML += `<div class="metric-item"><span>${stage.name}</span><span>${totalSemana}</span></div>`;
+                });
+            }
+
+            function renderFunnelChart() {
+                const ctx = document.getElementById('funnelChart').getContext('2d');
+                if (funnelChartInstance) funnelChartInstance.destroy();
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                const textColor = isDarkMode ? '#EAE8E1' : '#333333';
+                funnelChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: stages.map(s => s.name),
+                        datasets: [{
+                            label: 'Total Realizado',
+                            data: stages.map(s => data.funnel[s.id].length),
+                            backgroundColor: [
+                                'rgba(112, 112, 112, 0.7)',
+                                'rgba(141, 141, 141, 0.7)',
+                                'rgba(180, 132, 108, 0.7)',
+                                'rgba(200, 169, 126, 0.7)',
+                                'rgba(162, 123, 96, 0.7)'
+                            ],
+                            borderColor: [
+                                '#707070',
+                                '#8D8D8D',
+                                '#B4846C',
+                                '#C8A97E',
+                                '#A27B60'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
+                        scales: {
+                            x: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } },
+                            y: { grid: { display: false }, ticks: { color: textColor } }
+                        }
+                    }
+                });
+            }
+            
+            // --- Inicialização e Event Listeners ---
+            function init() {
+                applyTheme(localStorage.getItem('imobTheme') || 'light');
+                if (loadData() && data.goals) {
+                    configModal.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                    renderDashboard();
+                } else {
+                    configModal.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                }
+            }
+
+            btnSalvarMetas.addEventListener('click', setupInitialGoals);
+            btnUpdateMeta.addEventListener('click', updateLeadGoal);
+            btnResetar.addEventListener('click', resetData);
+            themeToggle.addEventListener('change', toggleTheme);
+            
+            dashboard.addEventListener('click', e => {
+                const addButton = e.target.closest('.add-button');
+                const addLeadsButton = e.target.closest('#btn-add-leads');
+                
+                if (addLeadsButton) {
+                    addMultipleLeads();
+                } else if (addButton) {
+                    addItemToStage(addButton.dataset.stage);
+                }
+            });
+
+            btnExportBackup.addEventListener('click', exportBackup);
+            btnImportBackup.addEventListener('click', () => importFileInput.click());
+            importFileInput.addEventListener('change', importBackup);
+            btnPdfGeneral.addEventListener('click', generateGeneralPDF);
+            btnPdfStages.addEventListener('click', generateStagesPDF);
+
+            init();
+        });
+    </script>
+</body>
+</html>
