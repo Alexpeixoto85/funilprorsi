@@ -82,23 +82,35 @@
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(26px); }
 
-        #configuracao-metas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); z-index: 1000;
-            display: flex; justify-content: center; align-items: center;
+        #configuracao-metas, #performance-analysis-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); z-index: 1001;
+            display: flex; justify-content: center;
+            align-items: center;
             backdrop-filter: blur(10px);
         }
-        #configuracao-metas .modal-content {
+        #configuracao-metas .modal-content, #performance-analysis-modal .modal-content {
             background: var(--modal-bg);
             padding: 30px 40px; border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 90%; max-width: 500px;
+            width: 90%; max-width: 600px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             animation: fadeIn 0.5s ease;
+            text-align: center;
         }
+        
+        #performance-analysis-modal h2 { margin-top: 0; font-size: 1.8rem; font-weight: 700; }
+        #performance-analysis-modal p { font-size: 1.1rem; margin-bottom: 20px; }
+        #performance-analysis-modal ul { list-style: none; padding: 0; text-align: left; margin-top: 15px; }
+        #performance-analysis-modal li { background-color: var(--bg-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--accent-color); }
+        #performance-title.positive { color: var(--success-color); }
+        #performance-title.negative { color: var(--danger-color); }
+
         .form-group label { color: var(--primary-color); }
         .form-group input, .edit-meta-group input { 
-            background-color: rgba(255, 255, 255, 0.1); border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             color: var(--text-color); padding: 12px; border-radius: 8px; width: 100%; font-size: 1rem;
         }
 
@@ -121,7 +133,7 @@
         .analysis-sidebar { display: flex; flex-direction: column; gap: 25px; }
 
         .funnel-stage, .analysis-card {
-            background: var(--card-bg-color); 
+            background: var(--card-bg-color);
             padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px var(--shadow-color);
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -140,7 +152,8 @@
         .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); border-radius: 10px; transition: width 0.5s ease-in-out; }
         
         .analysis-card h3 { 
-            margin-top: 0; color: var(--primary-color); border-bottom: 1px solid var(--border-color); 
+            margin-top: 0;
+            color: var(--primary-color); border-bottom: 1px solid var(--border-color); 
             padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;
         }
         .analysis-card .button-group { display: flex; flex-direction: column; gap: 10px; }
@@ -150,7 +163,8 @@
         .edit-meta-group button { padding: 12px 15px; font-size: 0.9rem; width: auto; }
 
         #toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            position: fixed;
+            bottom: 20px; left: 50%; transform: translateX(-50%);
             background-color: #333; color: white; padding: 12px 25px;
             border-radius: 8px; z-index: 2000; font-weight: 500;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -171,6 +185,18 @@
     </style>
 </head>
 <body>
+
+    <div id="performance-analysis-modal" class="hidden">
+        <div class="modal-content">
+            <h2 id="performance-title"></h2>
+            <p id="performance-message"></p>
+            <div id="performance-strategies" class="hidden">
+                <h4>Estratégias Sugeridas:</h4>
+                <ul></ul>
+            </div>
+            <button id="btnClosePerformanceModal"><i class="fas fa-times"></i> Fechar</button>
+        </div>
+    </div>
 
     <div id="configuracao-metas">
         <div class="modal-content">
@@ -205,6 +231,10 @@
                      <h3><i class="fas fa-chart-bar"></i> Visão Geral do Funil</h3>
                      <canvas id="funnelChart"></canvas>
                 </div>
+                 <div class="analysis-card">
+                    <h3><i class="fas fa-calendar-check"></i> Progresso do Mês</h3>
+                    <div id="resumo-progresso-mes"></div>
+                </div>
                 <div class="analysis-card">
                     <h3><i class="fas fa-edit"></i> Ajuste Rápido de Meta</h3>
                     <div class="edit-meta-group">
@@ -212,8 +242,8 @@
                         <button id="btnUpdateMeta" title="Atualizar Meta"><i class="fas fa-check"></i></button>
                     </div>
                 </div>
-                <div class="analysis-card">
-                     <h3><i class="fas fa-hdd"></i> Backup & Relatórios</h3>
+                 <div class="analysis-card">
+                    <h3><i class="fas fa-hdd"></i> Backup & Relatórios</h3>
                      <div class="button-group">
                         <button id="btnExportBackup"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
                         <button id="btnImportBackup"><i class="fas fa-upload"></i> Importar Backup</button>
@@ -242,6 +272,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             const { jsPDF } = window.jspdf;
             
+            // --- LÓGICA DE DATAS DINÂMICA ---
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth(); // 0-11
+            const totalDaysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysPassed = today.getDate();
+            const daysRemaining = totalDaysInMonth - daysPassed;
+
             const stages = [
                 { id: 'leads', name: 'Leads', icon: 'fa-users' },
                 { id: 'visitas', name: 'Visitas', icon: 'fa-handshake' },
@@ -265,15 +303,19 @@
             const importFileInput = document.getElementById('importFile');
             const btnPdfGeneral = document.getElementById('btnPdfGeneral');
             const btnPdfStages = document.getElementById('btnPdfStages');
-            
+            const performanceModal = document.getElementById('performance-analysis-modal');
+            const performanceTitle = document.getElementById('performance-title');
+            const performanceMessage = document.getElementById('performance-message');
+            const performanceStrategies = document.getElementById('performance-strategies');
+            const performanceStrategiesList = performanceStrategies.querySelector('ul');
+            const btnClosePerformanceModal = document.getElementById('btnClosePerformanceModal');
+
             let data = { 
                 goals: null, 
                 conversions: null, 
                 funnel: { leads: [], visitas: [], docs: [], aprovacoes: [], vendas: [] } 
             };
-            const today = new Date();
-            const currentDayOfMonth = today.getDate();
-            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            
             let funnelChartInstance = null;
             
             // --- Funções Auxiliares ---
@@ -373,7 +415,8 @@
                     convAprovacoesVendas: parseFloat(document.getElementById('convAprovacoesVendas').value) / 100,
                 };
                 if (Object.values(inputs).some(isNaN)) {
-                    alert('Por favor, preencha todos os campos corretamente.'); return;
+                    alert('Por favor, preencha todos os campos corretamente.');
+                    return;
                 }
                 data.conversions = {
                     leadsToVisitas: inputs.convLeadsVisitas,
@@ -444,7 +487,7 @@
                 stages.forEach(stage => {
                     const metaMensal = data.goals[stage.id];
                     const realizado = data.funnel[stage.id].length;
-                    const tendencia = (currentDayOfMonth > 0) ? (realizado / currentDayOfMonth) * daysInMonth : 0;
+                    const tendencia = (daysPassed > 0) ? (realizado / daysPassed) * totalDaysInMonth : 0;
                     const percRealizadoMeta = metaMensal > 0 ? (realizado / metaMensal) * 100 : 0;
                     
                     tableData.push([
@@ -455,7 +498,6 @@
                         `${percRealizadoMeta.toFixed(1)}%`
                     ]);
                 });
-
                 doc.autoTable({
                     head: [['Etapa do Funil', 'Meta Mensal', 'Realizado', 'Tendência', '% Meta Atingida']],
                     body: tableData,
@@ -469,7 +511,6 @@
 
             function generateStagesPDF() {
                 const doc = new jsPDF();
-                
                 stages.forEach((stage, index) => {
                     if (index > 0) doc.addPage();
                     doc.setFontSize(18);
@@ -479,6 +520,7 @@
                     doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 29);
                     
                     const items = data.funnel[stage.id];
+                    
                     if (items.length > 0) {
                         const tableBody = items.map(item => [
                             item.id,
@@ -498,6 +540,51 @@
                 doc.save(`relatorios-etapas-funil-rsi-${new Date().toISOString().slice(0, 10)}.pdf`);
                 showToast("Relatórios por etapa em PDF gerados!");
             }
+            
+            // --- ANÁLISE DE PERFORMANCE ---
+            function showPerformanceAnalysis() {
+                if (!data.goals || daysPassed === 0) { return; }
+
+                const metaVendas = data.goals.vendas;
+                const realizadoVendas = data.funnel.vendas.length;
+                const tendenciaVendas = (realizadoVendas / daysPassed) * totalDaysInMonth;
+
+                const strategies = [
+                    "Reativar leads antigos com uma nova oferta ou informação de mercado.",
+                    "Aumentar o networking participando de eventos locais (online ou presenciais).",
+                    "Pedir indicações para clientes satisfeitos da sua carteira.",
+                    "Criar conteúdo de valor nas redes sociais (vídeos, posts) sobre o mercado imobiliário local.",
+                    "Focar em um nicho de mercado específico (ex: imóveis de luxo, primeiro imóvel) e direcionar a prospecção.",
+                    "Realizar campanhas de e-mail marketing segmentadas para sua base de contatos.",
+                    "Analisar quais canais trouxeram os melhores leads no passado e intensificar os esforços neles.",
+                    "Promover um 'Open House' virtual ou presencial para um imóvel de destaque."
+                ];
+
+                performanceStrategies.classList.add('hidden');
+                performanceStrategiesList.innerHTML = '';
+
+                if (tendenciaVendas >= metaVendas) {
+                    performanceTitle.textContent = '🎉 Parabéns! Desempenho Excelente!';
+                    performanceTitle.className = 'positive';
+                    performanceMessage.textContent = `Sua tendência de vendas (${Math.round(tendenciaVendas)} vendas) está superando a meta de ${Math.ceil(metaVendas)} vendas. Continue com o ótimo trabalho!`;
+                } else {
+                    performanceTitle.textContent = '⚠️ Atenção! Oportunidade de Melhoria';
+                    performanceTitle.className = 'negative';
+                    performanceMessage.textContent = `Sua tendência atual é de ${Math.round(tendenciaVendas)} vendas, que está abaixo da sua meta de ${Math.ceil(metaVendas)}. É hora de acelerar a prospecção para atingir seu objetivo.`;
+                    
+                    const shuffled = strategies.sort(() => 0.5 - Math.random());
+                    let selectedStrategies = shuffled.slice(0, 3);
+                    
+                    selectedStrategies.forEach(strategy => {
+                        const li = document.createElement('li');
+                        li.textContent = strategy;
+                        performanceStrategiesList.appendChild(li);
+                    });
+                    performanceStrategies.classList.remove('hidden');
+                }
+                performanceModal.classList.remove('hidden');
+            }
+
 
             // --- Funções de Renderização ---
             function renderDashboard() {
@@ -506,9 +593,9 @@
                 dashboard.innerHTML = '';
                 stages.forEach(stage => {
                     const metaMensal = data.goals[stage.id];
-                    const metaDiaria = metaMensal / daysInMonth;
+                    const metaDiaria = totalDaysInMonth > 0 ? metaMensal / totalDaysInMonth : 0;
                     const realizado = data.funnel[stage.id].length;
-                    const tendencia = (currentDayOfMonth > 0) ? (realizado / currentDayOfMonth) * daysInMonth : 0;
+                    const tendencia = (daysPassed > 0) ? (realizado / daysPassed) * totalDaysInMonth : 0;
                     const percRealizadoMeta = metaMensal > 0 ? (realizado / metaMensal) * 100 : 0;
                     const percTendenciaMeta = metaMensal > 0 ? (tendencia / metaMensal) * 100 : 0;
                     
@@ -554,14 +641,18 @@
             function renderSummaries() {
                 const monthlySummary = document.getElementById('resumo-mensal');
                 const weeklySummary = document.getElementById('resumo-semanal');
+                const timeSummary = document.getElementById('resumo-progresso-mes');
                 monthlySummary.innerHTML = '';
                 weeklySummary.innerHTML = '';
+                timeSummary.innerHTML = '';
+
                 const now = new Date();
-                const firstDayOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+                const firstDayOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
                 firstDayOfWeek.setHours(0, 0, 0, 0);
                 const lastDayOfWeek = new Date(firstDayOfWeek);
                 lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
                 lastDayOfWeek.setHours(23, 59, 59, 999);
+                
                 stages.forEach(stage => {
                     monthlySummary.innerHTML += `<div class="metric-item"><span>${stage.name}</span><span>${data.funnel[stage.id].length}</span></div>`;
                     const totalSemana = data.funnel[stage.id].filter(item => {
@@ -570,6 +661,12 @@
                     }).length;
                     weeklySummary.innerHTML += `<div class="metric-item"><span>${stage.name}</span><span>${totalSemana}</span></div>`;
                 });
+
+                timeSummary.innerHTML = `
+                    <div class="metric-item"><span>Total de Dias no Mês:</span><span>${totalDaysInMonth}</span></div>
+                    <div class="metric-item"><span>Dias Passados:</span><span>${daysPassed}</span></div>
+                    <div class="metric-item"><span>Dias Restantes:</span><span>${daysRemaining}</span></div>
+                `;
             }
 
             function renderFunnelChart() {
@@ -619,6 +716,7 @@
                     configModal.classList.add('hidden');
                     mainContent.classList.remove('hidden');
                     renderDashboard();
+                    setTimeout(showPerformanceAnalysis, 1000); // Exibe o card de análise após carregar
                 } else {
                     configModal.classList.remove('hidden');
                     mainContent.classList.add('hidden');
@@ -646,6 +744,8 @@
             importFileInput.addEventListener('change', importBackup);
             btnPdfGeneral.addEventListener('click', generateGeneralPDF);
             btnPdfStages.addEventListener('click', generateStagesPDF);
+            btnClosePerformanceModal.addEventListener('click', () => performanceModal.classList.add('hidden'));
+            performanceModal.addEventListener('click', (e) => { if (e.target === performanceModal) { performanceModal.classList.add('hidden'); } });
 
             init();
         });
