@@ -17,15 +17,15 @@
 
     <style>
         :root {
-            --primary-color: #4A574A; /* Verde mais escuro para melhor contraste */
-            --secondary-color: #606C60; /* Tom correspondente */
+            --primary-color: #4A574A;
+            --secondary-color: #606C60;
             --accent-color: #B4846C;
             --success-color: #4CAF50;
             --warning-color: #FFC107;
             --danger-color: #D32F2F;
             
             --bg-color: #F4F2EE;
-            --card-bg-color: #FFFFFF; /* Fundo do card sólido para legibilidade */
+            --card-bg-color: #FFFFFF;
             --text-color: #333333;
             --text-muted-color: #666;
             --border-color: #e0e0e0;
@@ -82,7 +82,8 @@
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(26px); }
 
-        #configuracao-metas, #performance-analysis-modal {
+        /* Modais */
+        #configuracao-metas, #performance-analysis-modal, #config-modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6); z-index: 1001;
@@ -90,7 +91,7 @@
             align-items: center;
             backdrop-filter: blur(10px);
         }
-        #configuracao-metas .modal-content, #performance-analysis-modal .modal-content {
+        #configuracao-metas .modal-content, #performance-analysis-modal .modal-content, #config-modal .modal-content {
             background: var(--modal-bg);
             padding: 30px 40px; border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -162,6 +163,52 @@
         .edit-meta-group input { flex-grow: 1; }
         .edit-meta-group button { padding: 12px 15px; font-size: 0.9rem; width: auto; }
 
+        /* Controles de estágio */
+        .stage-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .qty-controls button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .qty-controls input {
+            width: 60px;
+            text-align: center;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            padding: 8px 0;
+            font-weight: 600;
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .nav-controls button {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.9rem;
+            background: var(--accent-color);
+        }
+        .nav-controls button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         #toast {
             position: fixed;
             bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -186,18 +233,7 @@
 </head>
 <body>
 
-    <div id="performance-analysis-modal" class="hidden">
-        <div class="modal-content">
-            <h2 id="performance-title"></h2>
-            <p id="performance-message"></p>
-            <div id="performance-strategies" class="hidden">
-                <h4>Estratégias Sugeridas:</h4>
-                <ul></ul>
-            </div>
-            <button id="btnClosePerformanceModal"><i class="fas fa-times"></i> Fechar</button>
-        </div>
-    </div>
-
+    <!-- Modal de Configuração Inicial (Metas) -->
     <div id="configuracao-metas">
         <div class="modal-content">
              <h2><i class="fas fa-bullseye"></i> Configurar Metas Mensais</h2>
@@ -210,16 +246,57 @@
             <button id="btnSalvarMetas"><i class="fas fa-save"></i> Salvar e Iniciar</button>
         </div>
     </div>
-    
+
+    <!-- Modal de Análise de Performance -->
+    <div id="performance-analysis-modal" class="hidden">
+        <div class="modal-content">
+            <h2 id="performance-title"></h2>
+            <p id="performance-message"></p>
+            <div id="performance-strategies" class="hidden">
+                <h4>Estratégias Sugeridas:</h4>
+                <ul></ul>
+            </div>
+            <button id="btnClosePerformanceModal"><i class="fas fa-times"></i> Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações (Backup, Relatórios, Reset) -->
+    <div id="config-modal" class="hidden">
+        <div class="modal-content">
+            <h2><i class="fas fa-cog"></i> Configurações</h2>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <h4>Backup</h4>
+                    <button id="btnExportBackup" style="margin-bottom: 10px;"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
+                    <button id="btnImportBackup"><i class="fas fa-upload"></i> Importar Backup</button>
+                    <input type="file" id="importFile" accept=".json" class="hidden">
+                </div>
+                <div>
+                    <h4>Relatórios</h4>
+                    <button id="btnPdfGeneral" style="margin-bottom: 10px;"><i class="fas fa-file-pdf"></i> Relatório Geral (PDF)</button>
+                    <button id="btnPdfStages"><i class="fas fa-file-alt"></i> Relatórios por Etapa (PDF)</button>
+                </div>
+                <div>
+                    <h4>Dados</h4>
+                    <button id="btnResetar" style="background: var(--danger-color);"><i class="fas fa-trash-alt"></i> Resetar Dados</button>
+                </div>
+                <button id="btnCloseConfigModal"><i class="fas fa-times"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast"></div>
 
     <div class="container hidden" id="main-content">
         <header>
             <h1><i class="fas fa-filter"></i> Funil Pro RSI</h1>
-            <div class="theme-switch-wrapper">
-                <i class="fas fa-sun"></i>
-                <label class="theme-switch"><input type="checkbox" id="theme-toggle"><span class="slider"></span></label>
-                <i class="fas fa-moon"></i>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="theme-switch-wrapper">
+                    <i class="fas fa-sun"></i>
+                    <label class="theme-switch"><input type="checkbox" id="theme-toggle"><span class="slider"></span></label>
+                    <i class="fas fa-moon"></i>
+                </div>
+                <i class="fas fa-cog" id="config-icon" style="cursor: pointer; font-size: 1.5rem;"></i>
             </div>
         </header>
         
@@ -242,17 +319,6 @@
                         <button id="btnUpdateMeta" title="Atualizar Meta"><i class="fas fa-check"></i></button>
                     </div>
                 </div>
-                 <div class="analysis-card">
-                    <h3><i class="fas fa-hdd"></i> Backup & Relatórios</h3>
-                     <div class="button-group">
-                        <button id="btnExportBackup"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
-                        <button id="btnImportBackup"><i class="fas fa-upload"></i> Importar Backup</button>
-                        <input type="file" id="importFile" accept=".json" class="hidden">
-                        <hr style="border-color: var(--border-color); opacity: 0.5;">
-                        <button id="btnPdfGeneral"><i class="fas fa-file-pdf"></i> Relatório Geral (PDF)</button>
-                        <button id="btnPdfStages"><i class="fas fa-file-alt"></i> Relatórios por Etapa (PDF)</button>
-                     </div>
-                </div>
                 <div class="analysis-card">
                      <h3><i class="fas fa-calendar-alt"></i> Resumo Mensal</h3>
                      <div id="resumo-mensal"></div>
@@ -260,9 +326,6 @@
                 <div class="analysis-card">
                      <h3><i class="fas fa-calendar-week"></i> Resumo Semanal</h3>
                      <div id="resumo-semanal"></div>
-                </div>
-                <div class="analysis-card">
-                    <button id="btnResetar" style="width:100%; background: var(--danger-color);"><i class="fas fa-trash-alt"></i> Resetar Dados</button>
                 </div>
             </aside>
         </div>
@@ -275,7 +338,7 @@
             // --- LÓGICA DE DATAS DINÂMICA ---
             const today = new Date();
             const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth(); // 0-11
+            const currentMonth = today.getMonth();
             const totalDaysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             const daysPassed = today.getDate();
             const daysRemaining = totalDaysInMonth - daysPassed;
@@ -309,6 +372,10 @@
             const performanceStrategies = document.getElementById('performance-strategies');
             const performanceStrategiesList = performanceStrategies.querySelector('ul');
             const btnClosePerformanceModal = document.getElementById('btnClosePerformanceModal');
+            // Elementos do modal de configurações
+            const configIcon = document.getElementById('config-icon');
+            const configModalElem = document.getElementById('config-modal');
+            const btnCloseConfigModal = document.getElementById('btnCloseConfigModal');
 
             let data = { 
                 goals: null, 
@@ -446,30 +513,48 @@
                 renderDashboard();
             }
 
-            function addItemToStage(stageId) {
-                data.funnel[stageId].push({ id: Date.now(), date: new Date().toISOString() });
+            // Funções para manipular itens
+            function addItemsToStage(stageId, quantity) {
+                for (let i = 0; i < quantity; i++) {
+                    data.funnel[stageId].push({ id: Date.now() + i, date: new Date().toISOString() });
+                }
                 saveData();
-                showToast(`+1 ${stages.find(s=>s.id === stageId).name} adicionado!`);
+                showToast(`${quantity} ${stages.find(s=>s.id === stageId).name} adicionado(s)!`);
                 renderDashboard();
             }
 
-            function addMultipleLeads() {
-                const input = document.getElementById('leads-input');
-                if (!input) return;
-
-                const quantity = parseInt(input.value, 10);
-
-                if (isNaN(quantity) || quantity <= 0) {
-                    showToast("Por favor, insira uma quantidade válida.");
+            function removeItemsFromStage(stageId, quantity) {
+                const currentLength = data.funnel[stageId].length;
+                if (currentLength < quantity) {
+                    showToast(`Não há ${quantity} itens para remover.`);
                     return;
                 }
-
                 for (let i = 0; i < quantity; i++) {
-                    data.funnel.leads.push({ id: Date.now() + i, date: new Date().toISOString() });
+                    data.funnel[stageId].pop(); // remove o último
                 }
-
                 saveData();
-                showToast(`${quantity} lead(s) adicionado(s)!`);
+                showToast(`${quantity} ${stages.find(s=>s.id === stageId).name} removido(s)!`);
+                renderDashboard();
+            }
+
+            function moveItem(stageId, direction) {
+                const currentIndex = stages.findIndex(s => s.id === stageId);
+                if (direction === 'next' && currentIndex >= stages.length - 1) return;
+                if (direction === 'prev' && currentIndex <= 0) return;
+                
+                const targetStageId = stages[currentIndex + (direction === 'next' ? 1 : -1)].id;
+                
+                if (data.funnel[stageId].length === 0) {
+                    showToast(`Não há leads em ${stages.find(s=>s.id === stageId).name} para mover.`);
+                    return;
+                }
+                
+                // Remove o último lead da origem e adiciona no destino
+                const movedItem = data.funnel[stageId].pop();
+                data.funnel[targetStageId].push(movedItem);
+                
+                saveData();
+                showToast(`Lead movido de ${stages.find(s=>s.id === stageId).name} para ${stages.find(s=>s.id === targetStageId).name}.`);
                 renderDashboard();
             }
 
@@ -591,7 +676,7 @@
                 if (!data.goals) return;
                 editMetaLeadsInput.value = data.goals.leads;
                 dashboard.innerHTML = '';
-                stages.forEach(stage => {
+                stages.forEach((stage, index) => {
                     const metaMensal = data.goals[stage.id];
                     const metaDiaria = totalDaysInMonth > 0 ? metaMensal / totalDaysInMonth : 0;
                     const realizado = data.funnel[stage.id].length;
@@ -599,18 +684,6 @@
                     const percRealizadoMeta = metaMensal > 0 ? (realizado / metaMensal) * 100 : 0;
                     const percTendenciaMeta = metaMensal > 0 ? (tendencia / metaMensal) * 100 : 0;
                     
-                    let actionHtml = '';
-                    if (stage.id === 'leads') {
-                        actionHtml = `
-                            <div class="edit-meta-group" style="margin-top: 15px; gap: 5px;">
-                                <input type="number" id="leads-input" placeholder="Adicionar qtd." min="1" style="flex-grow: 3;">
-                                <button id="btn-add-leads" title="Adicionar Leads" style="flex-grow: 1; padding: 12px 10px;"><i class="fas fa-plus"></i> Adicionar</button>
-                            </div>
-                        `;
-                    } else {
-                        actionHtml = `<button class="add-button" data-stage="${stage.id}" style="margin-top: 15px;"><i class="fas fa-plus"></i> Adicionar</button>`;
-                    }
-
                     const stageElement = document.createElement('div');
                     stageElement.className = 'funnel-stage';
                     stageElement.innerHTML = `
@@ -630,7 +703,19 @@
                            <span style="color: ${getPercentageColor(percTendenciaMeta)}; font-weight: bold;">${percTendenciaMeta.toFixed(1)}%</span>
                         </div>
                         <div class="progress-bar"><div class="progress-bar-inner" style="width: ${Math.min(percTendenciaMeta, 100)}%; background: ${getPercentageColor(percTendenciaMeta)}"></div></div>
-                        ${actionHtml}
+                        
+                        <!-- Controles -->
+                        <div class="stage-controls">
+                            <div class="qty-controls">
+                                <button class="btn-decrement" data-stage="${stage.id}">−</button>
+                                <input type="number" class="stage-quantity" value="1" min="1" data-stage="${stage.id}">
+                                <button class="btn-increment" data-stage="${stage.id}">+</button>
+                            </div>
+                            <div class="nav-controls">
+                                <button class="btn-move-prev" data-stage="${stage.id}" ${index === 0 ? 'disabled' : ''}><i class="fas fa-arrow-left"></i> Voltar</button>
+                                <button class="btn-move-next" data-stage="${stage.id}" ${index === stages.length-1 ? 'disabled' : ''}>Avançar <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
                     `;
                     dashboard.appendChild(stageElement);
                 });
@@ -716,36 +801,69 @@
                     configModal.classList.add('hidden');
                     mainContent.classList.remove('hidden');
                     renderDashboard();
-                    setTimeout(showPerformanceAnalysis, 1000); // Exibe o card de análise após carregar
+                    setTimeout(showPerformanceAnalysis, 1000);
                 } else {
                     configModal.classList.remove('hidden');
                     mainContent.classList.add('hidden');
                 }
             }
 
+            // Eventos dos modais
             btnSalvarMetas.addEventListener('click', setupInitialGoals);
             btnUpdateMeta.addEventListener('click', updateLeadGoal);
             btnResetar.addEventListener('click', resetData);
             themeToggle.addEventListener('change', toggleTheme);
             
-            dashboard.addEventListener('click', e => {
-                const addButton = e.target.closest('.add-button');
-                const addLeadsButton = e.target.closest('#btn-add-leads');
-                
-                if (addLeadsButton) {
-                    addMultipleLeads();
-                } else if (addButton) {
-                    addItemToStage(addButton.dataset.stage);
-                }
+            // Eventos de configuração
+            configIcon.addEventListener('click', () => {
+                configModalElem.classList.remove('hidden');
+            });
+            btnCloseConfigModal.addEventListener('click', () => {
+                configModalElem.classList.add('hidden');
+            });
+            configModalElem.addEventListener('click', (e) => {
+                if (e.target === configModalElem) configModalElem.classList.add('hidden');
             });
 
+            // Backup e relatórios
             btnExportBackup.addEventListener('click', exportBackup);
             btnImportBackup.addEventListener('click', () => importFileInput.click());
             importFileInput.addEventListener('change', importBackup);
             btnPdfGeneral.addEventListener('click', generateGeneralPDF);
             btnPdfStages.addEventListener('click', generateStagesPDF);
+
+            // Fechar performance modal
             btnClosePerformanceModal.addEventListener('click', () => performanceModal.classList.add('hidden'));
-            performanceModal.addEventListener('click', (e) => { if (e.target === performanceModal) { performanceModal.classList.add('hidden'); } });
+            performanceModal.addEventListener('click', (e) => { if (e.target === performanceModal) performanceModal.classList.add('hidden'); });
+
+            // Eventos do dashboard (delegação)
+            dashboard.addEventListener('click', e => {
+                const incrementBtn = e.target.closest('.btn-increment');
+                const decrementBtn = e.target.closest('.btn-decrement');
+                const movePrevBtn = e.target.closest('.btn-move-prev');
+                const moveNextBtn = e.target.closest('.btn-move-next');
+
+                if (incrementBtn) {
+                    const stageId = incrementBtn.dataset.stage;
+                    const card = incrementBtn.closest('.funnel-stage');
+                    const qtyInput = card.querySelector('.stage-quantity');
+                    const qty = parseInt(qtyInput.value, 10) || 1;
+                    addItemsToStage(stageId, qty);
+                }
+                else if (decrementBtn) {
+                    const stageId = decrementBtn.dataset.stage;
+                    const card = decrementBtn.closest('.funnel-stage');
+                    const qtyInput = card.querySelector('.stage-quantity');
+                    const qty = parseInt(qtyInput.value, 10) || 1;
+                    removeItemsFromStage(stageId, qty);
+                }
+                else if (movePrevBtn && !movePrevBtn.disabled) {
+                    moveItem(movePrevBtn.dataset.stage, 'prev');
+                }
+                else if (moveNextBtn && !moveNextBtn.disabled) {
+                    moveItem(moveNextBtn.dataset.stage, 'next');
+                }
+            });
 
             init();
         });
