@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funil Pro RSI - Resende Soluções Imobiliárias</title>
+    <title>Funil Pro Corretor</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -289,7 +289,7 @@
 
     <div class="container hidden" id="main-content">
         <header>
-            <h1><i class="fas fa-filter"></i> Funil Pro RSI</h1>
+            <h1><i class="fas fa-filter"></i> Funil Pro Corretor</h1>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <div class="theme-switch-wrapper">
                     <i class="fas fa-sun"></i>
@@ -431,7 +431,7 @@
                 const link = document.createElement('a');
                 link.href = url;
                 const date = new Date().toISOString().slice(0, 10);
-                link.download = `backup-funil-rsi-${date}.json`;
+                link.download = `backup-funil-Pro-${date}.json`;
                 link.click();
                 URL.revokeObjectURL(url);
                 showToast("Backup exportado com sucesso!");
@@ -564,7 +564,7 @@
                 const tableData = [];
                 
                 doc.setFontSize(18);
-                doc.text("Relatório Geral do Funil de Vendas - RSI", 14, 22);
+                doc.text("Relatório Geral do Funil de Vendas - Pro Corretor", 14, 22);
                 doc.setFontSize(11);
                 doc.setTextColor(100);
                 doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 29);
@@ -590,7 +590,7 @@
                     theme: 'grid'
                 });
 
-                doc.save(`relatorio-geral-funil-rsi-${new Date().toISOString().slice(0, 10)}.pdf`);
+                doc.save(`relatorio-geral-funil-pro-${new Date().toISOString().slice(0, 10)}.pdf`);
                 showToast("Relatório geral em PDF gerado!");
             }
 
@@ -622,7 +622,7 @@
                     }
                 });
 
-                doc.save(`relatorios-etapas-funil-rsi-${new Date().toISOString().slice(0, 10)}.pdf`);
+                doc.save(`relatorios-etapas-funil-pro-${new Date().toISOString().slice(0, 10)}.pdf`);
                 showToast("Relatórios por etapa em PDF gerados!");
             }
             
@@ -870,3 +870,4 @@
     </script>
 </body>
 </html>
+
