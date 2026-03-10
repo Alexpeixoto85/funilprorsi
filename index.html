@@ -2,1446 +2,906 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funil Pro Corretor — Marketing Intelligence</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2E4A31">
+<title>Funil Pro Corretor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --p1:#2E4A31;--p2:#3D6142;--p3:#4E7A54;
+  --a1:#C4724A;--a2:#D98A62;
+  --ok:#2E7D42;--warn:#B87020;--err:#B83030;
+  --bg:#EFF0EC;--surf:#FAFAF8;--card:#FFFFFF;
+  --t1:#1A2B1C;--t2:#445447;--t3:#7A8A7C;
+  --bdr:#DDE0D8;--shd:rgba(30,50,32,.10);
+  --g1:linear-gradient(160deg,var(--p1),var(--p2));
+  --g2:linear-gradient(135deg,var(--a1),var(--a2));
+  --bnav-h:68px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --hdr-h:58px;
+}
+body.dark{
+  --p1:#5B9463;--p2:#6FAA77;
+  --a1:#D98A62;--a2:#E8A07A;
+  --ok:#5BBF6E;--warn:#D9963A;--err:#E06060;
+  --bg:#141F15;--surf:#1B2A1D;--card:#203024;
+  --t1:#E4EDE5;--t2:#A8BEA9;--t3:#6A8A6C;
+  --bdr:#2A402C;--shd:rgba(0,0,0,.30);
+  --g1:linear-gradient(160deg,#1A2D1C,#253D27);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100dvh;overscroll-behavior:none;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none}
+input{font-family:inherit}
 
-    <style>
-        :root {
-            --p: #3D5A40; --p2: #4E7153; --acc: #C47B5A; --acc2: #D9956F;
-            --bg: #F2EDE6; --card: #FDFAF7; --text: #1E2820; --muted: #6B7B6E;
-            --border: #D8D0C4; --shadow: rgba(61,90,64,0.10);
-            --success: #3A7D44; --warn: #C68B3A; --danger: #B83232;
-            --grad: linear-gradient(135deg, var(--p), var(--p2));
-            --acc-grad: linear-gradient(135deg, var(--acc), var(--acc2));
-        }
-        body.dark {
-            --p: #7DB88A; --p2: #9DCCAA; --acc: #D9956F; --acc2: #E8A882;
-            --bg: #1A2B1D; --card: #22362A; --text: #E8F0EA; --muted: #8CA893;
-            --border: #2E4535; --shadow: rgba(0,0,0,0.25);
-            --success: #6DC47A; --warn: #E0A94A; --danger: #E56262;
-            --grad: linear-gradient(135deg, #2E4535, #3D5A42);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Sora', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            transition: background .3s, color .3s;
-        }
+/* ── SHELL ── */
+.shell{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 
-        /* ─── HEADER ─── */
-        .app-header {
-            background: var(--grad);
-            padding: 0 32px;
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,.18);
-            position: sticky; top: 0; z-index: 100;
-            flex-wrap: wrap;
-        }
-        .app-logo {
-            display: flex; align-items: center; gap: 12px;
-            padding: 16px 0;
-        }
-        .app-logo .icon-wrap {
-            background: rgba(255,255,255,.15);
-            border-radius: 12px; width: 44px; height: 44px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; color: #fff;
-        }
-        .app-logo h1 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.6rem; color: #fff; line-height: 1.1;
-        }
-        .app-logo span { font-size: .75rem; color: rgba(255,255,255,.7); font-weight: 300; display: block; }
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--g1);height:var(--hdr-h);
+  padding:0 16px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;box-shadow:0 2px 16px rgba(0,0,0,.22);z-index:50;position:relative;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;flex-shrink:0}
+.logo-text h1{font-size:1rem;font-weight:800;color:#fff;line-height:1.1}
+.logo-text span{font-size:.62rem;color:rgba(255,255,255,.65);font-weight:500}
+.hdr-btns{display:flex;gap:8px}
+.hbtn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;border:none;transition:background .2s}
+.hbtn:active{background:rgba(255,255,255,.3)}
 
-        /* ─── TABS ─── */
-        .nav-tabs {
-            display: flex; gap: 4px;
-            background: rgba(255,255,255,.08);
-            border-radius: 12px; padding: 4px;
-        }
-        .nav-tab {
-            background: transparent; border: none;
-            color: rgba(255,255,255,.65); font-family: 'Sora', sans-serif;
-            font-size: .8rem; font-weight: 600; letter-spacing: .03em;
-            padding: 8px 14px; border-radius: 9px; cursor: pointer;
-            display: flex; align-items: center; gap: 6px;
-            transition: all .2s;
-        }
-        .nav-tab.active { background: rgba(255,255,255,.18); color: #fff; }
-        .nav-tab:hover:not(.active) { background: rgba(255,255,255,.10); color: #fff; }
+/* ── PAGE AREA ── */
+.page{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;padding-bottom:calc(var(--bnav-h) + var(--safe-b) + 8px)}
+.tab{display:none;padding:14px 12px;animation:fadeUp .25s ease}
+.tab.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-        .header-controls { display: flex; align-items: center; gap: 14px; }
-        .theme-btn {
-            background: rgba(255,255,255,.12); border: none; border-radius: 50%;
-            width: 38px; height: 38px; color: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; transition: background .2s;
-        }
-        .theme-btn:hover { background: rgba(255,255,255,.25); }
-        .cfg-btn { font-size: 1.2rem; }
+/* ── BOTTOM NAV ── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  height:calc(var(--bnav-h) + var(--safe-b));
+  background:var(--card);border-top:1px solid var(--bdr);
+  box-shadow:0 -4px 24px rgba(0,0,0,.12);
+  display:flex;align-items:flex-start;padding-top:6px;
+  padding-bottom:var(--safe-b);
+}
+.bni{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:4px 2px;border:none;background:transparent;
+  color:var(--t3);font-size:.58rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+  transition:color .2s;
+}
+.bni.active{color:var(--p1)}
+.bni-ico{width:42px;height:30px;border-radius:21px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:background .2s,transform .18s}
+.bni.active .bni-ico{background:rgba(46,74,49,.12);transform:scale(1.06)}
+body.dark .bni.active .bni-ico{background:rgba(91,148,99,.15)}
 
-        /* ─── MAIN CONTAINER ─── */
-        .page { max-width: 1640px; margin: 0 auto; padding: 28px 24px; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+/* ── SHARED ── */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;box-shadow:0 2px 12px var(--shd);padding:14px}
+.sec{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.sec i{color:var(--p2)}
+.prog-track{background:var(--bdr);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;transition:width .55s cubic-bezier(.4,0,.2,1)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;font-size:.62rem;font-weight:700}
+.b-ok{background:rgba(46,125,66,.12);color:var(--ok)}
+.b-warn{background:rgba(184,112,32,.12);color:var(--warn)}
+.b-err{background:rgba(184,48,48,.12);color:var(--err)}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:.82rem}
+.mrow:last-child{border-bottom:none}
+.mrow .ml{color:var(--t3);font-weight:500}
+.mrow .mv{font-weight:700;background:var(--bg);padding:2px 8px;border-radius:6px;font-size:.78rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s}
+.btn:active{transform:scale(.96)}
+.btn-p{background:var(--g1);color:#fff;padding:13px 18px;font-size:.88rem;width:100%}
+.btn-g{background:var(--bg);color:var(--t1);border:1px solid var(--bdr);padding:13px 18px;font-size:.88rem;width:100%}
+.btn-d{background:var(--err);color:#fff;padding:13px 18px;font-size:.88rem;width:100%}
+.btn-ico{width:44px;height:44px;border-radius:11px;padding:0;background:var(--g1);color:#fff;flex-shrink:0}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:5px}
+.fi{width:100%;background:var(--bg);border:1.5px solid var(--bdr);color:var(--t1);border-radius:10px;padding:12px 13px;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s}
+.fi:focus{border-color:var(--p2)}
+.chip{display:inline-flex;padding:4px 11px;border-radius:99px;background:rgba(46,74,49,.08);color:var(--p2);font-size:.68rem;font-weight:700;border:1px solid rgba(46,74,49,.14)}
+body.dark .chip{background:rgba(91,148,99,.1);border-color:rgba(91,148,99,.2)}
+.hidden{display:none!important}
 
-        /* ─── CARDS ─── */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            box-shadow: 0 4px 20px var(--shadow);
-            padding: 22px 24px;
-            transition: transform .25s, box-shadow .25s;
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px var(--shadow); }
-        .card-title {
-            font-size: .78rem; font-weight: 700; letter-spacing: .08em;
-            text-transform: uppercase; color: var(--muted);
-            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-        }
-        .card-title i { color: var(--p); }
+/* ── TOAST ── */
+#toast{position:fixed;bottom:calc(var(--bnav-h) + var(--safe-b) + 12px);left:50%;transform:translate(-50%,16px);background:var(--t1);color:var(--bg);padding:10px 18px;border-radius:11px;font-size:.82rem;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.22);z-index:9999;opacity:0;visibility:hidden;white-space:nowrap;transition:all .3s cubic-bezier(.4,0,.2,1)}
+#toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
 
-        /* ─── GRID LAYOUTS ─── */
-        .grid-5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-        .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
-        .layout-main { display: grid; grid-template-columns: 1fr 340px; gap: 22px; }
-        .layout-strat { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
+/* ── MODAL ── */
+.mbg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center}
+.msheet{background:var(--card);border-radius:22px 22px 0 0;width:100%;max-width:600px;max-height:92dvh;overflow-y:auto;padding:6px 18px calc(20px + var(--safe-b));animation:sheetUp .3s cubic-bezier(.4,0,.2,1)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.handle{width:38px;height:4px;border-radius:2px;background:var(--bdr);margin:0 auto 16px}
+.mtitle{font-size:1.15rem;font-weight:800;margin-bottom:3px}
+.msub{font-size:.8rem;color:var(--t3);margin-bottom:18px}
+.slbl{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin:14px 0 7px;display:flex;align-items:center;gap:5px}
+.slbl i{color:var(--p2)}
+.cfg-gap{display:flex;flex-direction:column;gap:9px}
 
-        /* ─── FUNNEL STAGE CARDS ─── */
-        .stage-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 20px;
-            box-shadow: 0 4px 20px var(--shadow);
-            transition: transform .25s, box-shadow .25s;
-            position: relative; overflow: hidden;
-        }
-        .stage-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: var(--acc-grad);
-        }
-        .stage-card:hover { transform: translateY(-4px); box-shadow: 0 10px 36px var(--shadow); }
-        .stage-icon {
-            width: 46px; height: 46px; border-radius: 13px;
-            background: linear-gradient(135deg, var(--p), var(--p2));
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.2rem; margin-bottom: 14px;
-        }
-        .stage-name { font-size: .75rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-        .stage-count { font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--text); }
-        .stage-meta { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.kpi-tile{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:11px 9px;box-shadow:0 2px 8px var(--shd)}
+.kt-lbl{font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.kt-val{font-size:1.25rem;font-weight:800;line-height:1.1;margin:4px 0 2px}
+.kt-sub{font-size:.6rem;color:var(--t3)}
 
-        .progress-track { background: var(--border); border-radius: 99px; height: 6px; margin: 14px 0 8px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+/* ── STAGE CARDS ── */
+.stage-list{display:flex;flex-direction:column;gap:11px}
+.sc{background:var(--card);border:1px solid var(--bdr);border-radius:16px;box-shadow:0 2px 12px var(--shd);overflow:hidden}
+.sc-top{padding:14px 14px 0;display:flex;align-items:center;gap:11px}
+.sc-ico{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff}
+.sc-info{flex:1;min-width:0}
+.sc-info .sn{font-size:.65rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)}
+.sc-info .sv{font-size:2rem;font-weight:800;line-height:1;color:var(--t1)}
+.sc-info .sm{font-size:.7rem;color:var(--t3);margin-top:2px}
+.sc-pct{text-align:right;flex-shrink:0}
+.sc-pct .spv{font-size:1.3rem;font-weight:800;line-height:1}
+.sc-pct .spl{font-size:.6rem;color:var(--t3)}
+.sc-bars{padding:10px 14px}
+.br{margin-bottom:8px}
+.br:last-child{margin-bottom:0}
+.br-row{display:flex;justify-content:space-between;font-size:.68rem;margin-bottom:4px}
+.br-row span:first-child{color:var(--t3)}
+.br-row span:last-child{font-weight:700}
+.sc-ctrl{padding:11px 14px 13px;border-top:1px solid var(--bdr);background:var(--bg);display:flex;flex-direction:column;gap:9px}
+.qty-row{display:flex;align-items:center;gap:8px}
+.qbtn{width:46px;height:46px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--g1);color:#fff;font-size:1.4rem;font-weight:700;border:none;transition:transform .12s}
+.qbtn:active{transform:scale(.9)}
+.qin{flex:1;text-align:center;background:var(--card);border:1.5px solid var(--bdr);color:var(--t1);border-radius:10px;padding:10px 4px;font-size:1rem;font-weight:700;font-family:inherit}
+.nav-row{display:flex;gap:8px}
+.nbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:11px 6px;border-radius:10px;background:var(--g2);color:#fff;font-size:.76rem;font-weight:700;border:none;transition:opacity .2s,transform .12s}
+.nbtn:active{transform:scale(.96)}
+.nbtn:disabled{opacity:.25;pointer-events:none}
 
-        .pct-row { display: flex; justify-content: space-between; align-items: center; font-size: .8rem; }
-        .pct-label { color: var(--muted); }
-        .pct-val { font-weight: 700; }
+/* ── FUNNEL LAYOUT ── */
+.fl-main{display:flex;flex-direction:column;gap:12px}
+.sidebar-cards{display:flex;flex-direction:column;gap:11px}
+.chart-card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:14px;box-shadow:0 2px 10px var(--shd)}
+.ctitle{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.ctitle i{color:var(--p2)}
 
-        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: .82rem; }
-        .metric-row:last-child { border-bottom: none; }
-        .metric-row .label { color: var(--muted); }
-        .metric-row .val { font-weight: 600; background: var(--bg); padding: 2px 8px; border-radius: 7px; }
+/* ── STRATEGY ── */
+.ss{background:var(--card);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;box-shadow:0 2px 10px var(--shd);margin-bottom:11px}
+.ss-head{padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none}
+.ss-ico{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.05rem;color:#fff}
+.ss-info{flex:1;min-width:0}
+.ss-info h3{font-size:.88rem;font-weight:800;line-height:1.2}
+.ss-info p{font-size:.7rem;color:var(--t3);margin-top:2px}
+.ss-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.ss-chev{color:var(--t3);font-size:.75rem;margin-top:4px;transition:transform .25s}
+.ss.open .ss-chev{transform:rotate(180deg)}
+.ss-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.ss.open .ss-body{max-height:2400px}
+.ss-inner{padding:0 14px 16px;border-top:1px solid var(--bdr)}
+.tip-list{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.tip{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;background:var(--bg);border-radius:10px;font-size:.79rem;line-height:1.5}
+.tip .ti{color:var(--a1);font-size:.85rem;flex-shrink:0;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.kbox{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:.78rem;line-height:1.6;color:var(--t2)}
 
-        /* STAGE CONTROLS */
-        .stage-controls { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-        .qty-row { display: flex; align-items: center; gap: 6px; }
-        .btn-ctrl {
-            width: 36px; height: 36px; border: none; border-radius: 9px;
-            background: var(--grad); color: #fff; font-size: 1.1rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: transform .15s, box-shadow .15s; flex-shrink: 0;
-        }
-        .btn-ctrl:hover { transform: scale(1.08); box-shadow: 0 4px 12px var(--shadow); }
-        .qty-input {
-            width: 54px; text-align: center; background: var(--bg);
-            border: 1px solid var(--border); color: var(--text);
-            border-radius: 9px; padding: 8px 4px; font-weight: 700; font-size: .9rem;
-        }
-        .nav-row { display: flex; gap: 6px; }
-        .btn-nav {
-            flex: 1; border: none; border-radius: 9px; padding: 8px 10px;
-            background: var(--acc-grad); color: #fff; font-size: .78rem; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
-            transition: opacity .2s, transform .15s;
-        }
-        .btn-nav:disabled { opacity: .28; cursor: not-allowed; transform: none !important; }
-        .btn-nav:not(:disabled):hover { transform: scale(1.04); }
+/* ── CHECKLIST ── */
+.chk-hdr{background:var(--g1);border-radius:16px;padding:14px;margin-bottom:12px;color:#fff}
+.chk-hdr .dlbl{font-size:.66rem;font-weight:700;letter-spacing:.06em;opacity:.72;text-transform:uppercase}
+.chk-hdr h2{font-size:1.05rem;font-weight:800;margin:4px 0 10px}
+.cp-row{display:flex;align-items:center;gap:9px}
+.cp-row .prog-track{flex:1;height:6px;background:rgba(255,255,255,.22)}
+.cp-row .prog-fill{background:#fff}
+.cp-pct{font-size:.78rem;font-weight:800;white-space:nowrap}
+.chk-sub{font-size:.7rem;margin-top:4px;opacity:.72}
+.cg{background:var(--card);border:1px solid var(--bdr);border-radius:14px;margin-bottom:11px;box-shadow:0 2px 10px var(--shd);overflow:hidden}
+.cg-head{display:flex;align-items:center;gap:10px;padding:12px 13px;border-bottom:1px solid var(--bdr)}
+.cg-ico{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff}
+.cg-head h4{font-size:.86rem;font-weight:800;line-height:1.2}
+.cg-head small{font-size:.68rem;color:var(--t3)}
+.cg-ctr{margin-left:auto;flex-shrink:0;background:var(--bg);border-radius:99px;padding:2px 9px;font-size:.7rem;font-weight:700;color:var(--t3)}
+.ci{display:flex;align-items:flex-start;gap:11px;padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background .12s}
+.ci:last-child{border-bottom:none}
+.ci:active{background:var(--bg)}
+.cb{width:22px;height:22px;border-radius:6px;flex-shrink:0;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .18s}
+.ci.done .cb{background:var(--ok);border-color:var(--ok)}
+.ci.done .cb::after{content:'✓';font-size:.7rem;font-weight:900;color:#fff}
+.ct{flex:1;font-size:.8rem;line-height:1.45;transition:color .2s}
+.ci.done .ct{text-decoration:line-through;color:var(--t3)}
+.pdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:7px}
+.ph{background:var(--err)} .pm{background:var(--warn)} .pl{background:var(--ok)}
 
-        /* ─── SIDEBAR CARDS ─── */
-        .sidebar { display: flex; flex-direction: column; gap: 18px; }
-        .edit-goal-row { display: flex; gap: 8px; }
-        .edit-goal-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 10px 12px; font-size: .9rem; }
-        .btn-primary {
-            background: var(--grad); color: #fff; border: none; border-radius: 10px;
-            padding: 10px 16px; font-weight: 700; font-size: .85rem; cursor: pointer;
-            display: flex; align-items: center; gap: 6px; transition: transform .15s, box-shadow .15s;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
-        .btn-secondary {
-            background: var(--bg); color: var(--text); border: 1px solid var(--border);
-            border-radius: 10px; padding: 10px 16px; font-weight: 600; font-size: .85rem;
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-            transition: background .2s; width: 100%;
-        }
-        .btn-secondary:hover { background: var(--border); }
-        .btn-danger { background: var(--danger); color: #fff; }
+/* ── ANALYTICS ── */
+.insight{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:7px;font-size:.79rem;line-height:1.5}
+.insight i{font-size:.9rem;flex-shrink:0;margin-top:2px}
+.cstep{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--bg);border-radius:10px;margin-bottom:5px;font-size:.8rem}
+.cs-ico2{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#fff}
+.cs-lbl{flex:1;font-weight:600}
+.cs-val{font-weight:800}
+.diag-i{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.diag-i:last-child{border-bottom:none}
+.diag-i i{font-size:1rem;flex-shrink:0}
+.di-n{font-size:.81rem;font-weight:700}
+.di-s{font-size:.7rem;color:var(--t3)}
 
-        /* ─── STAT BADGES ─── */
-        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; }
-        .badge-green { background: rgba(58,125,68,.12); color: var(--success); }
-        .badge-warn { background: rgba(198,139,58,.12); color: var(--warn); }
-        .badge-red { background: rgba(184,50,50,.12); color: var(--danger); }
+/* ── PERF MODAL ── */
+.pw{text-align:center}
+.pe{font-size:3rem;margin-bottom:8px}
+.pt{font-size:1.2rem;font-weight:800;margin-bottom:5px}
+.pt.ok{color:var(--ok)} .pt.warn{color:var(--warn)}
+.pmsg{font-size:.82rem;color:var(--t3);margin-bottom:16px}
+.ptlbl{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);text-align:left;margin-bottom:7px}
 
-        /* ─── MARKETING SECTION ─── */
-        .strategy-stage-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 18px; padding: 24px;
-            box-shadow: 0 4px 20px var(--shadow);
-        }
-        .strategy-stage-header {
-            display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
-            padding-bottom: 16px; border-bottom: 1px solid var(--border);
-        }
-        .strategy-stage-icon {
-            width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; color: #fff;
-        }
-        .strategy-stage-header h3 { font-size: 1.1rem; font-weight: 700; }
-        .strategy-stage-header p { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+/* ══════════════════════════════════════
+   RESPONSIVE — tablet 640px
+══════════════════════════════════════ */
+@media(min-width:640px){
+  .stage-list{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .tab{padding:18px 16px}
+  .kpi-strip{gap:12px}
+  .topbar{padding:0 22px}
+}
 
-        .tips-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .tips-list li {
-            display: flex; gap: 10px; align-items: flex-start;
-            padding: 10px 12px; background: var(--bg); border-radius: 11px;
-            font-size: .82rem; line-height: 1.5;
-        }
-        .tips-list li .tip-icon { color: var(--acc); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+/* ══════════════════════════════════════
+   RESPONSIVE — desktop 1024px
+   → Transforms into a PWA-style sidebar app
+══════════════════════════════════════ */
+@media(min-width:1024px){
+  .shell{flex-direction:row}
+  .bnav{display:none}
+  .sidenav{
+    display:flex!important;flex-direction:column;
+    width:66px;background:var(--g1);align-items:center;
+    padding:14px 0;gap:4px;flex-shrink:0;
+    height:100dvh;position:sticky;top:0;
+  }
+  .sidenav .sn-logo{
+    width:40px;height:40px;border-radius:11px;
+    background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1.1rem;margin-bottom:10px;
+  }
+  .sidenav .sni{
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    width:50px;padding:9px 4px;border-radius:12px;
+    background:transparent;border:none;
+    color:rgba(255,255,255,.5);
+    font-size:.55rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    cursor:pointer;transition:background .2s,color .2s;
+  }
+  .sidenav .sni i{font-size:1.1rem}
+  .sidenav .sni.active{background:rgba(255,255,255,.18);color:#fff}
+  .sidenav .sni:not(.active):hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
+  .sidenav .sn-bottom{margin-top:auto;display:flex;flex-direction:column;gap:7px;align-items:center;padding-bottom:14px}
+  .main-body{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  .page{padding-bottom:0}
+  .tab{padding:22px 26px}
+  .topbar{height:auto;padding:13px 26px}
+  .logo-text h1{font-size:1.1rem}
+  .kpi-strip{grid-template-columns:repeat(4,1fr)}
+  .fl-main{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+  .sidebar-cards{position:sticky;top:8px}
+  .analytics-2c{display:grid!important;grid-template-columns:1fr 1fr;gap:16px}
+  .strat-2c{column-count:1}
+  .chk-2c{display:grid!important;grid-template-columns:1fr 1fr;gap:13px}
+}
 
-        .content-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
-        .chip {
-            padding: 5px 12px; border-radius: 99px;
-            background: rgba(61,90,64,.1); color: var(--p);
-            font-size: .74rem; font-weight: 600; border: 1px solid rgba(61,90,64,.2);
-        }
-        .section-label {
-            font-size: .7rem; font-weight: 700; letter-spacing: .08em;
-            text-transform: uppercase; color: var(--muted); margin: 16px 0 8px;
-        }
+/* ══════════════════════════════════════
+   RESPONSIVE — wide desktop 1280px
+══════════════════════════════════════ */
+@media(min-width:1280px){
+  .sidenav{width:180px}
+  .sidenav .sni{width:100%;flex-direction:row;gap:9px;padding:9px 14px;border-radius:10px;font-size:.7rem}
+  .sidenav .sn-bottom{align-items:flex-start;padding:0 10px 14px}
+  .sidenav .sn-bottom .hbtn{border-radius:10px;width:auto;padding:0 12px;gap:8px;font-size:.7rem;border-radius:10px}
+  .tab{padding:26px 30px}
+  .stage-list{grid-template-columns:repeat(5,1fr)!important}
+  .fl-main{grid-template-columns:1fr 310px}
+}
 
-        /* KPI BAR */
-        .kpi-row {
-            display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 22px;
-        }
-        .kpi-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 14px; padding: 18px 20px;
-            box-shadow: 0 3px 14px var(--shadow);
-        }
-        .kpi-label { font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-        .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--text); line-height: 1; }
-        .kpi-sub { font-size: .76rem; color: var(--muted); margin-top: 4px; }
-
-        /* ─── CHECKLIST ─── */
-        .checklist-section { margin-top: 8px; }
-        .checklist-day-header {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
-        }
-        .checklist-day-header .day-badge {
-            background: var(--grad); color: #fff; border-radius: 12px;
-            padding: 8px 16px; font-weight: 700; font-size: .85rem;
-            white-space: nowrap;
-        }
-        .checklist-day-header h2 { font-size: 1.4rem; font-weight: 700; }
-        .checklist-day-header p { font-size: .82rem; color: var(--muted); }
-
-        .checklist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-        .checklist-group {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 18px 20px;
-            box-shadow: 0 4px 16px var(--shadow);
-        }
-        .checklist-group-header {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-            padding-bottom: 12px; border-bottom: 1px solid var(--border);
-        }
-        .checklist-group-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .95rem; color: #fff; flex-shrink: 0;
-        }
-        .checklist-group-header h4 { font-size: .9rem; font-weight: 700; }
-        .checklist-group-header small { font-size: .74rem; color: var(--muted); }
-
-        .checklist-items { display: flex; flex-direction: column; gap: 8px; }
-        .check-item {
-            display: flex; align-items: flex-start; gap: 10px;
-            padding: 8px 10px; border-radius: 10px; cursor: pointer;
-            transition: background .15s; user-select: none;
-        }
-        .check-item:hover { background: var(--bg); }
-        .check-item input[type="checkbox"] { display: none; }
-        .check-box {
-            width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
-            border: 2px solid var(--border); display: flex; align-items: center;
-            justify-content: center; transition: all .2s; margin-top: 1px;
-        }
-        .check-item.done .check-box {
-            background: var(--success); border-color: var(--success); color: #fff;
-        }
-        .check-item.done .check-box::after { content: '✓'; font-size: .75rem; font-weight: 900; color: #fff; }
-        .check-item.done .check-text { text-decoration: line-through; color: var(--muted); }
-        .check-text { font-size: .82rem; line-height: 1.45; flex: 1; }
-        .check-priority {
-            font-size: .65rem; font-weight: 700; letter-spacing: .04em;
-            text-transform: uppercase; padding: 2px 7px; border-radius: 99px;
-            flex-shrink: 0; margin-top: 2px;
-        }
-        .priority-high { background: rgba(184,50,50,.1); color: var(--danger); }
-        .priority-mid { background: rgba(198,139,58,.1); color: var(--warn); }
-        .priority-low { background: rgba(58,125,68,.1); color: var(--success); }
-
-        .checklist-progress-bar {
-            display: flex; align-items: center; gap: 10px; margin-top: 18px;
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 14px; padding: 14px 18px;
-        }
-        .checklist-progress-bar .progress-track { flex: 1; margin: 0; height: 8px; }
-        .checklist-progress-bar .pct { font-weight: 800; font-size: 1rem; white-space: nowrap; }
-
-        /* ─── ANALYTICS ─── */
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
-        .chart-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 18px; padding: 22px; box-shadow: 0 4px 20px var(--shadow);
-        }
-        .chart-card h3 { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 16px; }
-        .conv-funnel { display: flex; flex-direction: column; gap: 6px; }
-        .conv-step {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 14px; background: var(--bg);
-            border-radius: 11px; font-size: .82rem;
-        }
-        .conv-step .arrow { color: var(--acc); font-size: .9rem; }
-        .conv-step .conv-label { flex: 1; font-weight: 500; }
-        .conv-step .conv-pct { font-weight: 800; font-size: .9rem; }
-
-        /* ─── MODALS ─── */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 1000;
-            background: rgba(0,0,0,.55); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .modal-box {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25);
-            padding: 32px 36px; width: 100%; max-width: 540px;
-            max-height: 90vh; overflow-y: auto;
-            animation: slideUp .35s cubic-bezier(.4,0,.2,1);
-        }
-        @keyframes slideUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
-        .modal-box h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
-        .modal-box p { font-size: .85rem; color: var(--muted); margin-bottom: 20px; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-        .form-group input {
-            width: 100%; background: var(--bg); border: 1px solid var(--border);
-            color: var(--text); border-radius: 11px; padding: 12px 14px;
-            font-size: .9rem; font-family: 'Sora', sans-serif;
-            transition: border-color .2s;
-        }
-        .form-group input:focus { outline: none; border-color: var(--p); }
-        .btn-full { width: 100%; margin-top: 8px; padding: 13px; font-size: .9rem; border-radius: 13px; }
-
-        .perf-modal-content { text-align: center; }
-        .perf-icon { font-size: 3.5rem; margin-bottom: 12px; }
-        .perf-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
-        .perf-title.positive { color: var(--success); }
-        .perf-title.negative { color: var(--warn); }
-        .perf-msg { font-size: .88rem; color: var(--muted); margin-bottom: 20px; }
-        .perf-tips { text-align: left; }
-        .perf-tip-item { display: flex; gap: 10px; padding: 10px 12px; background: var(--bg); border-radius: 11px; margin-bottom: 8px; font-size: .82rem; line-height: 1.5; }
-        .perf-tip-item i { color: var(--acc); flex-shrink: 0; margin-top: 2px; }
-
-        /* ─── TOAST ─── */
-        #toast {
-            position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px);
-            background: var(--text); color: var(--bg);
-            padding: 12px 22px; border-radius: 12px; font-size: .85rem; font-weight: 600;
-            box-shadow: 0 8px 24px rgba(0,0,0,.2); z-index: 9999;
-            opacity: 0; visibility: hidden;
-            transition: all .35s cubic-bezier(.4,0,.2,1);
-        }
-        #toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
-
-        .hidden { display: none !important; }
-
-        @media (max-width: 1100px) {
-            .grid-5 { grid-template-columns: repeat(3,1fr); }
-            .layout-main { grid-template-columns: 1fr; }
-            .checklist-grid { grid-template-columns: 1fr; }
-            .kpi-row { grid-template-columns: repeat(2,1fr); }
-        }
-        @media (max-width: 768px) {
-            .app-header { padding: 0 16px; }
-            .nav-tabs { display: none; }
-            .page { padding: 16px; }
-            .grid-5, .grid-3, .grid-2, .analytics-grid { grid-template-columns: 1fr; }
-            .kpi-row { grid-template-columns: 1fr 1fr; }
-            .layout-strat { grid-template-columns: 1fr; }
-        }
-    </style>
+/* hide sidenav by default */
+.sidenav{display:none}
+</style>
 </head>
 <body>
 
-<!-- ═══════════════ HEADER ═══════════════ -->
-<header class="app-header">
-    <div class="app-logo">
-        <div class="icon-wrap"><i class="fas fa-filter"></i></div>
-        <div>
-            <h1>Funil Pro Corretor</h1>
-            <span>Marketing Intelligence Dashboard</span>
+<!-- ═══════════ MODAL: METAS ═══════════ -->
+<div class="mbg" id="metasModal">
+  <div class="msheet">
+    <div class="handle"></div>
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:2.4rem;margin-bottom:7px">🎯</div>
+      <div class="mtitle">Configurar Metas</div>
+      <div class="msub">Defina suas metas mensais para começar o funil.</div>
+    </div>
+    <div class="fg"><label>Meta Mensal de Leads</label><input class="fi" type="number" id="metaLeads" placeholder="Ex: 100" min="1" inputmode="numeric"></div>
+    <div class="fg"><label>Leads → Visitas (%)</label><input class="fi" type="number" id="convLV" placeholder="Ex: 40" inputmode="decimal"></div>
+    <div class="fg"><label>Visitas → Docs. (%)</label><input class="fi" type="number" id="convVD" placeholder="Ex: 50" inputmode="decimal"></div>
+    <div class="fg"><label>Docs. → Aprovações (%)</label><input class="fi" type="number" id="convDA" placeholder="Ex: 80" inputmode="decimal"></div>
+    <div class="fg"><label>Aprovações → Vendas (%)</label><input class="fi" type="number" id="convAV" placeholder="Ex: 75" inputmode="decimal"></div>
+    <button class="btn btn-p" id="btnSalvar"><i class="fas fa-save"></i> Salvar e Iniciar</button>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: PERFORMANCE ═══════════ -->
+<div class="mbg hidden" id="perfModal">
+  <div class="msheet">
+    <div class="handle"></div>
+    <div class="pw">
+      <div class="pe" id="pEmoji"></div>
+      <div class="pt" id="pTitle"></div>
+      <div class="pmsg" id="pMsg"></div>
+      <div id="pTips" class="hidden"><div class="ptlbl"><i class="fas fa-bolt"></i> Ações Recomendadas</div><div id="pTipsC"></div></div>
+      <button class="btn btn-p" id="btnClosePerfModal" style="margin-top:16px"><i class="fas fa-times"></i> Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: CONFIG ═══════════ -->
+<div class="mbg hidden" id="cfgModal">
+  <div class="msheet">
+    <div class="handle"></div>
+    <div class="mtitle">⚙️ Configurações</div>
+    <div class="msub">Backup, relatórios e ajuste de metas</div>
+    <div class="slbl"><i class="fas fa-database"></i> Backup</div>
+    <div class="cfg-gap">
+      <button class="btn btn-g" id="btnExport"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
+      <button class="btn btn-g" id="btnImport"><i class="fas fa-upload"></i> Importar Backup</button>
+      <input type="file" id="importFile" accept=".json" class="hidden">
+    </div>
+    <div class="slbl"><i class="fas fa-file-pdf"></i> Relatórios PDF</div>
+    <div class="cfg-gap">
+      <button class="btn btn-g" id="btnPdfGeral"><i class="fas fa-file-alt"></i> Relatório Geral</button>
+      <button class="btn btn-g" id="btnPdfEtapas"><i class="fas fa-layer-group"></i> Relatórios por Etapa</button>
+    </div>
+    <div class="slbl"><i class="fas fa-bullseye"></i> Ajuste de Meta</div>
+    <div style="display:flex;gap:8px">
+      <input class="fi" type="number" id="editMetaLeads" placeholder="Nova meta de leads" inputmode="numeric" style="flex:1">
+      <button class="btn btn-ico" id="btnUpdateMeta"><i class="fas fa-check"></i></button>
+    </div>
+    <div class="slbl"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</div>
+    <button class="btn btn-d" id="btnReset"><i class="fas fa-trash-alt"></i> Resetar Todos os Dados</button>
+    <button class="btn btn-g" id="btnCloseCfg" style="margin-top:9px"><i class="fas fa-times"></i> Fechar</button>
+  </div>
+</div>
+
+<!-- ═══════════ APP SHELL ═══════════ -->
+<div class="shell hidden" id="appShell">
+
+  <!-- SIDE NAV (desktop) -->
+  <nav class="sidenav" id="sidenav">
+    <div class="sn-logo"><i class="fas fa-filter"></i></div>
+    <button class="sni active" data-tab="funil"><i class="fas fa-filter"></i><span>Funil</span></button>
+    <button class="sni" data-tab="marketing"><i class="fas fa-bullhorn"></i><span>Estratégia</span></button>
+    <button class="sni" data-tab="checklist"><i class="fas fa-tasks"></i><span>Checklist</span></button>
+    <button class="sni" data-tab="analytics"><i class="fas fa-chart-line"></i><span>Análise</span></button>
+    <div class="sn-bottom">
+      <button class="hbtn" id="themeSide" title="Tema"><i class="fas fa-moon" id="themeIconS"></i></button>
+      <button class="hbtn" id="cfgSide" title="Config"><i class="fas fa-cog"></i></button>
+    </div>
+  </nav>
+
+  <div class="main-body">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-icon"><i class="fas fa-filter"></i></div>
+        <div class="logo-text"><h1>Funil Pro Corretor</h1><span id="topDate"></span></div>
+      </div>
+      <div class="hdr-btns">
+        <button class="hbtn" id="themeBtn"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <button class="hbtn" id="cfgBtn"><i class="fas fa-cog"></i></button>
+      </div>
+    </div>
+
+    <!-- PAGE -->
+    <div class="page" id="pageArea">
+
+      <!-- FUNIL -->
+      <div class="tab active" id="tab-funil">
+        <div class="kpi-strip" id="kpiStrip"></div>
+        <div class="fl-main">
+          <div>
+            <div class="sec"><i class="fas fa-filter"></i> Etapas do Funil</div>
+            <div class="stage-list" id="stageList"></div>
+          </div>
+          <div class="sidebar-cards">
+            <div class="chart-card"><div class="ctitle"><i class="fas fa-chart-bar"></i> Meta vs Realizado</div><canvas id="funnelChart" height="200"></canvas></div>
+            <div class="card"><div class="sec"><i class="fas fa-calendar-check"></i> Mês Atual</div><div id="resMes"></div></div>
+            <div class="card"><div class="sec"><i class="fas fa-calendar-alt"></i> Resumo Mensal</div><div id="resMensal"></div></div>
+            <div class="card"><div class="sec"><i class="fas fa-calendar-week"></i> Esta Semana</div><div id="resSemanal"></div></div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <nav class="nav-tabs" id="navTabs">
-        <button class="nav-tab active" data-tab="funil"><i class="fas fa-filter"></i> Funil</button>
-        <button class="nav-tab" data-tab="marketing"><i class="fas fa-bullhorn"></i> Estratégia</button>
-        <button class="nav-tab" data-tab="checklist"><i class="fas fa-tasks"></i> Checklist</button>
-        <button class="nav-tab" data-tab="analytics"><i class="fas fa-chart-line"></i> Análise</button>
-    </nav>
+      <!-- ESTRATÉGIA -->
+      <div class="tab" id="tab-marketing">
+        <div class="sec" style="margin-bottom:13px"><i class="fas fa-bullhorn"></i> Estratégia por Etapa</div>
+        <div id="stratCards"></div>
+      </div>
 
-    <div class="header-controls">
-        <button class="theme-btn" id="themeBtn" title="Alternar tema"><i class="fas fa-moon" id="themeIcon"></i></button>
-        <button class="theme-btn cfg-btn" id="configBtn" title="Configurações"><i class="fas fa-cog"></i></button>
-    </div>
-</header>
+      <!-- CHECKLIST -->
+      <div class="tab" id="tab-checklist">
+        <div class="chk-hdr">
+          <div class="dlbl" id="chkDate"></div>
+          <h2>Checklist Diário</h2>
+          <div class="cp-row"><div class="prog-track"><div class="prog-fill" id="cpFill" style="width:0%"></div></div><span class="cp-pct" id="cpPct">0%</span></div>
+          <div class="chk-sub" id="cpSub">0 de 0 tarefas concluídas</div>
+        </div>
+        <div id="chkGrid" class="chk-2c" style="display:flex;flex-direction:column;gap:11px"></div>
+      </div>
+
+      <!-- ANÁLISE -->
+      <div class="tab" id="tab-analytics">
+        <div class="sec" style="margin-bottom:13px"><i class="fas fa-chart-line"></i> Análise Detalhada</div>
+        <div class="kpi-strip" id="aKpi" style="margin-bottom:14px"></div>
+        <div class="analytics-2c" style="display:flex;flex-direction:column;gap:13px">
+          <div class="chart-card"><div class="ctitle"><i class="fas fa-funnel-dollar"></i> Funil de Conversão</div><div id="convFunnel"></div></div>
+          <div class="chart-card"><div class="ctitle"><i class="fas fa-chart-bar"></i> Meta vs Realizado</div><canvas id="analyticsChart" height="220"></canvas></div>
+          <div class="chart-card"><div class="ctitle"><i class="fas fa-tachometer-alt"></i> Diagnóstico por Etapa</div><div id="stageDiag"></div></div>
+          <div class="chart-card"><div class="ctitle"><i class="fas fa-lightbulb"></i> Insights Automáticos</div><div id="autoInsights"></div></div>
+        </div>
+      </div>
+
+    </div><!-- /page -->
+  </div><!-- /main-body -->
+
+  <!-- BOTTOM NAV (mobile/tablet) -->
+  <nav class="bnav">
+    <button class="bni active" data-tab="funil"><div class="bni-ico"><i class="fas fa-filter"></i></div><span>Funil</span></button>
+    <button class="bni" data-tab="marketing"><div class="bni-ico"><i class="fas fa-bullhorn"></i></div><span>Estratégia</span></button>
+    <button class="bni" data-tab="checklist"><div class="bni-ico"><i class="fas fa-tasks"></i></div><span>Checklist</span></button>
+    <button class="bni" data-tab="analytics"><div class="bni-ico"><i class="fas fa-chart-line"></i></div><span>Análise</span></button>
+  </nav>
+
+</div><!-- /shell -->
 
 <div id="toast"></div>
 
-<!-- ═══════════════ MODAL: METAS INICIAIS ═══════════════ -->
-<div class="modal-overlay" id="metasModal">
-    <div class="modal-box">
-        <div style="text-align:center; margin-bottom: 20px;">
-            <div style="font-size:2.8rem; margin-bottom: 10px;">🎯</div>
-            <h2>Configurar Metas Mensais</h2>
-            <p>Defina suas metas para começar. Os dados ficam salvos no navegador.</p>
-        </div>
-        <div class="form-group"><label>Meta Mensal de Leads</label><input type="number" id="metaLeads" placeholder="Ex: 100" min="1"></div>
-        <div class="form-group"><label>Conversão: Leads → Visitas (%)</label><input type="number" id="convLV" placeholder="Ex: 40" min="0" max="100"></div>
-        <div class="form-group"><label>Conversão: Visitas → Docs. (%)</label><input type="number" id="convVD" placeholder="Ex: 50" min="0" max="100"></div>
-        <div class="form-group"><label>Conversão: Docs. → Aprovações (%)</label><input type="number" id="convDA" placeholder="Ex: 80" min="0" max="100"></div>
-        <div class="form-group"><label>Conversão: Aprovações → Vendas (%)</label><input type="number" id="convAV" placeholder="Ex: 75" min="0" max="100"></div>
-        <button class="btn-primary btn-full" id="btnSalvar"><i class="fas fa-save"></i> Salvar e Iniciar</button>
-    </div>
-</div>
-
-<!-- ═══════════════ MODAL: PERFORMANCE ═══════════════ -->
-<div class="modal-overlay hidden" id="perfModal">
-    <div class="modal-box perf-modal-content">
-        <div class="perf-icon" id="perfIcon"></div>
-        <div class="perf-title" id="perfTitle"></div>
-        <p class="perf-msg" id="perfMsg"></p>
-        <div class="perf-tips hidden" id="perfTips"></div>
-        <button class="btn-primary btn-full" id="btnClosePerfModal" style="margin-top:16px;"><i class="fas fa-times"></i> Fechar</button>
-    </div>
-</div>
-
-<!-- ═══════════════ MODAL: CONFIGURAÇÕES ═══════════════ -->
-<div class="modal-overlay hidden" id="configModal">
-    <div class="modal-box">
-        <h2>⚙️ Configurações</h2>
-        <p>Gerencie seus dados e relatórios.</p>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-            <p style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;">Backup</p>
-            <button class="btn-secondary" id="btnExport"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
-            <button class="btn-secondary" id="btnImport"><i class="fas fa-upload"></i> Importar Backup</button>
-            <input type="file" id="importFile" accept=".json" class="hidden">
-            <p style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px;">Relatórios PDF</p>
-            <button class="btn-secondary" id="btnPdfGeral"><i class="fas fa-file-pdf"></i> Relatório Geral</button>
-            <button class="btn-secondary" id="btnPdfEtapas"><i class="fas fa-file-alt"></i> Relatórios por Etapa</button>
-            <p style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px;">Ajuste de Meta</p>
-            <div class="edit-goal-row">
-                <input type="number" id="editMetaLeads" placeholder="Nova meta de leads">
-                <button class="btn-primary" id="btnUpdateMeta"><i class="fas fa-check"></i></button>
-            </div>
-            <p style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px;">Dados</p>
-            <button class="btn-secondary btn-danger" id="btnReset"><i class="fas fa-trash-alt"></i> Resetar Todos os Dados</button>
-            <button class="btn-primary btn-full" id="btnCloseConfig" style="margin-top:4px;"><i class="fas fa-times"></i> Fechar</button>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
-<div class="page hidden" id="mainContent">
-
-    <!-- ══ TAB: FUNIL ══ -->
-    <div class="tab-content active" id="tab-funil">
-        <!-- KPI Bar -->
-        <div class="kpi-row" id="kpiBar"></div>
-        <!-- Main layout -->
-        <div class="layout-main">
-            <div>
-                <div class="grid-5" id="funnel-dashboard"></div>
-            </div>
-            <aside class="sidebar">
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-chart-bar"></i> Visão do Funil</div>
-                    <canvas id="funnelChart" height="200"></canvas>
-                </div>
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-calendar-check"></i> Progresso do Mês</div>
-                    <div id="resumo-progresso-mes"></div>
-                </div>
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-calendar-alt"></i> Resumo Mensal</div>
-                    <div id="resumo-mensal"></div>
-                </div>
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-calendar-week"></i> Resumo Semanal</div>
-                    <div id="resumo-semanal"></div>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <!-- ══ TAB: ESTRATÉGIA ══ -->
-    <div class="tab-content" id="tab-marketing">
-        <div style="margin-bottom: 22px;">
-            <h2 style="font-size:1.5rem; font-weight:800;">📣 Central de Estratégia de Marketing</h2>
-            <p style="color:var(--muted); font-size:.88rem; margin-top:4px;">Táticas, conteúdo e ações específicas para cada etapa do seu funil</p>
-        </div>
-        <div id="strategy-cards-container"></div>
-    </div>
-
-    <!-- ══ TAB: CHECKLIST ══ -->
-    <div class="tab-content" id="tab-checklist">
-        <div class="checklist-day-header">
-            <div class="day-badge" id="checklistDayBadge"></div>
-            <div>
-                <h2 id="checklistTitle">Checklist de Ações Diárias</h2>
-                <p id="checklistSubtitle">Suas prioridades hoje, baseadas no funil</p>
-            </div>
-        </div>
-        <div class="checklist-progress-bar" id="checklistProgressBar">
-            <i class="fas fa-tasks" style="color:var(--p);"></i>
-            <span style="font-size:.82rem;color:var(--muted);">Progresso do dia:</span>
-            <div class="progress-track"><div class="progress-fill" id="checklistProgressFill" style="background:var(--grad); width:0%;"></div></div>
-            <span class="pct" id="checklistProgressPct">0%</span>
-        </div>
-        <div class="checklist-grid" id="checklistGrid" style="margin-top:20px;"></div>
-    </div>
-
-    <!-- ══ TAB: ANÁLISE ══ -->
-    <div class="tab-content" id="tab-analytics">
-        <div style="margin-bottom: 22px;">
-            <h2 style="font-size:1.5rem; font-weight:800;">📊 Análise Detalhada do Funil</h2>
-            <p style="color:var(--muted); font-size:.88rem; margin-top:4px;">Conversões, tendências e diagnóstico de performance</p>
-        </div>
-        <div class="kpi-row" id="analyticsKpi"></div>
-        <div class="analytics-grid">
-            <div class="chart-card">
-                <h3><i class="fas fa-funnel-dollar"></i> Funil de Conversão</h3>
-                <div class="conv-funnel" id="convFunnel"></div>
-            </div>
-            <div class="chart-card">
-                <h3><i class="fas fa-chart-bar"></i> Meta vs Realizado</h3>
-                <canvas id="analyticsChart" height="200"></canvas>
-            </div>
-            <div class="chart-card">
-                <h3><i class="fas fa-tachometer-alt"></i> Diagnóstico por Etapa</h3>
-                <div id="stageDiagnostic"></div>
-            </div>
-            <div class="chart-card">
-                <h3><i class="fas fa-lightbulb"></i> Insights Automáticos</h3>
-                <div id="autoInsights"></div>
-            </div>
-        </div>
-    </div>
-
-</div><!-- end #mainContent -->
-
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const { jsPDF } = window.jspdf;
+document.addEventListener('DOMContentLoaded',()=>{
+const {jsPDF}=window.jspdf;
 
-    // ── DATE LOGIC ──
-    const today = new Date();
-    const Y = today.getFullYear(), M = today.getMonth();
-    const totalDays = new Date(Y, M+1, 0).getDate();
-    const daysPassed = today.getDate();
-    const daysRemaining = totalDays - daysPassed;
-    const weekDays = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-    const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+/* DATES */
+const now=new Date(),Y=now.getFullYear(),Mo=now.getMonth();
+const totDays=new Date(Y,Mo+1,0).getDate();
+const daysPast=now.getDate(),daysLeft=totDays-daysPast;
+const WDS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const MNS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+document.getElementById('topDate').textContent=`${WDS[now.getDay()]}, ${now.getDate()} de ${MNS[Mo]}`;
+document.getElementById('chkDate').textContent=`${WDS[now.getDay()]}, ${now.getDate()} de ${MNS[Mo]} de ${Y}`;
 
-    // ── STAGES ──
-    const stages = [
-        { id:'leads',      name:'Leads',          icon:'fa-users',          color:'#3D5A40', tip:'Topo do funil — foco em volume e qualidade' },
-        { id:'visitas',    name:'Visitas',         icon:'fa-handshake',      color:'#4E7153', tip:'Qualificação presencial do cliente' },
-        { id:'docs',       name:'Docs. Analisados',icon:'fa-file-contract',  color:'#B4846C', tip:'Processo burocrático — seja ágil' },
-        { id:'aprovacoes', name:'Aprovações',      icon:'fa-stamp',          color:'#C8A97E', tip:'Crédito aprovado — próximo da venda' },
-        { id:'vendas',     name:'Vendas',          icon:'fa-key',            color:'#8B6347', tip:'Objetivo final — celebre cada conquista!' }
-    ];
+/* STAGES */
+const stages=[
+  {id:'leads',name:'Leads',icon:'fa-users',color:'#2E4A31'},
+  {id:'visitas',name:'Visitas',icon:'fa-handshake',color:'#3D6142'},
+  {id:'docs',name:'Docs.',icon:'fa-file-contract',color:'#B4724A'},
+  {id:'aprovacoes',name:'Aprovações',icon:'fa-stamp',color:'#A0824A'},
+  {id:'vendas',name:'Vendas',icon:'fa-key',color:'#7A5238'}
+];
 
-    // ── MARKETING STRATEGY DATA ──
-    const strategyData = {
-        leads: {
-            subtitle: 'Gerar volume de clientes qualificados',
-            tips: [
-                { icon:'fa-bullseye', text:'Crie personas detalhadas: faixa de renda, região desejada, perfil familiar. Quanto mais específico, mais eficaz sua prospecção.' },
-                { icon:'fa-ad', text:'Invista em tráfego pago segmentado: Facebook/Instagram Ads com raio de localização + faixa etária 28-50 anos para máximo ROI.' },
-                { icon:'fa-share-alt', text:'Peça indicações ativamente a cada cliente atendido. Uma indicação vale 5x mais que um lead frio.' },
-                { icon:'fa-map-marker-alt', text:'Prospecte bairro a bairro: panfletagem, visitas a condomínios, parcerias com síndicos.' },
-                { icon:'fa-phone-alt', text:'Implemente cadência de prospecção: 20 ligações/dia para base fria + 10 mensagens no WhatsApp para indicações.' }
-            ],
-            content: ['Reels imobiliários','Posts de mercado','Stories de imóveis','Google Meu Negócio','WhatsApp Business','Landing pages','Lives informativas','Blog imobiliário'],
-            kpis: 'Custo por Lead (CPL), Taxa de resposta, Leads qualificados vs não qualificados'
-        },
-        visitas: {
-            subtitle: 'Converter leads em visitas presenciais',
-            tips: [
-                { icon:'fa-clock', text:'Responda leads em até 5 minutos. A velocidade de contato aumenta 9x a chance de agendar uma visita.' },
-                { icon:'fa-video', text:'Ofereça tour virtual antes da visita presencial para pré-qualificar e economizar seu tempo.' },
-                { icon:'fa-calendar-check', text:'Confirme a visita por 3 canais: WhatsApp, ligação e e-mail. Reduza no-shows em até 60%.' },
-                { icon:'fa-star', text:'Prepare uma apresentação profissional do imóvel: fotos HDR, planta baixa e comparativo de preços da região.' },
-                { icon:'fa-route', text:'Planeje rotas eficientes: agrupe visitas por região e período para maximizar seu dia de atendimento.' }
-            ],
-            content: ['Tour virtual 360°','Fotos profissionais','Vídeo do imóvel','Ficha técnica PDF','Comparativo de preços','Mapa da região','Vídeo do bairro'],
-            kpis: 'Taxa de agendamento, Taxa de presença, Tempo médio de agendamento'
-        },
-        docs: {
-            subtitle: 'Agilizar análise documental e crédito',
-            tips: [
-                { icon:'fa-list-check', text:'Envie um checklist completo de documentos antes da visita. Clientes preparados fecham 40% mais rápido.' },
-                { icon:'fa-handshake', text:'Mantenha parcerias com correspondentes bancários de 3+ bancos para ter alternativas de financiamento.' },
-                { icon:'fa-bolt', text:'Pré-analise a capacidade de crédito do cliente antes de avançar. Economize tempo focando em quem pode comprar.' },
-                { icon:'fa-user-tie', text:'Seja o elo entre cliente e banco: acompanhe o processo diariamente e mantenha todas as partes informadas.' },
-                { icon:'fa-file-signature', text:'Tenha modelos de contratos e documentos padronizados prontos para agilizar o processo.' }
-            ],
-            content: ['Checklist de docs','Guia de financiamento','Calculadora de parcela','Comparativo de bancos','Vídeo explicativo do processo'],
-            kpis: 'Tempo médio de análise, Taxa de documentação completa, % aprovação na análise'
-        },
-        aprovacoes: {
-            subtitle: 'Converter aprovações em contratos assinados',
-            tips: [
-                { icon:'fa-fire', text:'Urgência ética: "Sua aprovação expira em X dias. Vamos garantir sua vaga?" — crie senso de urgência real.' },
-                { icon:'fa-medal', text:'Compartilhe depoimentos de clientes que já realizaram o sonho da casa própria com você.' },
-                { icon:'fa-calculator', text:'Apresente simulação financeira detalhada: parcela, entrada, FGTS, benefícios tributários.' },
-                { icon:'fa-shield-alt', text:'Esclareça todas as dúvidas sobre o contrato antes da assinatura. Clientes informados não desistem.' },
-                { icon:'fa-gift', text:'Ofereça benefícios exclusivos: indicação de profissionais para reforma, parceria com mudança, etc.' }
-            ],
-            content: ['Depoimentos em vídeo','Simulação financeira','Guia de assinatura','Posts de entrega de chaves','Stories de clientes felizes'],
-            kpis: 'Taxa de aprovação → venda, Tempo entre aprovação e assinatura, % desistências'
-        },
-        vendas: {
-            subtitle: 'Fechar vendas e gerar indicações',
-            tips: [
-                { icon:'fa-trophy', text:'Celebre cada venda nas redes sociais com autorização do cliente. Prova social gera novos leads organicamente.' },
-                { icon:'fa-heart', text:'Pós-venda ativo: ligue 30 dias após a entrega, no aniversário da compra e em datas especiais.' },
-                { icon:'fa-comments', text:'Peça avaliação no Google e depoimento formal. 88% dos compradores confiam em avaliações online.' },
-                { icon:'fa-users-cog', text:'Crie um programa de indicação com bonificação: "Indique um amigo e ganhe X". Ative sua carteira.' },
-                { icon:'fa-chart-line', text:'Analise métricas: ticket médio, bairros mais vendidos, perfil do comprador. Use dados para otimizar.' }
-            ],
-            content: ['Post de entrega de chaves','Depoimento do cliente','Case de sucesso','Infográfico de vendas','Reels de comemoração','Newsletter da carteira'],
-            kpis: 'Ticket médio, NPS do cliente, Taxa de recompra/indicação, CAC vs LTV'
-        }
-    };
+/* STRATEGY */
+const SD={
+  leads:{sub:'Gere volume com qualidade',tips:[
+    {i:'fa-bullseye',t:'Crie personas: renda, região, perfil. Quanto mais específico, mais eficaz a prospecção.'},
+    {i:'fa-ad',t:'Tráfego pago segmentado: raio de localização + faixa etária 28-50 anos para máximo ROI.'},
+    {i:'fa-share-alt',t:'Peça indicações ativamente. Uma indicação vale 5× mais que um lead frio.'},
+    {i:'fa-phone-alt',t:'Cadência diária: 20 ligações para base fria + 10 mensagens no WhatsApp para indicações.'},
+    {i:'fa-map-marker-alt',t:'Prospecte bairro a bairro: parcerias com síndicos, panfletagem e eventos locais.'}
+  ],content:['Reels imobiliários','Posts de mercado','Stories de imóveis','WhatsApp Business','Landing pages','Google Meu Negócio','Lives informativas'],kpis:'CPL (Custo por Lead), Taxa de resposta, % leads qualificados'},
+  visitas:{sub:'Converta leads em visitas presenciais',tips:[
+    {i:'fa-clock',t:'Responda leads em até 5 min. A velocidade aumenta 9× a chance de agendar.'},
+    {i:'fa-video',t:'Tour virtual antes da visita para pré-qualificar e economizar seu tempo.'},
+    {i:'fa-calendar-check',t:'Confirme por 3 canais: WhatsApp, ligação e e-mail. Reduza no-shows em 60%.'},
+    {i:'fa-star',t:'Apresentação profissional: fotos HDR, planta baixa e comparativo de preços.'},
+    {i:'fa-route',t:'Agrupe visitas por região e período para maximizar o dia de atendimento.'}
+  ],content:['Tour virtual 360°','Fotos profissionais','Ficha técnica PDF','Vídeo do bairro','Comparativo de preços'],kpis:'Taxa de agendamento, Taxa de presença, Tempo médio'},
+  docs:{sub:'Agilize análise documental e crédito',tips:[
+    {i:'fa-list-check',t:'Envie checklist de documentos antes da visita. Clientes preparados fecham 40% mais rápido.'},
+    {i:'fa-handshake',t:'Parcerias com 3+ correspondentes bancários para alternativas de financiamento.'},
+    {i:'fa-bolt',t:'Pré-analise capacidade de crédito antes de avançar. Foque em quem pode comprar.'},
+    {i:'fa-user-tie',t:'Seja o elo entre cliente e banco: acompanhe diariamente e mantenha todos informados.'}
+  ],content:['Checklist de docs','Guia de financiamento','Calculadora de parcela','Comparativo de bancos'],kpis:'Tempo médio de análise, % docs completos, % aprovação'},
+  aprovacoes:{sub:'Converta aprovações em contratos',tips:[
+    {i:'fa-fire',t:'"Aprovação expira em X dias." Crie urgência real e ética para fechar.'},
+    {i:'fa-medal',t:'Compartilhe depoimentos de clientes que já realizaram o sonho com você.'},
+    {i:'fa-calculator',t:'Simulação detalhada: parcela, entrada, FGTS, benefícios tributários.'},
+    {i:'fa-shield-alt',t:'Esclareça todas as dúvidas antes da assinatura. Clientes informados não desistem.'}
+  ],content:['Depoimentos em vídeo','Simulação financeira','Guia de assinatura','Posts entrega de chaves'],kpis:'Taxa aprovação→venda, Tempo entre aprovação e assinatura, % desistências'},
+  vendas:{sub:'Feche vendas e gere indicações',tips:[
+    {i:'fa-trophy',t:'Celebre cada venda nas redes (com autorização). Prova social gera leads organicamente.'},
+    {i:'fa-heart',t:'Pós-venda ativo: ligue 30 dias após entrega e no aniversário da compra.'},
+    {i:'fa-comments',t:'Peça avaliação no Google. 88% dos compradores confiam em avaliações online.'},
+    {i:'fa-users-cog',t:'Programa de indicação com bonificação. Ative sua carteira de clientes satisfeitos.'}
+  ],content:['Entrega de chaves','Case de sucesso','Reels de comemoração','Newsletter da carteira'],kpis:'Ticket médio, NPS, Taxa de indicação, CAC vs LTV'}
+};
 
-    // ── DATA ──
-    let data = { goals: null, conversions: null, funnel: { leads:[], visitas:[], docs:[], aprovacoes:[], vendas:[] } };
-    let funnelChartInst = null, analyticsChartInst = null;
-    let checklistState = {}; // { 'group-idx': bool }
+/* STATE */
+let data={goals:null,conversions:null,funnel:{leads:[],visitas:[],docs:[],aprovacoes:[],vendas:[]}};
+let fChart=null,aChart=null,chkState={},stratOk=false;
 
-    // ── HELPERS ──
-    const $ = id => document.getElementById(id);
-    function toast(msg) {
-        const t = $('toast');
-        t.textContent = msg; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-    function pctColor(p) {
-        if (p >= 100) return 'var(--success)';
-        if (p >= 70) return 'var(--warn)';
-        return 'var(--danger)';
-    }
-    function saveData() { localStorage.setItem('funilProV2', JSON.stringify(data)); }
-    function loadData() {
-        const s = localStorage.getItem('funilProV2');
-        if (s) { data = JSON.parse(s); return true; }
-        return false;
-    }
-    function calcGoals(baseLead) {
-        const c = data.conversions;
-        data.goals = {
-            leads: baseLead,
-            visitas: baseLead * c.lv,
-            docs: baseLead * c.lv * c.vd,
-            aprovacoes: baseLead * c.lv * c.vd * c.da,
-            vendas: baseLead * c.lv * c.vd * c.da * c.av
-        };
-    }
-    function pct(v, max) { return max > 0 ? Math.min((v/max)*100, 100) : 0; }
+/* UTILS */
+const $=id=>document.getElementById(id);
+const pct=(v,mx)=>mx>0?Math.min((v/mx)*100,100):0;
+const pcColor=p=>p>=100?'var(--ok)':p>=70?'var(--warn)':'var(--err)';
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+function save(){localStorage.setItem('funilProM2',JSON.stringify(data))}
+function load(){const s=localStorage.getItem('funilProM2');if(s){data=JSON.parse(s);return true}return false}
+function calcGoals(lead){const c=data.conversions;data.goals={leads:lead,visitas:lead*c.lv,docs:lead*c.lv*c.vd,aprovacoes:lead*c.lv*c.vd*c.da,vendas:lead*c.lv*c.vd*c.da*c.av}}
 
-    // ── THEME ──
-    function applyTheme(t) {
-        document.body.classList.toggle('dark', t === 'dark');
-        $('themeIcon').className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        if (funnelChartInst) renderFunnelChart();
-        if (analyticsChartInst) renderAnalyticsChart();
-    }
-    $('themeBtn').addEventListener('click', () => {
-        const d = document.body.classList.contains('dark');
-        const nt = d ? 'light' : 'dark';
-        localStorage.setItem('imobTheme', nt);
-        applyTheme(nt);
-    });
+/* THEME */
+function applyTheme(t){
+  document.body.classList.toggle('dark',t==='dark');
+  const ico=t==='dark'?'fa-sun':'fa-moon';
+  $('themeIcon').className='fas '+ico;
+  const tis=$('themeIconS');if(tis)tis.className='fas '+ico;
+  if(fChart)renderFChart();if(aChart)renderAChart();
+}
+function toggleTheme(){const d=document.body.classList.contains('dark');const nt=d?'light':'dark';localStorage.setItem('imobTheme',nt);applyTheme(nt)}
+$('themeBtn').addEventListener('click',toggleTheme);
+const tsn=$('themeSide');if(tsn)tsn.addEventListener('click',toggleTheme);
 
-    // ── TABS ──
-    document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            $('tab-' + btn.dataset.tab).classList.add('active');
-            if (btn.dataset.tab === 'analytics') { renderAnalyticsTab(); }
-            if (btn.dataset.tab === 'checklist') { renderChecklist(); }
-            if (btn.dataset.tab === 'marketing') { renderStrategyTab(); }
-        });
-    });
+/* TABS */
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.bni,.sni').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  $('tab-'+t).classList.add('active');
+  $('pageArea').scrollTo(0,0);
+  if(t==='analytics')renderAnalytics();
+  if(t==='checklist')renderChecklist();
+  if(t==='marketing')renderStrategy();
+}
+document.querySelectorAll('.bni,.sni').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
 
-    // ── MODALS ──
-    $('configBtn').addEventListener('click', () => $('configModal').classList.remove('hidden'));
-    $('btnCloseConfig').addEventListener('click', () => $('configModal').classList.add('hidden'));
-    $('configModal').addEventListener('click', e => { if (e.target === $('configModal')) $('configModal').classList.add('hidden'); });
-    $('btnClosePerfModal').addEventListener('click', () => $('perfModal').classList.add('hidden'));
-    $('perfModal').addEventListener('click', e => { if (e.target === $('perfModal')) $('perfModal').classList.add('hidden'); });
+/* MODALS */
+$('cfgBtn').addEventListener('click',()=>$('cfgModal').classList.remove('hidden'));
+const csn=$('cfgSide');if(csn)csn.addEventListener('click',()=>$('cfgModal').classList.remove('hidden'));
+$('btnCloseCfg').addEventListener('click',()=>$('cfgModal').classList.add('hidden'));
+$('cfgModal').addEventListener('click',e=>{if(e.target===$('cfgModal'))$('cfgModal').classList.add('hidden')});
+$('btnClosePerfModal').addEventListener('click',()=>$('perfModal').classList.add('hidden'));
+$('perfModal').addEventListener('click',e=>{if(e.target===$('perfModal'))$('perfModal').classList.add('hidden')});
 
-    // ── INITIAL SETUP ──
-    $('btnSalvar').addEventListener('click', () => {
-        const vals = {
-            leads: parseFloat($('metaLeads').value),
-            lv: parseFloat($('convLV').value)/100,
-            vd: parseFloat($('convVD').value)/100,
-            da: parseFloat($('convDA').value)/100,
-            av: parseFloat($('convAV').value)/100
-        };
-        if (Object.values(vals).some(isNaN)) { alert('Preencha todos os campos.'); return; }
-        data.conversions = { lv: vals.lv, vd: vals.vd, da: vals.da, av: vals.av };
-        calcGoals(vals.leads);
-        saveData();
-        toast('Metas salvas com sucesso! 🎯');
-        init();
-    });
+/* SETUP */
+$('btnSalvar').addEventListener('click',()=>{
+  const v={leads:parseFloat($('metaLeads').value),lv:parseFloat($('convLV').value)/100,vd:parseFloat($('convVD').value)/100,da:parseFloat($('convDA').value)/100,av:parseFloat($('convAV').value)/100};
+  if(Object.values(v).some(isNaN)){alert('Preencha todos os campos.');return}
+  data.conversions={lv:v.lv,vd:v.vd,da:v.da,av:v.av};calcGoals(v.leads);save();toast('Metas salvas! 🎯');init();
+});
+$('btnUpdateMeta').addEventListener('click',()=>{
+  const v=parseFloat($('editMetaLeads').value);
+  if(isNaN(v)||v<=0){alert('Valor inválido.');return}
+  calcGoals(v);save();renderAll();toast('Meta atualizada!');$('cfgModal').classList.add('hidden');
+});
+$('btnReset').addEventListener('click',()=>{if(confirm('Apagar todos os dados?')){localStorage.removeItem('funilProM2');location.reload()}});
+$('btnExport').addEventListener('click',()=>{const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`backup-funil-${new Date().toISOString().slice(0,10)}.json`;a.click();toast('Backup exportado!')});
+$('btnImport').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const imp=JSON.parse(ev.target.result);if(imp.goals&&imp.conversions&&imp.funnel){data=imp;save();renderAll();toast('Backup restaurado!')}else throw new Error('Formato inválido')}catch(er){alert('Erro: '+er.message)}};r.readAsText(f);$('importFile').value=''});
+$('btnPdfGeral').addEventListener('click',pdfGeral);
+$('btnPdfEtapas').addEventListener('click',pdfEtapas);
 
-    $('btnUpdateMeta').addEventListener('click', () => {
-        const v = parseFloat($('editMetaLeads').value);
-        if (isNaN(v) || v <= 0) { alert('Valor inválido.'); return; }
-        calcGoals(v);
-        saveData();
-        toast('Meta atualizada!');
-        renderAll();
-        $('configModal').classList.add('hidden');
-    });
+/* FUNNEL ACTIONS */
+$('stageList').addEventListener('click',e=>{
+  const card=e.target.closest('.sc');if(!card)return;
+  const sid=card.dataset.stage;
+  const qty=parseInt(card.querySelector('.qin')?.value,10)||1;
+  if(e.target.closest('.qbtn.add'))addItems(sid,qty);
+  else if(e.target.closest('.qbtn.rem'))removeItems(sid,qty);
+  else if(e.target.closest('.nbtn.prev')&&!e.target.closest('.nbtn.prev').disabled)moveItem(sid,'prev');
+  else if(e.target.closest('.nbtn.next')&&!e.target.closest('.nbtn.next').disabled)moveItem(sid,'next');
+},{passive:true});
+function addItems(sid,qty){for(let i=0;i<qty;i++)data.funnel[sid].push({id:Date.now()+i,date:new Date().toISOString()});save();toast(`+${qty} ${stages.find(s=>s.id===sid).name}`);renderAll()}
+function removeItems(sid,qty){if(data.funnel[sid].length<qty){toast('Itens insuficientes.');return}for(let i=0;i<qty;i++)data.funnel[sid].pop();save();toast(`−${qty} removido(s)`);renderAll()}
+function moveItem(sid,dir){const idx=stages.findIndex(s=>s.id===sid);const tid=stages[idx+(dir==='next'?1:-1)].id;if(!data.funnel[sid].length){toast('Sem itens.');return}data.funnel[tid].push(data.funnel[sid].pop());save();toast(`Movido → ${stages.find(s=>s.id===tid).name}`);renderAll()}
 
-    $('btnReset').addEventListener('click', () => {
-        if (confirm('Tem certeza? Todos os dados serão apagados.')) {
-            localStorage.removeItem('funilProV2');
-            location.reload();
-        }
-    });
+/* ─── RENDER: FUNIL ─── */
+function renderKpi(){
+  if(!data.goals)return;
+  const v=data.funnel.vendas.length,mv=data.goals.vendas;
+  const tend=daysPast>0?(v/daysPast)*totDays:0;
+  const efic=data.funnel.leads.length>0?((v/data.funnel.leads.length)*100).toFixed(1):'—';
+  $('kpiStrip').innerHTML=`
+    <div class="kpi-tile"><div class="kt-lbl">Mês</div><div class="kt-val">${((daysPast/totDays)*100).toFixed(0)}%</div><div class="kt-sub">${daysPast}/${totDays}d</div></div>
+    <div class="kpi-tile"><div class="kt-lbl">Vendas</div><div class="kt-val">${v}</div><div class="kt-sub">Meta:${Math.ceil(mv)}</div></div>
+    <div class="kpi-tile"><div class="kt-lbl">Tendência</div><div class="kt-val" style="color:${tend>=mv?'var(--ok)':'var(--warn)'}">${Math.round(tend)}</div><div class="kt-sub">${tend>=mv?'✅ OK':'⚠️ baixo'}</div></div>
+    <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">L→Venda</div></div>
+  `;
+}
+function renderStages(){
+  if(!data.goals)return;
+  const list=$('stageList');list.innerHTML='';
+  stages.forEach((s,i)=>{
+    const meta=data.goals[s.id],real=data.funnel[s.id].length;
+    const tend=daysPast>0?(real/daysPast)*totDays:0;
+    const md=totDays>0?meta/totDays:0;
+    const pR=pct(real,meta),pT=pct(tend,meta);
+    const div=document.createElement('div');
+    div.className='sc';div.dataset.stage=s.id;
+    div.innerHTML=`
+      <div class="sc-top">
+        <div class="sc-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
+        <div class="sc-info"><div class="sn">${s.name}</div><div class="sv">${real}</div><div class="sm">Meta:${Math.ceil(meta)} · Dia:${md.toFixed(1)}</div></div>
+        <div class="sc-pct"><div class="spv" style="color:${pcColor(pR)}">${pR.toFixed(0)}%</div><div class="spl">realizado</div></div>
+      </div>
+      <div class="sc-bars">
+        <div class="br">
+          <div class="br-row"><span>Realizado</span><span style="color:${pcColor(pR)}">${real}/${Math.ceil(meta)}</span></div>
+          <div class="prog-track" style="height:6px"><div class="prog-fill" style="width:${pR}%;background:${pcColor(pR)}"></div></div>
+        </div>
+        <div class="br">
+          <div class="br-row"><span>Tendência</span><span style="color:${pcColor(pT)}">${Math.round(tend)} (${pT.toFixed(0)}%)</span></div>
+          <div class="prog-track" style="height:5px"><div class="prog-fill" style="width:${pT}%;background:${pcColor(pT)};opacity:.6"></div></div>
+        </div>
+      </div>
+      <div class="sc-ctrl">
+        <div class="qty-row">
+          <button class="qbtn rem">−</button>
+          <input type="number" class="qin" value="1" min="1" inputmode="numeric">
+          <button class="qbtn add">+</button>
+        </div>
+        <div class="nav-row">
+          <button class="nbtn prev" ${i===0?'disabled':''}><i class="fas fa-arrow-left"></i> Voltar</button>
+          <button class="nbtn next" ${i===stages.length-1?'disabled':''}>Avançar <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+function renderFChart(){
+  const ctx=$('funnelChart').getContext('2d');
+  if(fChart)fChart.destroy();
+  const dk=document.body.classList.contains('dark');
+  const tc=dk?'#6A8A6C':'#7A8A7C',gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+  fChart=new Chart(ctx,{type:'bar',data:{labels:stages.map(s=>s.name),datasets:[{label:'Meta',data:stages.map(s=>Math.ceil(data.goals[s.id])),backgroundColor:'rgba(196,114,74,.25)',borderColor:'#C4724A',borderWidth:1.5,borderRadius:5},{label:'Realizado',data:stages.map(s=>data.funnel[s.id].length),backgroundColor:stages.map(s=>s.color+'CC'),borderRadius:5}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{labels:{color:tc,font:{size:10,family:'Plus Jakarta Sans'}}}},scales:{x:{beginAtZero:true,grid:{color:gc},ticks:{color:tc,font:{size:10}}},y:{grid:{display:false},ticks:{color:tc,font:{size:10}}}}}});
+}
+function renderSidebar(){
+  if(!data.goals)return;
+  $('resMes').innerHTML=`<div class="mrow"><span class="ml">Total de dias</span><span class="mv">${totDays}</span></div><div class="mrow"><span class="ml">Dias passados</span><span class="mv">${daysPast}</span></div><div class="mrow"><span class="ml">Dias restantes</span><span class="mv">${daysLeft}</span></div><div class="mrow"><span class="ml">Semana</span><span class="mv">${Math.ceil(daysPast/7)}ª</span></div>`;
+  $('resMensal').innerHTML=stages.map(s=>`<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${data.funnel[s.id].length}</span></div>`).join('');
+  const fd=new Date(now.getFullYear(),now.getMonth(),now.getDate()-now.getDay()+(now.getDay()===0?-6:1));fd.setHours(0,0,0,0);
+  const ld=new Date(fd);ld.setDate(ld.getDate()+6);ld.setHours(23,59,59,999);
+  $('resSemanal').innerHTML=stages.map(s=>{const n=data.funnel[s.id].filter(it=>{const d=new Date(it.date);return d>=fd&&d<=ld}).length;return`<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${n}</span></div>`}).join('');
+}
+function renderFunil(){renderKpi();renderStages();renderFChart();renderSidebar()}
 
-    $('btnExport').addEventListener('click', () => {
-        const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `backup-funil-${new Date().toISOString().slice(0,10)}.json`; a.click();
-        toast('Backup exportado!');
-    });
-    $('btnImport').addEventListener('click', () => $('importFile').click());
-    $('importFile').addEventListener('change', e => {
-        const f = e.target.files[0]; if (!f) return;
-        const r = new FileReader();
-        r.onload = ev => {
-            try {
-                const imp = JSON.parse(ev.target.result);
-                if (imp.goals && imp.conversions && imp.funnel) {
-                    data = imp; saveData(); renderAll(); toast('Backup restaurado!');
-                } else throw new Error('Estrutura inválida');
-            } catch(er) { alert('Erro ao importar: ' + er.message); }
-        };
-        r.readAsText(f); $('importFile').value = '';
-    });
+/* ─── RENDER: STRATEGY ─── */
+function renderStrategy(){
+  if(stratOk)return;stratOk=true;
+  const c=$('stratCards');c.innerHTML='';
+  stages.forEach((s,i)=>{
+    const sd=SD[s.id],real=data.funnel[s.id].length;
+    const meta=data.goals?Math.ceil(data.goals[s.id]):'—';
+    const p=data.goals?pct(real,data.goals[s.id]):0;
+    const bdg=p>=100?`<span class="badge b-ok"><i class="fas fa-check-circle"></i> OK</span>`:p>=70?`<span class="badge b-warn"><i class="fas fa-clock"></i> Ritmo</span>`:`<span class="badge b-err"><i class="fas fa-exclamation-circle"></i> Atenção</span>`;
+    const div=document.createElement('div');div.className='ss'+(p<70?' open':'');
+    div.innerHTML=`
+      <div class="ss-head">
+        <div class="ss-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
+        <div class="ss-info"><h3>${i+1}. ${s.name}</h3><p>${sd.sub}</p></div>
+        <div class="ss-right">${bdg}<div style="font-size:.66rem;color:var(--t3)">${real}/${meta}</div><i class="fas fa-chevron-down ss-chev"></i></div>
+      </div>
+      <div class="ss-body"><div class="ss-inner">
+        <div class="slbl"><i class="fas fa-lightbulb"></i> Táticas</div>
+        <div class="tip-list">${sd.tips.map(t=>`<div class="tip"><i class="fas ${t.i} ti"></i><span>${t.t}</span></div>`).join('')}</div>
+        <div class="slbl"><i class="fas fa-pencil-alt"></i> Conteúdo</div>
+        <div class="chips">${sd.content.map(ch=>`<span class="chip">${ch}</span>`).join('')}</div>
+        <div class="slbl"><i class="fas fa-tachometer-alt"></i> KPIs</div>
+        <div class="kbox">${sd.kpis}</div>
+      </div></div>
+    `;
+    div.querySelector('.ss-head').addEventListener('click',()=>div.classList.toggle('open'));
+    c.appendChild(div);
+  });
+}
 
-    // PDF
-    $('btnPdfGeral').addEventListener('click', generateGeneralPDF);
-    $('btnPdfEtapas').addEventListener('click', generateStagesPDF);
+/* ─── RENDER: CHECKLIST ─── */
+function renderChecklist(){
+  if(!data.goals)return;
+  const groups=buildChecklist();
+  const grid=$('chkGrid');grid.innerHTML='';
+  groups.forEach((g,gi)=>{
+    const div=document.createElement('div');div.className='cg';
+    const doneCount=g.items.filter((_,ii)=>chkState[`${gi}-${ii}`]).length;
+    div.innerHTML=`
+      <div class="cg-head">
+        <div class="cg-ico" style="background:${g.color}"><i class="fas ${g.icon}"></i></div>
+        <div><h4>${g.title}</h4><small>${g.sub}</small></div>
+        <div class="cg-ctr">${doneCount}/${g.items.length}</div>
+      </div>
+      <div class="cg-items">
+        ${g.items.map((it,ii)=>{const key=`${gi}-${ii}`;const d=chkState[key]||false;return`<label class="ci ${d?'done':''}" data-key="${key}"><div class="cb"></div><span class="ct">${it.txt}</span><div class="pdot ${it.pri==='high'?'ph':it.pri==='mid'?'pm':'pl'}"></div></label>`}).join('')}
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+  grid.addEventListener('click',e=>{
+    const item=e.target.closest('.ci');if(!item)return;
+    const key=item.dataset.key;chkState[key]=!chkState[key];item.classList.toggle('done',chkState[key]);
+    const grp=item.closest('.cg');const all=grp.querySelectorAll('.ci');const dn=grp.querySelectorAll('.ci.done').length;
+    grp.querySelector('.cg-ctr').textContent=`${dn}/${all.length}`;updateChkProg();
+  },{passive:true});
+  updateChkProg();
+}
+function updateChkProg(){
+  const all=document.querySelectorAll('.ci'),dn=document.querySelectorAll('.ci.done').length,tot=all.length;
+  const p=tot>0?Math.round((dn/tot)*100):0;
+  $('cpFill').style.width=p+'%';$('cpPct').textContent=p+'%';$('cpSub').textContent=`${dn} de ${tot} tarefas concluídas`;
+}
+function buildChecklist(){
+  if(!data.goals)return[];
+  const md=data.goals.leads/totDays,mv=data.goals.visitas/totDays;
+  const lP=pct(data.funnel.leads.length,data.goals.leads);
+  const vP=pct(data.funnel.visitas.length,data.goals.visitas);
+  const dP=pct(data.funnel.docs.length,data.goals.docs);
+  const aP=pct(data.funnel.aprovacoes.length,data.goals.aprovacoes);
+  const sP=pct(data.funnel.vendas.length,data.goals.vendas);
+  const q=Math.max(Math.ceil(md*1.2),10),vq=Math.max(Math.ceil(mv),1);
+  return[
+    {title:'Prospecção & Leads',sub:`Meta: ~${q} leads hoje`,icon:'fa-users',color:'#2E4A31',items:[
+      {txt:`Enviar ${q*2} mensagens no WhatsApp (base fria + indicações)`,pri:'high'},
+      {txt:`Fazer ${q} ligações de prospecção para base de contatos`,pri:lP<60?'high':'mid'},
+      {txt:'Publicar 1 conteúdo imobiliário (Reels, Story ou Post)',pri:'high'},
+      {txt:'Responder TODOS os leads recebidos em até 5 minutos',pri:'high'},
+      {txt:'Pedir 2 indicações para clientes da carteira ativa',pri:lP<70?'high':'mid'}
+    ]},
+    {title:'Agendamento & Visitas',sub:`Meta: ~${vq} visita(s) hoje`,icon:'fa-handshake',color:'#3D6142',items:[
+      {txt:`Confirmar ${vq} visita(s) por WhatsApp e ligação`,pri:'high'},
+      {txt:'Preparar apresentação: fotos, planta, comparativo de preços',pri:vP<70?'high':'mid'},
+      {txt:'Follow-up com leads que não responderam em 2 dias',pri:'mid'},
+      {txt:'Oferecer tour virtual para 3 leads qualificados',pri:vP<50?'high':'low'}
+    ]},
+    {title:'Documentação & Crédito',sub:'Agilize processos em andamento',icon:'fa-file-contract',color:'#B4724A',items:[
+      {txt:'Enviar checklist de documentos para clientes em visitas',pri:'high'},
+      {txt:'Ligar para correspondente bancário: status dos processos',pri:dP<70?'high':'mid'},
+      {txt:'Verificar pendências e acionar clientes com documentos faltantes',pri:'mid'},
+      {txt:'Enviar simulação financeira para 2 clientes qualificados',pri:dP<50?'high':'low'}
+    ]},
+    {title:'Aprovações & Fechamentos',sub:'Converter aprovações em contratos',icon:'fa-key',color:'#7A5238',items:[
+      {txt:'Verificar status de todos os processos de aprovação',pri:'high'},
+      {txt:aP<70?'Ligar para aprovados — criar urgência de fechamento':'Confirmar data de assinatura com clientes aprovados',pri:aP<70?'high':'mid'},
+      {txt:'Resolver pendências: documentos, assinaturas, certidões',pri:'mid'},
+      {txt:sP>=100?'Postar entrega de chaves nas redes (com autorização)':'Negociar condições com clientes indecisos',pri:'mid'}
+    ]},
+    {title:'Marketing Digital',sub:'Presença consistente nas redes',icon:'fa-bullhorn',color:'#A0824A',items:[
+      {txt:'Verificar métricas: alcance, curtidas e DMs das redes sociais',pri:'mid'},
+      {txt:'Responder todos os comentários e mensagens recebidas',pri:'high'},
+      {txt:'Capturar conteúdo: foto ou vídeo do trabalho ou imóvel',pri:'mid'},
+      {txt:'Planejar conteúdo de amanhã: formato, legenda e horário',pri:'low'}
+    ]},
+    {title:'Análise & Planejamento',sub:'Reflexão e otimização diária',icon:'fa-chart-line',color:'#3A6A42',items:[
+      {txt:'Atualizar o funil com leads, visitas e avanços do dia',pri:'high'},
+      {txt:`Verificar tendência: ${sP.toFixed(0)}% da meta. ${sP<70?'Intensifique a prospecção!':'Mantenha o ritmo!'}`,pri:'mid'},
+      {txt:'Qual ação gerou mais resultado hoje? Repita amanhã.',pri:'mid'},
+      {txt:'Anotar 3 aprendizados e 3 prioridades para amanhã',pri:'low'}
+    ]}
+  ];
+}
 
-    // ── FUNNEL ACTIONS ──
-    $('funnel-dashboard').addEventListener('click', e => {
-        const inc = e.target.closest('.btn-inc');
-        const dec = e.target.closest('.btn-dec');
-        const prev = e.target.closest('.btn-prev');
-        const next = e.target.closest('.btn-next');
-        const card = e.target.closest('.stage-card');
-        const stageId = card?.dataset.stage;
-        if (!stageId) return;
-        const qtyIn = card.querySelector('.qty-input');
-        const qty = parseInt(qtyIn?.value, 10) || 1;
-        if (inc) { addItems(stageId, qty); }
-        else if (dec) { removeItems(stageId, qty); }
-        else if (prev && !prev.disabled) { moveItem(stageId, 'prev'); }
-        else if (next && !next.disabled) { moveItem(stageId, 'next'); }
-    });
+/* ─── RENDER: ANALYTICS ─── */
+function renderAnalytics(){
+  if(!data.goals)return;
+  const cr={};
+  for(let i=1;i<stages.length;i++){const f=data.funnel[stages[i-1].id].length,t=data.funnel[stages[i].id].length;cr[`${stages[i-1].id}_${stages[i].id}`]=f>0?((t/f)*100).toFixed(1):'—'}
+  const v=data.funnel.vendas.length,l=data.funnel.leads.length;
+  const efic=l>0?((v/l)*100).toFixed(1):'—';
+  const tend=daysPast>0?Math.round((v/daysPast)*totDays):0;
+  $('aKpi').innerHTML=`
+    <div class="kpi-tile"><div class="kt-lbl">L→V conv</div><div class="kt-val">${cr.leads_visitas||'—'}%</div><div class="kt-sub">Agendamento</div></div>
+    <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">Lead→Venda</div></div>
+    <div class="kpi-tile"><div class="kt-lbl">Projeção</div><div class="kt-val" style="color:${tend>=data.goals.vendas?'var(--ok)':'var(--warn)'}">${tend}</div><div class="kt-sub">vendas/mês</div></div>
+    <div class="kpi-tile"><div class="kt-lbl">Dias rest.</div><div class="kt-val">${daysLeft}</div><div class="kt-sub">para fechar</div></div>
+  `;
+  // conv funnel
+  const cf=$('convFunnel');cf.innerHTML='';
+  stages.forEach((s,i)=>{
+    const real=data.funnel[s.id].length,meta=data.goals[s.id];
+    const p=pct(real,meta).toFixed(0);
+    cf.innerHTML+=`
+      <div class="cstep">
+        <div class="cs-ico2" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
+        <span class="cs-lbl">${s.name}</span>
+        <span class="cs-val" style="color:${pcColor(parseFloat(p))}">${real}/${Math.ceil(meta)}</span>
+        <span class="badge ${parseFloat(p)>=100?'b-ok':parseFloat(p)>=70?'b-warn':'b-err'}">${p}%</span>
+      </div>
+      ${i<stages.length-1?`<div style="text-align:center;font-size:.7rem;color:var(--t3);padding:2px 0"><i class="fas fa-arrow-down"></i> ${cr[stages[i].id+'_'+stages[i+1].id]||'—'}% conv</div>`:''}
+    `;
+  });
+  renderAChart();
+  // diag
+  const dg=$('stageDiag');dg.innerHTML='';
+  stages.forEach(s=>{
+    const real=data.funnel[s.id].length,meta=Math.ceil(data.goals[s.id]);
+    const p=pct(real,data.goals[s.id]);
+    const falt=Math.max(meta-real,0),pd=daysLeft>0?(falt/daysLeft).toFixed(1):'—';
+    const{ic,cl,lb}=p>=100?{ic:'fa-check-circle',cl:'var(--ok)',lb:'Meta atingida'}:p>=70?{ic:'fa-dot-circle',cl:'var(--warn)',lb:'Em ritmo'}:{ic:'fa-times-circle',cl:'var(--err)',lb:'Abaixo da meta'};
+    dg.innerHTML+=`<div class="diag-i"><i class="fas ${ic}" style="color:${cl}"></i><div><div class="di-n">${s.name} — ${lb}</div><div class="di-s">Faltam ${falt} · Precisa: ${pd}/dia</div></div></div>`;
+  });
+  // insights
+  const ins=$('autoInsights');ins.innerHTML='';
+  buildInsights().forEach(it=>ins.innerHTML+=`<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`);
+}
+function renderAChart(){
+  const ctx=$('analyticsChart');if(!ctx)return;
+  if(aChart)aChart.destroy();
+  const dk=document.body.classList.contains('dark');
+  const tc=dk?'#6A8A6C':'#7A8A7C',gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+  aChart=new Chart(ctx.getContext('2d'),{type:'bar',data:{labels:stages.map(s=>s.name),datasets:[{label:'Meta',data:stages.map(s=>Math.ceil(data.goals[s.id])),backgroundColor:'rgba(196,114,74,.25)',borderColor:'#C4724A',borderWidth:1.5,borderRadius:4},{label:'Realizado',data:stages.map(s=>data.funnel[s.id].length),backgroundColor:stages.map(s=>s.color+'CC'),borderRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:10,family:'Plus Jakarta Sans'}}}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10}}},y:{beginAtZero:true,grid:{color:gc},ticks:{color:tc,font:{size:10}}}}}});
+}
+function buildInsights(){
+  if(!data.goals)return[];
+  const out=[],v=data.funnel.vendas.length,mv=data.goals.vendas;
+  const tend=daysPast>0?(v/daysPast)*totDays:0;
+  if(tend>=mv)out.push({ic:'fa-trophy',cl:'var(--ok)',txt:`🏆 Tendência de ${Math.round(tend)} supera a meta de ${Math.ceil(mv)}. Continue!`});
+  else{const def=Math.ceil(mv)-v,pd=daysLeft>0?(def/daysLeft).toFixed(1):'—';out.push({ic:'fa-exclamation-triangle',cl:'var(--warn)',txt:`Precisa de ${def} venda(s) em ${daysLeft} dias (${pd}/dia).`})}
+  const lP=pct(data.funnel.leads.length,data.goals.leads);
+  if(lP<60)out.push({ic:'fa-users',cl:'var(--err)',txt:'Captação de leads abaixo de 60%. Intensifique prospecção e tráfego pago.'});
+  const lvR=data.funnel.leads.length>0?(data.funnel.visitas.length/data.funnel.leads.length*100):0;
+  const lvM=data.conversions.lv*100;
+  if(lvR<lvM*.7&&data.funnel.leads.length>5)out.push({ic:'fa-handshake',cl:'var(--warn)',txt:`Conversão L→V (${lvR.toFixed(0)}%) abaixo da meta (${lvM.toFixed(0)}%). Melhore follow-up.`});
+  if(data.funnel.aprovacoes.length>0&&v===0)out.push({ic:'fa-stamp',cl:'var(--warn)',txt:`${data.funnel.aprovacoes.length} aprovação(ões) sem venda. Converta agora!`});
+  const efic=data.funnel.leads.length>0?(v/data.funnel.leads.length*100):0;
+  if(efic>10)out.push({ic:'fa-chart-line',cl:'var(--ok)',txt:`Eficiência ${efic.toFixed(1)}% (L→V). Excelente! Média do mercado: 5-8%.`});
+  else if(data.funnel.leads.length>10)out.push({ic:'fa-filter',cl:'var(--t3)',txt:'Revise qualidade dos leads. Menos leads qualificados vale mais que muitos leads frios.'});
+  return out.slice(0,5);
+}
 
-    function addItems(stageId, qty) {
-        for (let i = 0; i < qty; i++) data.funnel[stageId].push({ id: Date.now()+i, date: new Date().toISOString() });
-        saveData();
-        toast(`+${qty} ${stages.find(s=>s.id===stageId).name}!`);
-        renderAll();
-    }
-    function removeItems(stageId, qty) {
-        if (data.funnel[stageId].length < qty) { toast('Não há itens suficientes.'); return; }
-        for (let i = 0; i < qty; i++) data.funnel[stageId].pop();
-        saveData(); renderAll();
-        toast(`-${qty} removido(s).`);
-    }
-    function moveItem(stageId, dir) {
-        const idx = stages.findIndex(s => s.id === stageId);
-        const targetId = stages[idx + (dir==='next'?1:-1)].id;
-        if (!data.funnel[stageId].length) { toast('Sem itens para mover.'); return; }
-        data.funnel[targetId].push(data.funnel[stageId].pop());
-        saveData(); renderAll();
-        toast(`Lead movido → ${stages.find(s=>s.id===targetId).name}`);
-    }
+/* ─── PERFORMANCE MODAL ─── */
+function showPerf(){
+  if(!data.goals||daysPast===0)return;
+  const v=data.funnel.vendas.length,mv=data.goals.vendas,tend=(v/daysPast)*totDays;
+  const em=$('pEmoji'),tt=$('pTitle'),pm=$('pMsg'),pt=$('pTips'),ptc=$('pTipsC');
+  if(tend>=mv){em.textContent='🎉';tt.textContent='Excelente Desempenho!';tt.className='pt ok';pm.textContent=`Tendência de ${Math.round(tend)} vendas supera a meta de ${Math.ceil(mv)}!`;pt.classList.add('hidden')}
+  else{em.textContent='⚡';tt.textContent='Hora de Acelerar!';tt.className='pt warn';pm.textContent=`Tendência: ${Math.round(tend)} | Meta: ${Math.ceil(mv)}. Veja as ações abaixo.`;ptc.innerHTML=buildInsights().map(it=>`<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`).join('');pt.classList.remove('hidden')}
+  $('perfModal').classList.remove('hidden');
+}
 
-    // ── RENDER DASHBOARD ──
-    function renderDashboard() {
-        if (!data.goals) return;
-        renderKpiBar();
-        renderFunnelCards();
-        renderFunnelChart();
-        renderSidebar();
-    }
+/* ─── PDF ─── */
+function pdfGeral(){
+  const doc=new jsPDF();
+  doc.setFontSize(18);doc.text('Relatório Geral — Funil Pro Corretor',14,22);
+  doc.setFontSize(11);doc.setTextColor(100);doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`,14,30);
+  const rows=stages.map(s=>{const meta=Math.ceil(data.goals[s.id]),real=data.funnel[s.id].length,tend=daysPast>0?Math.round((real/daysPast)*totDays):0,p=meta>0?((real/meta)*100).toFixed(1)+'%':'—';return[s.name,meta,real,tend,p]});
+  doc.autoTable({head:[['Etapa','Meta','Realizado','Tendência','% Atingido']],body:rows,startY:38,theme:'grid'});
+  doc.save(`relatorio-funil-${new Date().toISOString().slice(0,10)}.pdf`);toast('PDF gerado!');
+}
+function pdfEtapas(){
+  const doc=new jsPDF();
+  stages.forEach((s,i)=>{
+    if(i>0)doc.addPage();
+    doc.setFontSize(18);doc.text(`Etapa: ${s.name}`,14,22);doc.setFontSize(11);doc.setTextColor(100);doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`,14,30);
+    const items=data.funnel[s.id];
+    if(items.length>0)doc.autoTable({head:[['ID','Data']],body:items.map(it=>[it.id,new Date(it.date).toLocaleString('pt-BR')]),startY:40,theme:'striped'});
+    else doc.text('Nenhum item.',14,46);
+  });
+  doc.save(`etapas-funil-${new Date().toISOString().slice(0,10)}.pdf`);toast('PDFs gerados!');
+}
 
-    function renderKpiBar() {
-        const leads = data.funnel.leads.length;
-        const vendas = data.funnel.vendas.length;
-        const metaVendas = data.goals.vendas;
-        const tend = daysPassed > 0 ? (vendas / daysPassed) * totalDays : 0;
-        const eficiencia = leads > 0 ? ((vendas / leads) * 100).toFixed(1) : '0.0';
-        const progMes = ((daysPassed / totalDays) * 100).toFixed(0);
+/* ─── RENDER ALL ─── */
+function renderAll(){
+  renderFunil();stratOk=false;
+  if($('tab-marketing').classList.contains('active'))renderStrategy();
+  if($('tab-checklist').classList.contains('active'))renderChecklist();
+  if($('tab-analytics').classList.contains('active'))renderAnalytics();
+}
 
-        $('kpiBar').innerHTML = `
-            <div class="kpi-card">
-                <div class="kpi-label"><i class="fas fa-calendar"></i> Progresso do Mês</div>
-                <div class="kpi-value">${progMes}%</div>
-                <div class="kpi-sub">${daysPassed} de ${totalDays} dias passados</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label"><i class="fas fa-key"></i> Vendas Realizadas</div>
-                <div class="kpi-value">${vendas}</div>
-                <div class="kpi-sub">Meta: ${Math.ceil(metaVendas)}</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label"><i class="fas fa-chart-line"></i> Tendência do Mês</div>
-                <div class="kpi-value" style="color:${tend>=metaVendas?'var(--success)':'var(--warn)'}">${Math.round(tend)}</div>
-                <div class="kpi-sub">${tend>=metaVendas?'✅ Acima da meta':'⚠️ Abaixo da meta'}</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label"><i class="fas fa-percent"></i> Eficiência Global</div>
-                <div class="kpi-value">${eficiencia}%</div>
-                <div class="kpi-sub">Leads → Vendas</div>
-            </div>
-        `;
-    }
-
-    function renderFunnelCards() {
-        const dash = $('funnel-dashboard');
-        dash.innerHTML = '';
-        stages.forEach((s, i) => {
-            const meta = data.goals[s.id];
-            const real = data.funnel[s.id].length;
-            const tend = daysPassed > 0 ? (real/daysPassed)*totalDays : 0;
-            const metaDiaria = totalDays > 0 ? meta/totalDays : 0;
-            const pReal = pct(real, meta);
-            const pTend = pct(tend, meta);
-
-            const div = document.createElement('div');
-            div.className = 'stage-card';
-            div.dataset.stage = s.id;
-            div.innerHTML = `
-                <div class="stage-icon"><i class="fas ${s.icon}"></i></div>
-                <div class="stage-name">${s.name}</div>
-                <div class="stage-count">${real}</div>
-                <div class="stage-meta">Meta: ${Math.ceil(meta)} | Diário: ${metaDiaria.toFixed(1)}</div>
-                <div class="progress-track" style="margin-top:14px;">
-                    <div class="progress-fill" style="width:${pReal}%; background:${pctColor(pReal)};"></div>
-                </div>
-                <div class="pct-row" style="margin-top:5px;">
-                    <span class="pct-label">Realizado</span>
-                    <span class="pct-val" style="color:${pctColor(pReal)};">${pReal.toFixed(0)}%</span>
-                </div>
-                <div class="progress-track" style="margin-top:8px;">
-                    <div class="progress-fill" style="width:${pTend}%; background:${pctColor(pTend)}; opacity:.65;"></div>
-                </div>
-                <div class="pct-row" style="margin-top:5px;">
-                    <span class="pct-label">Tendência</span>
-                    <span class="pct-val" style="color:${pctColor(pTend)};font-weight:500;">${Math.round(tend)} (${pTend.toFixed(0)}%)</span>
-                </div>
-                <div class="stage-controls">
-                    <div class="qty-row">
-                        <button class="btn-ctrl btn-dec" title="Remover">−</button>
-                        <input type="number" class="qty-input" value="1" min="1">
-                        <button class="btn-ctrl btn-inc" title="Adicionar">+</button>
-                    </div>
-                    <div class="nav-row">
-                        <button class="btn-nav btn-prev" ${i===0?'disabled':''}><i class="fas fa-arrow-left"></i> Voltar</button>
-                        <button class="btn-nav btn-next" ${i===stages.length-1?'disabled':''}>Avançar <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </div>
-            `;
-            dash.appendChild(div);
-        });
-    }
-
-    function renderFunnelChart() {
-        const ctx = $('funnelChart').getContext('2d');
-        if (funnelChartInst) funnelChartInst.destroy();
-        const dark = document.body.classList.contains('dark');
-        const textColor = dark ? '#8CA893' : '#6B7B6E';
-        const gridColor = dark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
-        funnelChartInst = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: stages.map(s => s.name),
-                datasets: [
-                    { label: 'Realizado', data: stages.map(s => data.funnel[s.id].length), backgroundColor: stages.map(s => s.color+'CC'), borderRadius: 6 },
-                    { label: 'Meta', data: stages.map(s => Math.ceil(data.goals[s.id])), backgroundColor: 'rgba(180,132,108,.25)', borderColor: stages.map(s=>s.color), borderWidth: 1.5, borderRadius: 6 }
-                ]
-            },
-            options: {
-                indexAxis: 'y', responsive: true,
-                plugins: { legend: { labels: { color: textColor, font: {size: 11, family: 'Sora'} } } },
-                scales: {
-                    x: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } },
-                    y: { grid: { display: false }, ticks: { color: textColor } }
-                }
-            }
-        });
-    }
-
-    function renderSidebar() {
-        // Progresso do Mês
-        $('resumo-progresso-mes').innerHTML = `
-            <div class="metric-row"><span class="label">Total de Dias no Mês</span><span class="val">${totalDays}</span></div>
-            <div class="metric-row"><span class="label">Dias Passados</span><span class="val">${daysPassed}</span></div>
-            <div class="metric-row"><span class="label">Dias Restantes</span><span class="val">${daysRemaining}</span></div>
-            <div class="metric-row"><span class="label">Semana do Mês</span><span class="val">${Math.ceil(daysPassed/7)}ª</span></div>
-        `;
-        // Resumo Mensal
-        $('resumo-mensal').innerHTML = stages.map(s =>
-            `<div class="metric-row"><span class="label">${s.name}</span><span class="val">${data.funnel[s.id].length}</span></div>`
-        ).join('');
-        // Resumo Semanal
-        const now = new Date();
-        const firstDOW = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + (now.getDay()===0?-6:1));
-        firstDOW.setHours(0,0,0,0);
-        const lastDOW = new Date(firstDOW); lastDOW.setDate(lastDOW.getDate()+6); lastDOW.setHours(23,59,59,999);
-        $('resumo-semanal').innerHTML = stages.map(s => {
-            const semana = data.funnel[s.id].filter(it => { const d = new Date(it.date); return d >= firstDOW && d <= lastDOW; }).length;
-            return `<div class="metric-row"><span class="label">${s.name}</span><span class="val">${semana}</span></div>`;
-        }).join('');
-    }
-
-    // ── RENDER STRATEGY TAB ──
-    function renderStrategyTab() {
-        const container = $('strategy-cards-container');
-        if (container.innerHTML !== '') return; // already rendered
-
-        // Stage overview row
-        let html = `<div class="grid-5" style="margin-bottom:22px;">`;
-        stages.forEach(s => {
-            const real = data.funnel[s.id].length;
-            const meta = data.goals ? Math.ceil(data.goals[s.id]) : '—';
-            const p = data.goals ? pct(real, data.goals[s.id]).toFixed(0) : 0;
-            html += `
-            <div class="card" style="text-align:center;">
-                <div style="width:40px;height:40px;border-radius:11px;background:${stages.find(x=>x.id===s.id).color};display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;margin-bottom:10px;"><i class="fas ${s.icon}"></i></div>
-                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">${s.name}</div>
-                <div style="font-size:1.6rem;font-weight:800;margin:4px 0;">${real}</div>
-                <div style="font-size:.75rem;color:var(--muted);">Meta: ${meta}</div>
-                <div class="progress-track" style="margin:10px 0 5px;"><div class="progress-fill" style="width:${p}%;background:${pctColor(parseFloat(p))};"></div></div>
-                <span style="font-size:.78rem;font-weight:700;color:${pctColor(parseFloat(p))};">${p}%</span>
-            </div>`;
-        });
-        html += `</div>`;
-
-        // Strategy cards for each stage
-        html += `<div style="display:flex;flex-direction:column;gap:22px;">`;
-        stages.forEach((s, i) => {
-            const sd = strategyData[s.id];
-            const real = data.funnel[s.id].length;
-            const meta = data.goals ? Math.ceil(data.goals[s.id]) : '—';
-            const p = data.goals ? pct(real, data.goals[s.id]) : 0;
-            const statusBadge = p >= 100
-                ? `<span class="badge badge-green"><i class="fas fa-check-circle"></i> Meta atingida</span>`
-                : p >= 70
-                ? `<span class="badge badge-warn"><i class="fas fa-exclamation-circle"></i> Em andamento</span>`
-                : `<span class="badge badge-red"><i class="fas fa-times-circle"></i> Atenção necessária</span>`;
-
-            html += `
-            <div class="strategy-stage-card">
-                <div class="strategy-stage-header">
-                    <div class="strategy-stage-icon" style="background:${s.color};"><i class="fas ${s.icon}"></i></div>
-                    <div style="flex:1;">
-                        <h3>Etapa ${i+1}: ${s.name} ${statusBadge}</h3>
-                        <p>${sd.subtitle} — <em>${s.tip}</em></p>
-                    </div>
-                    <div style="text-align:right;flex-shrink:0;">
-                        <div style="font-size:1.8rem;font-weight:800;color:${pctColor(p)};">${real}</div>
-                        <div style="font-size:.75rem;color:var(--muted);">de ${meta}</div>
-                    </div>
-                </div>
-                <div class="layout-strat" style="margin-top:0;">
-                    <div>
-                        <div class="section-label"><i class="fas fa-lightbulb"></i> Estratégias e Táticas</div>
-                        <ul class="tips-list">
-                            ${sd.tips.map(t => `<li><i class="fas ${t.icon} tip-icon"></i><span>${t.text}</span></li>`).join('')}
-                        </ul>
-                    </div>
-                    <div>
-                        <div class="section-label"><i class="fas fa-pencil-alt"></i> Ideias de Conteúdo</div>
-                        <div class="content-chips">${sd.content.map(c => `<span class="chip">${c}</span>`).join('')}</div>
-                        <div class="section-label" style="margin-top:18px;"><i class="fas fa-tachometer-alt"></i> KPIs para Monitorar</div>
-                        <div style="background:var(--bg);border-radius:11px;padding:12px 14px;font-size:.8rem;line-height:1.6;color:var(--muted);">${sd.kpis}</div>
-                    </div>
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
-        container.innerHTML = html;
-    }
-
-    // ── RENDER CHECKLIST ──
-    function renderChecklist() {
-        const now = new Date();
-        $('checklistDayBadge').textContent = `${weekDays[now.getDay()]}, ${now.getDate()} de ${monthNames[M]}`;
-
-        // Evaluate funnel performance to generate dynamic checklist
-        const checklistGroups = generateDailyChecklist();
-        const grid = $('checklistGrid');
-        grid.innerHTML = '';
-
-        checklistGroups.forEach((group, gi) => {
-            const div = document.createElement('div');
-            div.className = 'checklist-group';
-            div.innerHTML = `
-                <div class="checklist-group-header">
-                    <div class="checklist-group-icon" style="background:${group.color};"><i class="fas ${group.icon}"></i></div>
-                    <div>
-                        <h4>${group.title}</h4>
-                        <small>${group.subtitle}</small>
-                    </div>
-                </div>
-                <div class="checklist-items">
-                    ${group.items.map((item, ii) => {
-                        const key = `${gi}-${ii}`;
-                        const done = checklistState[key] || false;
-                        return `
-                        <label class="check-item ${done?'done':''}" data-key="${key}">
-                            <div class="check-box"></div>
-                            <span class="check-text">${item.text}</span>
-                            <span class="check-priority priority-${item.priority}">${item.priority === 'high' ? '🔴 Alta' : item.priority === 'mid' ? '🟡 Média' : '🟢 Baixa'}</span>
-                        </label>`;
-                    }).join('')}
-                </div>
-            `;
-            grid.appendChild(div);
-        });
-
-        // Event delegation for check items
-        grid.addEventListener('click', e => {
-            const item = e.target.closest('.check-item');
-            if (!item) return;
-            const key = item.dataset.key;
-            checklistState[key] = !checklistState[key];
-            item.classList.toggle('done', checklistState[key]);
-            updateChecklistProgress();
-        });
-
-        updateChecklistProgress();
-    }
-
-    function updateChecklistProgress() {
-        const items = document.querySelectorAll('.check-item');
-        const done = document.querySelectorAll('.check-item.done').length;
-        const total = items.length;
-        const p = total > 0 ? Math.round((done/total)*100) : 0;
-        $('checklistProgressFill').style.width = p + '%';
-        $('checklistProgressPct').textContent = p + '%';
-        $('checklistSubtitle').textContent = `${done} de ${total} tarefas concluídas`;
-    }
-
-    function generateDailyChecklist() {
-        if (!data.goals) return [];
-        const metaDiariaLeads = data.goals.leads / totalDays;
-        const metaDiariaVisitas = data.goals.visitas / totalDays;
-        const leadsPct = pct(data.funnel.leads.length, data.goals.leads);
-        const visitasPct = pct(data.funnel.visitas.length, data.goals.visitas);
-        const docsPct = pct(data.funnel.docs.length, data.goals.docs);
-        const aprovPct = pct(data.funnel.aprovacoes.length, data.goals.aprovacoes);
-        const vendasPct = pct(data.funnel.vendas.length, data.goals.vendas);
-
-        const prospectingQty = Math.ceil(metaDiariaLeads * 1.2);
-        const visitasQty = Math.ceil(metaDiariaVisitas);
-
-        // PROSPECÇÃO
-        const prospGroup = {
-            title: 'Prospecção & Leads',
-            subtitle: `Meta diária: ~${prospectingQty} novos leads`,
-            icon: 'fa-users', color: '#3D5A40',
-            items: [
-                { text: `Enviar ${Math.max(prospectingQty*2, 20)} mensagens de prospecção no WhatsApp (clientes frios + indicações)`, priority: 'high' },
-                { text: `Fazer ${Math.max(prospectingQty, 10)} ligações de prospecção para base de contatos`, priority: leadsPct < 60 ? 'high' : 'mid' },
-                { text: 'Publicar 1 conteúdo imobiliário nas redes sociais (Stories, Reels ou post)', priority: 'high' },
-                { text: 'Verificar e responder TODOS os leads recebidos em até 5 minutos', priority: 'high' },
-                { text: 'Pedir 2 indicações para clientes da carteira ativa', priority: leadsPct < 70 ? 'high' : 'mid' }
-            ]
-        };
-
-        // VISITAS
-        const visitGroup = {
-            title: 'Agendamento & Visitas',
-            subtitle: `Meta diária: ~${visitasQty} visita(s)`,
-            icon: 'fa-handshake', color: '#4E7153',
-            items: [
-                { text: `Confirmar ${visitasQty > 0 ? visitasQty : 1} visita(s) agendada(s) por WhatsApp e ligação`, priority: 'high' },
-                { text: 'Preparar apresentação do imóvel: fotos, planta, comparativo de preços', priority: visitasPct < 70 ? 'high' : 'mid' },
-                { text: 'Fazer follow-up com leads que não responderam nos últimos 2 dias', priority: 'mid' },
-                { text: 'Oferecer tour virtual para pelo menos 3 leads qualificados', priority: visitasPct < 50 ? 'high' : 'low' }
-            ]
-        };
-
-        // DOCUMENTAÇÃO
-        const docsGroup = {
-            title: 'Documentação & Crédito',
-            subtitle: 'Agilize os processos em andamento',
-            icon: 'fa-file-contract', color: '#B4846C',
-            items: [
-                { text: 'Enviar checklist de documentos para clientes na etapa de visitas', priority: 'high' },
-                { text: 'Ligar para correspondente bancário: status dos processos em aberto', priority: docsPct < 70 ? 'high' : 'mid' },
-                { text: 'Verificar pendências de documentação e cobrar clientes com pendências', priority: 'mid' },
-                { text: 'Enviar simulação financeira personalizada para 2 clientes qualificados', priority: docsPct < 50 ? 'high' : 'low' }
-            ]
-        };
-
-        // APROVAÇÕES & FECHAMENTO
-        const fecharGroup = {
-            title: 'Aprovações & Fechamentos',
-            subtitle: 'Converter aprovações em vendas',
-            icon: 'fa-key', color: '#8B6347',
-            items: [
-                { text: 'Acompanhar status de todos os processos de aprovação em aberto', priority: 'high' },
-                { text: aprovPct < 70 ? 'Ligar para clientes com aprovação pendente — criar senso de urgência' : 'Confirmar assinatura de contrato com clientes aprovados', priority: aprovPct < 70 ? 'high' : 'mid' },
-                { text: 'Resolver pendências: documentos faltantes, assinaturas, certidões', priority: 'mid' },
-                { text: 'Celebrar fechamento: postar entrega de chaves (com autorização) nas redes', priority: vendasPct >= 100 ? 'high' : 'low' }
-            ]
-        };
-
-        // MARKETING DIÁRIO
-        const mktGroup = {
-            title: 'Marketing & Posicionamento',
-            subtitle: 'Presença digital consistente',
-            icon: 'fa-bullhorn', color: '#C8A97E',
-            items: [
-                { text: 'Verificar métricas do Instagram/Facebook: alcance, curtidas, DMs', priority: 'mid' },
-                { text: 'Responder todos os comentários e mensagens das redes sociais', priority: 'high' },
-                { text: 'Capturar conteúdo do dia: foto ou vídeo do seu trabalho (imóvel, atendimento, região)', priority: 'mid' },
-                { text: 'Planejar conteúdo de amanhã: formato, legenda e horário ideal de postagem', priority: 'low' }
-            ]
-        };
-
-        // ANÁLISE DIÁRIA
-        const analyzeGroup = {
-            title: 'Análise & Planejamento',
-            subtitle: 'Reflexão e otimização contínua',
-            icon: 'fa-chart-line', color: '#5A8C64',
-            items: [
-                { text: 'Atualizar o funil com todos os leads, visitas e avanços do dia de hoje', priority: 'high' },
-                { text: 'Analisar: qual ação gerou mais resultado hoje? Repita amanhã.', priority: 'mid' },
-                { text: `Verificar tendência do funil: ${pct(data.funnel.vendas.length, data.goals.vendas).toFixed(0)}% da meta de vendas. ${pct(data.funnel.vendas.length, data.goals.vendas) < 70 ? 'Intensifique a prospecção!' : 'Mantenha o ritmo!'}`, priority: 'mid' },
-                { text: 'Registrar 3 aprendizados do dia e 3 prioridades para amanhã', priority: 'low' }
-            ]
-        };
-
-        return [prospGroup, visitGroup, docsGroup, fecharGroup, mktGroup, analyzeGroup];
-    }
-
-    // ── RENDER ANALYTICS TAB ──
-    function renderAnalyticsTab() {
-        if (!data.goals) return;
-
-        // KPIs
-        const convRates = {};
-        for (let i = 1; i < stages.length; i++) {
-            const from = data.funnel[stages[i-1].id].length;
-            const to   = data.funnel[stages[i].id].length;
-            convRates[`${stages[i-1].id}_${stages[i].id}`] = from > 0 ? ((to/from)*100).toFixed(1) : '—';
-        }
-        const leadsMes = data.funnel.leads.length;
-        const vendasMes = data.funnel.vendas.length;
-        const efic = leadsMes > 0 ? ((vendasMes/leadsMes)*100).toFixed(1) : '0.0';
-        const tend = daysPassed > 0 ? Math.round((vendasMes/daysPassed)*totalDays) : 0;
-
-        $('analyticsKpi').innerHTML = `
-            <div class="kpi-card">
-                <div class="kpi-label">Leads → Visitas</div>
-                <div class="kpi-value">${convRates.leads_visitas}%</div>
-                <div class="kpi-sub">Taxa de agendamento</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Visitas → Docs</div>
-                <div class="kpi-value">${convRates.visitas_docs}%</div>
-                <div class="kpi-sub">Qualificação efetiva</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Eficiência Global</div>
-                <div class="kpi-value">${efic}%</div>
-                <div class="kpi-sub">Lead → Venda</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Projeção de Vendas</div>
-                <div class="kpi-value" style="color:${tend >= data.goals.vendas?'var(--success)':'var(--warn)'};">${tend}</div>
-                <div class="kpi-sub">Tendência do mês</div>
-            </div>
-        `;
-
-        // Conversion Funnel
-        const cf = $('convFunnel');
-        cf.innerHTML = '';
-        stages.forEach((s, i) => {
-            const real = data.funnel[s.id].length;
-            const meta = data.goals[s.id];
-            const p = pct(real, meta).toFixed(0);
-            cf.innerHTML += `
-                <div class="conv-step">
-                    <div style="width:32px;height:32px;border-radius:9px;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;"><i class="fas ${s.icon}"></i></div>
-                    <span class="conv-label">${s.name}</span>
-                    <span class="conv-pct" style="color:${pctColor(parseFloat(p))};">${real} / ${Math.ceil(meta)}</span>
-                    <span class="badge ${parseFloat(p)>=100?'badge-green':parseFloat(p)>=70?'badge-warn':'badge-red'}">${p}%</span>
-                </div>
-                ${i < stages.length-1 ? `<div style="text-align:center;font-size:.8rem;color:var(--muted);padding:2px 0;"><i class="fas fa-arrow-down"></i> conv: ${convRates[stages[i].id+'_'+stages[i+1].id]}%</div>` : ''}
-            `;
-        });
-
-        // Chart
-        renderAnalyticsChart();
-
-        // Diagnostic
-        const diag = $('stageDiagnostic');
-        diag.innerHTML = '';
-        stages.forEach(s => {
-            const real = data.funnel[s.id].length;
-            const meta = Math.ceil(data.goals[s.id]);
-            const p = pct(real, data.goals[s.id]);
-            const status = p >= 100 ? {icon:'fa-check-circle', color:'var(--success)', label:'✅ Meta atingida'} :
-                           p >= 70  ? {icon:'fa-dot-circle',   color:'var(--warn)',    label:'⏳ Em ritmo'} :
-                                      {icon:'fa-times-circle',  color:'var(--danger)',  label:'⚠️ Abaixo da meta'};
-            const faltam = Math.max(meta - real, 0);
-            const porDia = daysRemaining > 0 ? (faltam / daysRemaining).toFixed(1) : '—';
-            diag.innerHTML += `
-                <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
-                    <i class="fas ${status.icon}" style="color:${status.color};font-size:1.1rem;width:20px;"></i>
-                    <div style="flex:1;">
-                        <div style="font-size:.82rem;font-weight:700;">${s.name} — ${status.label}</div>
-                        <div style="font-size:.75rem;color:var(--muted);">Faltam ${faltam} | Necessário: ${porDia}/dia</div>
-                    </div>
-                </div>
-            `;
-        });
-
-        // Auto Insights
-        const ins = $('autoInsights');
-        const insights = generateInsights();
-        ins.innerHTML = insights.map(i => `
-            <div class="perf-tip-item" style="margin-bottom:8px;border-radius:11px;">
-                <i class="fas ${i.icon}" style="color:${i.color};flex-shrink:0;margin-top:2px;"></i>
-                <span style="font-size:.82rem;">${i.text}</span>
-            </div>
-        `).join('');
-    }
-
-    function renderAnalyticsChart() {
-        const ctx = $('analyticsChart').getContext('2d');
-        if (analyticsChartInst) analyticsChartInst.destroy();
-        const dark = document.body.classList.contains('dark');
-        const textColor = dark ? '#8CA893' : '#6B7B6E';
-        const gridColor = dark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
-        analyticsChartInst = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: stages.map(s=>s.name),
-                datasets: [
-                    { label: 'Meta', data: stages.map(s=>Math.ceil(data.goals[s.id])), backgroundColor: 'rgba(180,132,108,.3)', borderColor: '#C8A97E', borderWidth: 1.5, borderRadius: 5 },
-                    { label: 'Realizado', data: stages.map(s=>data.funnel[s.id].length), backgroundColor: stages.map(s=>s.color+'CC'), borderRadius: 5 }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { labels: { color: textColor, font: {size: 11, family: 'Sora'} } } },
-                scales: {
-                    x: { grid: { color: gridColor }, ticks: { color: textColor, font: {size: 10} } },
-                    y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } }
-                }
-            }
-        });
-    }
-
-    function generateInsights() {
-        if (!data.goals) return [];
-        const insights = [];
-        const vendasReal = data.funnel.vendas.length;
-        const vendMeta = data.goals.vendas;
-        const tend = daysPassed > 0 ? (vendasReal/daysPassed)*totalDays : 0;
-
-        if (tend >= vendMeta) {
-            insights.push({ icon:'fa-trophy', color:'var(--success)', text:`🏆 Parabéns! Sua tendência de ${Math.round(tend)} vendas supera a meta de ${Math.ceil(vendMeta)}. Continue o ritmo!` });
-        } else {
-            const deficit = Math.ceil(vendMeta) - vendasReal;
-            const porDia = daysRemaining > 0 ? (deficit/daysRemaining).toFixed(1) : '—';
-            insights.push({ icon:'fa-exclamation-triangle', color:'var(--warn)', text:`Você precisa de ${deficit} venda(s) em ${daysRemaining} dias (${porDia}/dia) para bater a meta.` });
-        }
-
-        const leadsPct = pct(data.funnel.leads.length, data.goals.leads);
-        if (leadsPct < 60) {
-            insights.push({ icon:'fa-users', color:'var(--danger)', text:'Sua captação de leads está abaixo de 60% da meta. Intensifique prospecção ativa e tráfego pago urgente.' });
-        }
-
-        const lvReal = data.funnel.leads.length > 0 ? (data.funnel.visitas.length / data.funnel.leads.length * 100) : 0;
-        const lvMeta = data.conversions.lv * 100;
-        if (lvReal < lvMeta * 0.7 && data.funnel.leads.length > 5) {
-            insights.push({ icon:'fa-handshake', color:'var(--warn)', text:`Conversão Leads→Visitas real (${lvReal.toFixed(0)}%) está abaixo da meta (${lvMeta.toFixed(0)}%). Melhore follow-up e abordagem.` });
-        }
-
-        if (data.funnel.aprovacoes.length > 0 && data.funnel.vendas.length === 0) {
-            insights.push({ icon:'fa-stamp', color:'var(--warn)', text:`Você tem ${data.funnel.aprovacoes.length} aprovação(ões) sem fechar venda. Foque em converter essas oportunidades agora!` });
-        }
-
-        if (data.funnel.vendas.length >= Math.ceil(vendMeta)) {
-            insights.push({ icon:'fa-medal', color:'var(--success)', text:'Meta de vendas atingida! Agora é hora de pedir indicações e construir pipeline para o próximo mês.' });
-        }
-
-        const efic = data.funnel.leads.length > 0 ? (data.funnel.vendas.length / data.funnel.leads.length * 100) : 0;
-        if (efic > 10) {
-            insights.push({ icon:'fa-chart-line', color:'var(--success)', text:`Sua eficiência global é ${efic.toFixed(1)}% (Lead→Venda). Excelente! A média do mercado é 5-8%.` });
-        } else if (data.funnel.leads.length > 10) {
-            insights.push({ icon:'fa-filter', color:'var(--muted)', text:'Revise a qualidade dos seus leads. Menos leads qualificados vale mais do que muitos leads frios.' });
-        }
-
-        return insights.slice(0, 5);
-    }
-
-    // ── PERFORMANCE MODAL ──
-    function showPerformanceAnalysis() {
-        if (!data.goals || daysPassed === 0) return;
-        const vendas = data.funnel.vendas.length;
-        const metaVendas = data.goals.vendas;
-        const tend = (vendas/daysPassed)*totalDays;
-        const pfx = $('perfIcon'), pt = $('perfTitle'), pm = $('perfMsg'), ptt = $('perfTips');
-
-        if (tend >= metaVendas) {
-            pfx.textContent = '🎉';
-            pt.textContent = 'Desempenho Excelente!';
-            pt.className = 'perf-title positive';
-            pm.textContent = `Sua tendência (${Math.round(tend)} vendas) supera a meta de ${Math.ceil(metaVendas)}. Continue esse ritmo incrível!`;
-            ptt.classList.add('hidden');
-        } else {
-            pfx.textContent = '⚠️';
-            pt.textContent = 'Oportunidade de Aceleração!';
-            pt.className = 'perf-title negative';
-            pm.textContent = `Tendência atual: ${Math.round(tend)} vendas | Meta: ${Math.ceil(metaVendas)}. Veja as estratégias abaixo para fechar a diferença.`;
-            const strategies = generateInsights();
-            ptt.classList.remove('hidden');
-            ptt.innerHTML = `<div class="section-label" style="margin-bottom:10px;">Ações Recomendadas:</div>` +
-                strategies.map(s => `<div class="perf-tip-item"><i class="fas ${s.icon}" style="color:${s.color};"></i><span>${s.text}</span></div>`).join('');
-        }
-        $('perfModal').classList.remove('hidden');
-    }
-
-    // ── PDF ──
-    function generateGeneralPDF() {
-        const doc = new jsPDF();
-        doc.setFontSize(18);
-        doc.text('Relatório Geral — Funil Pro Corretor', 14, 22);
-        doc.setFontSize(11); doc.setTextColor(100);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')} | Mês: ${monthNames[M]}/${Y}`, 14, 30);
-        const rows = stages.map(s => {
-            const meta = Math.ceil(data.goals[s.id]);
-            const real = data.funnel[s.id].length;
-            const tend = daysPassed > 0 ? Math.round((real/daysPassed)*totalDays) : 0;
-            const p = meta > 0 ? ((real/meta)*100).toFixed(1)+'%' : '—';
-            return [s.name, meta, real, tend, p];
-        });
-        doc.autoTable({ head:[['Etapa','Meta Mensal','Realizado','Tendência','% Atingido']], body: rows, startY: 38, theme: 'grid' });
-        doc.save(`relatorio-geral-funil-${new Date().toISOString().slice(0,10)}.pdf`);
-        toast('PDF gerado!');
-    }
-    function generateStagesPDF() {
-        const doc = new jsPDF();
-        stages.forEach((s, i) => {
-            if (i > 0) doc.addPage();
-            doc.setFontSize(18); doc.text(`Etapa: ${s.name}`, 14, 22);
-            doc.setFontSize(11); doc.setTextColor(100);
-            doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
-            const items = data.funnel[s.id];
-            if (items.length > 0) {
-                doc.autoTable({ head:[['ID','Data']], body: items.map(it => [it.id, new Date(it.date).toLocaleString('pt-BR')]), startY: 40, theme: 'striped' });
-            } else {
-                doc.text('Nenhum item cadastrado.', 14, 46);
-            }
-        });
-        doc.save(`relatorios-etapas-funil-${new Date().toISOString().slice(0,10)}.pdf`);
-        toast('PDFs por etapa gerados!');
-    }
-
-    // ── RENDER ALL ──
-    function renderAll() {
-        renderDashboard();
-        // Reset rendered tabs so they re-render on next visit
-        $('strategy-cards-container').innerHTML = '';
-    }
-
-    // ── INIT ──
-    function init() {
-        applyTheme(localStorage.getItem('imobTheme') || 'light');
-        if (loadData() && data.goals) {
-            $('metasModal').classList.add('hidden');
-            $('mainContent').classList.remove('hidden');
-            renderAll();
-            setTimeout(showPerformanceAnalysis, 900);
-        } else {
-            $('metasModal').classList.remove('hidden');
-            $('mainContent').classList.add('hidden');
-        }
-    }
-    init();
+/* ─── INIT ─── */
+function init(){
+  applyTheme(localStorage.getItem('imobTheme')||'light');
+  if(load()&&data.goals){
+    $('metasModal').classList.add('hidden');
+    $('appShell').classList.remove('hidden');
+    renderAll();setTimeout(showPerf,800);
+  } else {
+    $('metasModal').classList.remove('hidden');
+    $('appShell').classList.add('hidden');
+  }
+}
+init();
 });
 </script>
 </body>
