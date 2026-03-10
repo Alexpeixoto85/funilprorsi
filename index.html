@@ -36,10 +36,16 @@ body.dark {
 *,*::before,*::after {
   box-sizing:border-box; margin:0; padding:0;
   -webkit-tap-highlight-color:transparent;
-  -webkit-user-select:none; user-select:none;
+  /* Não usar user-select global para não atrapalhar inputs */
 }
 p, span, div.ct, .kbox, .tip span { -webkit-user-select:text; user-select:text; }
-input, select, textarea { font-size:16px !important; font-family:'Plus Jakarta Sans',sans-serif; }
+/* CORREÇÃO: inputs devem ser editáveis */
+input, select, textarea {
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+  font-size: 16px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 input[type=number] { -moz-appearance:textfield; }
@@ -86,6 +92,7 @@ body.modal-open { overflow:hidden; touch-action:none; }
   display:flex; align-items:center; justify-content:center;
   color:#fff; font-size:.95rem; transition:background .2s;
   touch-action:manipulation;
+  cursor:pointer;
 }
 .hbtn:active { background:rgba(255,255,255,.32); }
 
@@ -114,6 +121,7 @@ body.modal-open { overflow:hidden; touch-action:none; }
   color:var(--t3); font-size:.58rem; font-weight:700;
   letter-spacing:.03em; text-transform:uppercase; transition:color .2s;
   touch-action:manipulation;
+  cursor:pointer;
 }
 .bni.active { color:var(--p1); }
 .bni-ico {
@@ -165,7 +173,7 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 .btn-d { background:var(--err); color:#fff; padding:14px 18px; font-size:.9rem; width:100%; }
 .btn-ico { width:48px; height:48px; border-radius:12px; padding:0; background:var(--g1); color:#fff; flex-shrink:0; }
 
-/* Form fields — todos com text + inputmode */
+/* Form fields */
 .fg { margin-bottom:13px; }
 .fg label { display:block; font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); margin-bottom:6px; }
 .fi {
@@ -217,7 +225,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   border-radius:24px 24px 0 0;
   width:100%; max-width:600px;
   max-height:88dvh; overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
+  -webkit-overflow-scrolling:touch; /* rolagem suave no iOS */
   padding:6px 18px;
   padding-bottom:calc(22px + var(--safe-b));
   animation:sheetUp .3s cubic-bezier(.4,0,.2,1);
@@ -282,6 +290,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   background:var(--g1); color:#fff; font-size:1.4rem; font-weight:700;
   border:none; transition:transform .12s, opacity .12s;
   touch-action:manipulation;
+  cursor:pointer;
 }
 .qbtn:active { transform:scale(.88); opacity:.85; }
 .qin {
@@ -297,6 +306,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   background:var(--g2); color:#fff; font-size:.78rem; font-weight:700;
   border:none; transition:opacity .2s, transform .12s;
   touch-action:manipulation;
+  cursor:pointer;
 }
 .nbtn:active { transform:scale(.96); }
 .nbtn:disabled { opacity:.22; pointer-events:none; }
@@ -436,7 +446,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 
 /* ══ MOBILE ENHANCEMENTS ══ */
 canvas { max-height: 250px; width: 100% !important; height: auto !important; }
-button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; }
+button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; cursor: pointer; }
 @media (max-width: 380px) {
   .kt-val { font-size: 1.1rem; }
   .sc-info .sv { font-size: 1.6rem; }
