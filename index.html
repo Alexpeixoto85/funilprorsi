@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#2E4A31">
@@ -50,6 +50,7 @@ body {
   background:var(--bg); color:var(--t1);
   min-height:100dvh; overscroll-behavior:none;
   transition:background .3s,color .3s;
+  overflow-x:hidden;
 }
 body.modal-open { overflow:hidden; touch-action:none; }
 
@@ -84,6 +85,7 @@ body.modal-open { overflow:hidden; touch-action:none; }
   background:rgba(255,255,255,.15); border:none;
   display:flex; align-items:center; justify-content:center;
   color:#fff; font-size:.95rem; transition:background .2s;
+  touch-action:manipulation;
 }
 .hbtn:active { background:rgba(255,255,255,.32); }
 
@@ -111,10 +113,11 @@ body.modal-open { overflow:hidden; touch-action:none; }
   padding:4px 2px; border:none; background:transparent;
   color:var(--t3); font-size:.58rem; font-weight:700;
   letter-spacing:.03em; text-transform:uppercase; transition:color .2s;
+  touch-action:manipulation;
 }
 .bni.active { color:var(--p1); }
 .bni-ico {
-  width:42px; height:30px; border-radius:21px;
+  width:44px; height:32px; border-radius:21px;
   display:flex; align-items:center; justify-content:center;
   font-size:1.05rem; transition:background .18s,transform .18s;
 }
@@ -147,13 +150,14 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 }
 .mrow:last-child { border-bottom:none; }
 .mrow .ml { color:var(--t3); font-weight:500; }
-.mrow .mv { font-weight:700; background:var(--bg); padding:2px 8px; border-radius:6px; font-size:.78rem; }
+.mrow .mv { font-weight:700; background:var(--bg); padding:2px 8px; border-radius:6px; font-size:.78rem; word-break:break-word; }
 .btn {
   display:inline-flex; align-items:center; justify-content:center;
   gap:7px; border:none; border-radius:12px;
   font-family:inherit; font-weight:700; cursor:pointer;
   transition:transform .12s, opacity .15s;
   -webkit-user-select:none; user-select:none;
+  touch-action:manipulation;
 }
 .btn:active { transform:scale(.95); opacity:.88; }
 .btn-p { background:var(--g1); color:#fff; padding:14px 18px; font-size:.9rem; width:100%; }
@@ -239,7 +243,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   box-shadow:0 2px 8px var(--shd);
 }
 .kt-lbl { font-size:.6rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); }
-.kt-val { font-size:1.3rem; font-weight:800; line-height:1.1; margin:4px 0 2px; }
+.kt-val { font-size:1.3rem; font-weight:800; line-height:1.1; margin:4px 0 2px; word-break:break-word; }
 .kt-sub { font-size:.62rem; color:var(--t3); }
 
 /* ══ STAGE CARDS ══ */
@@ -256,10 +260,10 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 .sc-info { flex:1; min-width:0; }
 .sc-info .sn { font-size:.65rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--t3); }
-.sc-info .sv { font-size:2rem; font-weight:800; line-height:1; color:var(--t1); }
+.sc-info .sv { font-size:2rem; font-weight:800; line-height:1; color:var(--t1); word-break:break-word; }
 .sc-info .sm { font-size:.7rem; color:var(--t3); margin-top:2px; }
 .sc-pct { text-align:right; flex-shrink:0; }
-.sc-pct .spv { font-size:1.35rem; font-weight:800; line-height:1; }
+.sc-pct .spv { font-size:1.35rem; font-weight:800; line-height:1; word-break:break-word; }
 .sc-pct .spl { font-size:.6rem; color:var(--t3); }
 .sc-bars { padding:10px 14px; }
 .br { margin-bottom:8px; }
@@ -277,6 +281,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   display:flex; align-items:center; justify-content:center;
   background:var(--g1); color:#fff; font-size:1.4rem; font-weight:700;
   border:none; transition:transform .12s, opacity .12s;
+  touch-action:manipulation;
 }
 .qbtn:active { transform:scale(.88); opacity:.85; }
 .qin {
@@ -291,6 +296,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   padding:13px 6px; border-radius:11px;
   background:var(--g2); color:#fff; font-size:.78rem; font-weight:700;
   border:none; transition:opacity .2s, transform .12s;
+  touch-action:manipulation;
 }
 .nbtn:active { transform:scale(.96); }
 .nbtn:disabled { opacity:.22; pointer-events:none; }
@@ -320,7 +326,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   font-size:1.05rem; color:#fff;
 }
 .ss-info { flex:1; min-width:0; }
-.ss-info h3 { font-size:.88rem; font-weight:800; line-height:1.2; }
+.ss-info h3 { font-size:.88rem; font-weight:800; line-height:1.2; word-break:break-word; }
 .ss-info p { font-size:.7rem; color:var(--t3); margin-top:2px; }
 .ss-right { display:flex; flex-direction:column; align-items:flex-end; gap:3px; flex-shrink:0; }
 .ss-chev { color:var(--t3); font-size:.75rem; margin-top:4px; transition:transform .25s; }
@@ -333,14 +339,14 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   display:flex; gap:9px; align-items:flex-start;
   padding:10px 12px; background:var(--bg); border-radius:10px;
   font-size:.8rem; line-height:1.5;
-  -webkit-user-select:text; user-select:text;
+  -webkit-user-select:text; user-select:text; word-break:break-word;
 }
 .tip .ti { color:var(--a1); font-size:.85rem; flex-shrink:0; margin-top:2px; }
 .chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
 .kbox {
   background:var(--bg); border-radius:10px; padding:11px 13px;
   font-size:.79rem; line-height:1.6; color:var(--t2);
-  -webkit-user-select:text; user-select:text;
+  -webkit-user-select:text; user-select:text; word-break:break-word;
 }
 
 /* ══ CHECKLIST ══ */
@@ -366,7 +372,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   display:flex; align-items:center; justify-content:center;
   font-size:.88rem; color:#fff;
 }
-.cg-head h4 { font-size:.88rem; font-weight:800; line-height:1.2; }
+.cg-head h4 { font-size:.88rem; font-weight:800; line-height:1.2; word-break:break-word; }
 .cg-head small { font-size:.7rem; color:var(--t3); }
 .cg-ctr {
   margin-left:auto; flex-shrink:0;
@@ -388,7 +394,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 .ci.done .cb { background:var(--ok); border-color:var(--ok); }
 .ci.done .cb::after { content:'✓'; font-size:.75rem; font-weight:900; color:#fff; }
-.ct { flex:1; font-size:.81rem; line-height:1.45; transition:color .2s; -webkit-user-select:text; user-select:text; }
+.ct { flex:1; font-size:.81rem; line-height:1.45; transition:color .2s; -webkit-user-select:text; user-select:text; word-break:break-word; }
 .ci.done .ct { text-decoration:line-through; color:var(--t3); }
 .pdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:6px; }
 .ph { background:var(--err); } .pm { background:var(--warn); } .pl { background:var(--ok); }
@@ -398,7 +404,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .insight {
   display:flex; gap:10px; align-items:flex-start;
   padding:11px 12px; background:var(--bg); border-radius:10px; margin-bottom:7px;
-  font-size:.8rem; line-height:1.5; -webkit-user-select:text; user-select:text;
+  font-size:.8rem; line-height:1.5; -webkit-user-select:text; user-select:text; word-break:break-word;
 }
 .insight i { font-size:.9rem; flex-shrink:0; margin-top:2px; }
 .cstep {
@@ -409,12 +415,12 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   width:34px; height:34px; border-radius:9px; flex-shrink:0;
   display:flex; align-items:center; justify-content:center; font-size:.85rem; color:#fff;
 }
-.cs-lbl { flex:1; font-weight:600; }
+.cs-lbl { flex:1; font-weight:600; word-break:break-word; }
 .cs-val { font-weight:800; }
 .diag-i { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--bdr); }
 .diag-i:last-child { border-bottom:none; }
 .diag-i i { font-size:1rem; flex-shrink:0; }
-.di-n { font-size:.82rem; font-weight:700; }
+.di-n { font-size:.82rem; font-weight:700; word-break:break-word; }
 .di-s { font-size:.71rem; color:var(--t3); }
 
 /* ══ PERFORMANCE MODAL ══ */
@@ -422,11 +428,23 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .pe { font-size:3rem; margin-bottom:8px; }
 .pt { font-size:1.2rem; font-weight:800; margin-bottom:5px; }
 .pt.ok { color:var(--ok); } .pt.warn { color:var(--warn); }
-.pmsg { font-size:.83rem; color:var(--t3); margin-bottom:16px; -webkit-user-select:text; user-select:text; }
+.pmsg { font-size:.83rem; color:var(--t3); margin-bottom:16px; -webkit-user-select:text; user-select:text; word-break:break-word; }
 .ptlbl { font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); text-align:left; margin-bottom:7px; }
 
 /* ══ SIDE NAV (desktop) ══ */
 .sidenav { display:none; }
+
+/* ══ MOBILE ENHANCEMENTS ══ */
+canvas { max-height: 250px; width: 100% !important; height: auto !important; }
+button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; }
+@media (max-width: 380px) {
+  .kt-val { font-size: 1.1rem; }
+  .sc-info .sv { font-size: 1.6rem; }
+  .sc-pct .spv { font-size: 1rem; }
+  .btn { padding: 12px 14px; }
+  .qbtn { width: 44px; height: 44px; }
+  .bni-ico { width: 40px; height: 30px; }
+}
 
 /* ══ BREAKPOINTS ══ */
 @media(min-width:640px) {
@@ -699,8 +717,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const PAST = NOW.getDate(), LEFT = TOT - PAST;
   const WDS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const MNS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  $id('topDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]}`;
-  $id('chkDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]} de ${Y}`;
 
   // ── STAGES ──
   const STAGES = [
@@ -783,6 +799,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function pct(v, mx) { return mx > 0 ? Math.min((v / mx) * 100, 100) : 0; }
   function pcColor(p) { return p >= 100 ? 'var(--ok)' : p >= 70 ? 'var(--warn)' : 'var(--err)'; }
   function numFmt(n) { return isNaN(n) ? '0' : String(Math.round(n)); }
+
+  // Atualiza data no topo
+  $id('topDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]}`;
+  $id('chkDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]} de ${Y}`;
 
   function toast(msg) {
     const t = $id('toast');
@@ -1014,6 +1034,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderFChart() {
     const canvas = $id('funnelChart');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (fChart) fChart.destroy();
     const dk = document.body.classList.contains('dark');
