@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#2E4A31">
-<title>Funil Pro Corretor • mobile</title>
+<title>Funil Pro Corretor • CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
@@ -14,7 +15,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-/* ══ TOKENS ══ */
 :root {
   --p1:#2E4A31; --p2:#3D6142; --a1:#C4724A; --a2:#D98A62;
   --ok:#2E7D42; --warn:#B87020; --err:#B83030;
@@ -31,28 +31,16 @@ body.dark {
   --bdr:#2A402C; --shd:rgba(0,0,0,.30);
   --g1:linear-gradient(160deg,#1A2D1C,#253D27);
 }
-
-/* ══ RESET ══ */
-*,*::before,*::after {
-  box-sizing:border-box; margin:0; padding:0;
-  -webkit-tap-highlight-color:transparent;
-}
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; margin:0; padding:0; }
 p, span, div.ct, .kbox, .tip span { -webkit-user-select:text; user-select:text; }
 input, select, textarea {
-  -webkit-user-select: auto !important;
-  user-select: auto !important;
-  font-size: 16px !important;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-user-select:auto !important; user-select:auto !important;
+  font-size:16px !important; font-family:'Plus Jakarta Sans',sans-serif;
 }
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 input[type=number] { -moz-appearance:textfield; }
-
 html { font-size:16px; }
 body {
   font-family:'Plus Jakarta Sans',sans-serif;
@@ -63,27 +51,13 @@ body {
 }
 body.modal-open { overflow:hidden; touch-action:none; }
 
-/* ══ SHELL — CORRIGIDO PARA ROLAGEM TOTAL EM CELULAR ══ */
-.shell { 
-  display:flex; 
-  flex-direction:column; 
-  height: 100%; 
-  overflow: hidden; 
-  position: relative;
-}
-
-/* ══ TOP BAR — com suporte a notch ══ */
+.shell { display:flex; flex-direction:column; height:100%; overflow:hidden; position:relative; }
 .topbar {
   background:var(--g1);
   padding: env(safe-area-inset-top) 16px 0;
   min-height: calc(58px + env(safe-area-inset-top));
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  box-shadow:0 2px 16px rgba(0,0,0,.22);
-  z-index:50;
-  position:relative;
+  flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 2px 16px rgba(0,0,0,.22); z-index:50; position:relative;
 }
 .logo { display:flex; align-items:center; gap:10px; }
 .logo-icon {
@@ -100,24 +74,17 @@ body.modal-open { overflow:hidden; touch-action:none; }
   background:rgba(255,255,255,.15); border:none;
   display:flex; align-items:center; justify-content:center;
   color:#fff; font-size:.95rem; transition:background .2s;
-  touch-action:manipulation;
-  cursor:pointer;
+  touch-action:manipulation; cursor:pointer;
 }
 .hbtn:active { background:rgba(255,255,255,.32); }
-
-/* ══ PAGE — área rolável com espaçamento extra no fim ══ */
 .page {
-  flex:1; 
-  overflow-y: auto; 
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* rolagem suave no iOS */
-  padding-bottom: calc(var(--bnav-h) + var(--safe-b) + 20px); /* espaço extra para o nav fixo */
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:calc(var(--bnav-h) + var(--safe-b) + 20px);
 }
 .tab { display:none; padding:14px 13px; animation:fadeUp .22s ease; }
 .tab.active { display:block; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-/* ══ BOTTOM NAV — fixo na parte inferior ══ */
 .bnav {
   position:fixed; bottom:0; left:0; right:0; z-index:200;
   height:calc(var(--bnav-h) + var(--safe-b));
@@ -131,8 +98,7 @@ body.modal-open { overflow:hidden; touch-action:none; }
   padding:4px 2px; border:none; background:transparent;
   color:var(--t3); font-size:.58rem; font-weight:700;
   letter-spacing:.03em; text-transform:uppercase; transition:color .2s;
-  touch-action:manipulation;
-  cursor:pointer;
+  touch-action:manipulation; cursor:pointer;
 }
 .bni.active { color:var(--p1); }
 .bni-ico {
@@ -143,7 +109,7 @@ body.modal-open { overflow:hidden; touch-action:none; }
 .bni.active .bni-ico { background:rgba(46,74,49,.12); transform:scale(1.06); }
 body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 
-/* ══ SHARED COMPONENTS (mantido igual) ══ */
+/* CARDS & COMPONENTS */
 .card {
   background:var(--card); border:1px solid var(--bdr);
   border-radius:16px; box-shadow:0 2px 12px var(--shd); padding:14px;
@@ -163,6 +129,7 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 .b-ok { background:rgba(46,125,66,.12); color:var(--ok); }
 .b-warn { background:rgba(184,112,32,.12); color:var(--warn); }
 .b-err { background:rgba(184,48,48,.12); color:var(--err); }
+.b-info { background:rgba(46,74,49,.1); color:var(--p2); }
 .mrow {
   display:flex; justify-content:space-between; align-items:center;
   padding:8px 0; border-bottom:1px solid var(--bdr); font-size:.82rem;
@@ -182,11 +149,14 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 .btn-p { background:var(--g1); color:#fff; padding:14px 18px; font-size:.9rem; width:100%; }
 .btn-g { background:var(--bg); color:var(--t1); border:1px solid var(--bdr); padding:14px 18px; font-size:.9rem; width:100%; }
 .btn-d { background:var(--err); color:#fff; padding:14px 18px; font-size:.9rem; width:100%; }
+.btn-a { background:var(--g2); color:#fff; padding:14px 18px; font-size:.9rem; width:100%; }
 .btn-ico { width:48px; height:48px; border-radius:12px; padding:0; background:var(--g1); color:#fff; flex-shrink:0; }
+.btn-sm { padding:9px 14px; font-size:.78rem; width:auto; border-radius:9px; }
 
 /* Form fields */
 .fg { margin-bottom:13px; }
 .fg label { display:block; font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); margin-bottom:6px; }
+.fg label .req { color:var(--err); margin-left:3px; }
 .fi {
   width:100%; background:var(--bg); border:1.5px solid var(--bdr);
   color:var(--t1); border-radius:12px; padding:14px;
@@ -194,6 +164,12 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
   font-size:16px !important;
 }
 .fi:focus { border-color:var(--p2); }
+.fi.error { border-color:var(--err); }
+.fg .hint { font-size:.66rem; color:var(--t3); margin-top:4px; }
+.fg .dup-warn {
+  font-size:.72rem; color:var(--err); margin-top:5px; font-weight:700;
+  display:flex; align-items:center; gap:5px; display:none;
+}
 
 .chip {
   display:inline-flex; padding:5px 11px; border-radius:99px;
@@ -209,7 +185,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .slbl i { color:var(--p2); }
 .hidden { display:none !important; }
 
-/* ══ TOAST ══ */
+/* TOAST */
 #toast {
   position:fixed;
   bottom:calc(var(--bnav-h) + var(--safe-b) + 14px);
@@ -224,7 +200,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 #toast.show { opacity:1; visibility:visible; transform:translate(-50%,0); }
 
-/* ══ MODAIS (sem alterações) ══ */
+/* MODALS */
 .mbg {
   position:fixed; inset:0; z-index:500;
   background:rgba(0,0,0,.6); backdrop-filter:blur(8px);
@@ -235,7 +211,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   background:var(--card);
   border-radius:24px 24px 0 0;
   width:100%; max-width:600px;
-  max-height:88dvh; overflow-y:auto;
+  max-height:92dvh; overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   padding:6px 18px;
   padding-bottom:calc(22px + var(--safe-b));
@@ -247,15 +223,13 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .msub { font-size:.82rem; color:var(--t3); margin-bottom:18px; }
 .cfg-gap { display:flex; flex-direction:column; gap:9px; }
 
-/* ══ KPI STRIP e demais estilos (mantidos) ══ */
+/* KPI */
 .kpi-strip {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:9px; margin-bottom:14px;
 }
-@media(min-width:400px) {
-  .kpi-strip { grid-template-columns:repeat(4,1fr); }
-}
+@media(min-width:400px) { .kpi-strip { grid-template-columns:repeat(4,1fr); } }
 .kpi-tile {
   background:var(--card); border:1px solid var(--bdr);
   border-radius:12px; padding:12px 10px;
@@ -265,6 +239,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .kt-val { font-size:1.3rem; font-weight:800; line-height:1.1; margin:4px 0 2px; word-break:break-word; }
 .kt-sub { font-size:.62rem; color:var(--t3); }
 
+/* STAGE CARDS */
 .stage-list { display:flex; flex-direction:column; gap:11px; }
 .sc {
   background:var(--card); border:1px solid var(--bdr);
@@ -299,8 +274,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   display:flex; align-items:center; justify-content:center;
   background:var(--g1); color:#fff; font-size:1.4rem; font-weight:700;
   border:none; transition:transform .12s, opacity .12s;
-  touch-action:manipulation;
-  cursor:pointer;
+  touch-action:manipulation; cursor:pointer;
 }
 .qbtn:active { transform:scale(.88); opacity:.85; }
 .qin {
@@ -315,12 +289,86 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   padding:13px 6px; border-radius:11px;
   background:var(--g2); color:#fff; font-size:.78rem; font-weight:700;
   border:none; transition:opacity .2s, transform .12s;
-  touch-action:manipulation;
-  cursor:pointer;
+  touch-action:manipulation; cursor:pointer;
 }
 .nbtn:active { transform:scale(.96); }
 .nbtn:disabled { opacity:.22; pointer-events:none; }
 
+/* LEAD CARDS */
+.lead-card {
+  background:var(--card); border:1px solid var(--bdr);
+  border-radius:14px; box-shadow:0 2px 10px var(--shd);
+  overflow:hidden; margin-bottom:10px;
+  transition:box-shadow .2s;
+}
+.lead-card:hover { box-shadow:0 4px 18px var(--shd); }
+.lead-card-top {
+  padding:13px 14px 10px; display:flex; align-items:flex-start; gap:11px;
+}
+.lead-avatar {
+  width:44px; height:44px; border-radius:12px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; font-weight:800; color:#fff;
+}
+.lead-info { flex:1; min-width:0; }
+.lead-name { font-size:.93rem; font-weight:800; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lead-phone { font-size:.75rem; color:var(--t3); margin-top:2px; }
+.lead-email { font-size:.72rem; color:var(--t3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lead-stage-badge {
+  flex-shrink:0; padding:4px 10px; border-radius:99px;
+  font-size:.65rem; font-weight:800; color:#fff;
+}
+.lead-tags { padding:0 14px 10px; display:flex; flex-wrap:wrap; gap:5px; }
+.lead-tag {
+  padding:3px 9px; border-radius:99px; font-size:.65rem; font-weight:700;
+  background:var(--bg); color:var(--t2); border:1px solid var(--bdr);
+}
+.lead-actions {
+  border-top:1px solid var(--bdr); padding:10px 14px;
+  display:flex; align-items:center; gap:8px; background:var(--bg);
+}
+.lead-stage-select {
+  flex:1; background:var(--card); border:1.5px solid var(--bdr);
+  color:var(--t1); border-radius:9px; padding:8px 10px;
+  font-size:.78rem; font-weight:700; font-family:inherit;
+  outline:none; cursor:pointer;
+}
+.lead-action-btn {
+  width:38px; height:38px; border-radius:9px; border:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.9rem; cursor:pointer; transition:transform .12s, opacity .15s;
+  touch-action:manipulation;
+}
+.lead-action-btn:active { transform:scale(.88); }
+.la-edit { background:rgba(46,74,49,.1); color:var(--p2); }
+.la-delete { background:rgba(184,48,48,.1); color:var(--err); }
+.la-whats { background:rgba(37,211,102,.15); color:#25D366; }
+
+/* LEADS TAB */
+.leads-toolbar {
+  display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;
+}
+.leads-search {
+  flex:1; min-width:200px; background:var(--card);
+  border:1.5px solid var(--bdr); color:var(--t1);
+  border-radius:12px; padding:11px 14px;
+  font-size:.85rem; font-family:inherit; outline:none;
+}
+.leads-search:focus { border-color:var(--p2); }
+.filter-btn {
+  padding:11px 14px; border-radius:12px; border:1.5px solid var(--bdr);
+  background:var(--card); color:var(--t2); font-size:.78rem; font-weight:700;
+  font-family:inherit; cursor:pointer; white-space:nowrap;
+  transition:border-color .2s, background .2s;
+}
+.filter-btn.active { background:var(--p1); color:#fff; border-color:var(--p1); }
+.leads-empty {
+  text-align:center; padding:40px 20px; color:var(--t3);
+}
+.leads-empty i { font-size:2.5rem; margin-bottom:12px; opacity:.4; }
+.leads-count { font-size:.72rem; color:var(--t3); margin-bottom:12px; font-weight:600; }
+
+/* ANALYTICS */
 .fl-main { display:flex; flex-direction:column; gap:12px; }
 .sidebar-cards { display:flex; flex-direction:column; gap:11px; }
 .chart-card {
@@ -329,7 +377,55 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 .ctitle { font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:var(--t3); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
 .ctitle i { color:var(--p2); }
+.analytics-wrap { display:flex; flex-direction:column; gap:13px; }
+.insight {
+  display:flex; gap:10px; align-items:flex-start;
+  padding:11px 12px; background:var(--bg); border-radius:10px; margin-bottom:7px;
+  font-size:.8rem; line-height:1.5; word-break:break-word;
+}
+.insight i { font-size:.9rem; flex-shrink:0; margin-top:2px; }
+.cstep {
+  display:flex; align-items:center; gap:9px;
+  padding:10px 12px; background:var(--bg); border-radius:10px; margin-bottom:5px; font-size:.8rem;
+}
+.cs-ico2 {
+  width:34px; height:34px; border-radius:9px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:.85rem; color:#fff;
+}
+.cs-lbl { flex:1; font-weight:600; word-break:break-word; }
+.cs-val { font-weight:800; }
+.diag-i { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--bdr); }
+.diag-i:last-child { border-bottom:none; }
+.diag-i i { font-size:1rem; flex-shrink:0; }
+.di-n { font-size:.82rem; font-weight:700; word-break:break-word; }
+.di-s { font-size:.71rem; color:var(--t3); }
 
+/* FINANCIAL POTENTIAL */
+.potencial-card {
+  background:var(--g1); border-radius:16px; padding:16px;
+  color:#fff; margin-bottom:14px;
+}
+.potencial-title { font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; opacity:.75; }
+.potencial-val { font-size:2.2rem; font-weight:800; line-height:1.1; margin:6px 0 2px; }
+.potencial-sub { font-size:.78rem; opacity:.75; }
+.potencial-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.potencial-item {
+  background:rgba(255,255,255,.12); border-radius:10px; padding:10px;
+}
+.pi-lbl { font-size:.62rem; font-weight:700; opacity:.75; }
+.pi-val { font-size:1.1rem; font-weight:800; margin-top:2px; }
+
+/* IMOVEL INTEREST BREAKDOWN */
+.imovel-bar {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid var(--bdr); font-size:.8rem;
+}
+.imovel-bar:last-child { border-bottom:none; }
+.ib-name { flex:1; font-weight:600; }
+.ib-count { font-weight:800; color:var(--p2); min-width:24px; text-align:right; }
+.ib-val { font-size:.75rem; color:var(--a1); font-weight:700; min-width:90px; text-align:right; }
+
+/* STRATEGY */
 .ss {
   background:var(--card); border:1px solid var(--bdr);
   border-radius:16px; overflow:hidden; box-shadow:0 2px 10px var(--shd); margin-bottom:11px;
@@ -356,17 +452,16 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .tip {
   display:flex; gap:9px; align-items:flex-start;
   padding:10px 12px; background:var(--bg); border-radius:10px;
-  font-size:.8rem; line-height:1.5;
-  -webkit-user-select:text; user-select:text; word-break:break-word;
+  font-size:.8rem; line-height:1.5; word-break:break-word;
 }
 .tip .ti { color:var(--a1); font-size:.85rem; flex-shrink:0; margin-top:2px; }
 .chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
 .kbox {
   background:var(--bg); border-radius:10px; padding:11px 13px;
-  font-size:.79rem; line-height:1.6; color:var(--t2);
-  -webkit-user-select:text; user-select:text; word-break:break-word;
+  font-size:.79rem; line-height:1.6; color:var(--t2); word-break:break-word;
 }
 
+/* CHECKLIST */
 .chk-hdr {
   background:var(--g1); border-radius:16px; padding:14px;
   margin-bottom:12px; color:#fff;
@@ -411,57 +506,54 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 .ci.done .cb { background:var(--ok); border-color:var(--ok); }
 .ci.done .cb::after { content:'✓'; font-size:.75rem; font-weight:900; color:#fff; }
-.ct { flex:1; font-size:.81rem; line-height:1.45; transition:color .2s; -webkit-user-select:text; user-select:text; word-break:break-word; }
+.ct { flex:1; font-size:.81rem; line-height:1.45; transition:color .2s; word-break:break-word; }
 .ci.done .ct { text-decoration:line-through; color:var(--t3); }
 .pdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:6px; }
 .ph { background:var(--err); } .pm { background:var(--warn); } .pl { background:var(--ok); }
 
-.analytics-wrap { display:flex; flex-direction:column; gap:13px; }
-.insight {
-  display:flex; gap:10px; align-items:flex-start;
-  padding:11px 12px; background:var(--bg); border-radius:10px; margin-bottom:7px;
-  font-size:.8rem; line-height:1.5; -webkit-user-select:text; user-select:text; word-break:break-word;
-}
-.insight i { font-size:.9rem; flex-shrink:0; margin-top:2px; }
-.cstep {
-  display:flex; align-items:center; gap:9px;
-  padding:10px 12px; background:var(--bg); border-radius:10px; margin-bottom:5px; font-size:.8rem;
-}
-.cs-ico2 {
-  width:34px; height:34px; border-radius:9px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:.85rem; color:#fff;
-}
-.cs-lbl { flex:1; font-weight:600; word-break:break-word; }
-.cs-val { font-weight:800; }
-.diag-i { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--bdr); }
-.diag-i:last-child { border-bottom:none; }
-.diag-i i { font-size:1rem; flex-shrink:0; }
-.di-n { font-size:.82rem; font-weight:700; word-break:break-word; }
-.di-s { font-size:.71rem; color:var(--t3); }
-
+/* PERFORMANCE MODAL */
 .pw { text-align:center; }
 .pe { font-size:3rem; margin-bottom:8px; }
 .pt { font-size:1.2rem; font-weight:800; margin-bottom:5px; }
 .pt.ok { color:var(--ok); } .pt.warn { color:var(--warn); }
-.pmsg { font-size:.83rem; color:var(--t3); margin-bottom:16px; -webkit-user-select:text; user-select:text; word-break:break-word; }
+.pmsg { font-size:.83rem; color:var(--t3); margin-bottom:16px; word-break:break-word; }
 .ptlbl { font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); text-align:left; margin-bottom:7px; }
 
+/* SIDENAV */
 .sidenav { display:none; }
 
-canvas { max-height: 250px; width: 100% !important; height: auto !important; }
-button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; cursor: pointer; }
-@media (max-width: 380px) {
-  .kt-val { font-size: 1.1rem; }
-  .sc-info .sv { font-size: 1.6rem; }
-  .sc-pct .spv { font-size: 1rem; }
-  .btn { padding: 12px 14px; }
-  .qbtn { width: 44px; height: 44px; }
-  .bni-ico { width: 40px; height: 30px; }
+canvas { max-height:250px; width:100% !important; height:auto !important; }
+button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action:manipulation; cursor:pointer; }
+
+/* REPORT */
+.report-table-wrap { overflow-x:auto; margin:12px 0; border-radius:12px; border:1px solid var(--bdr); }
+.report-table { width:100%; border-collapse:collapse; font-size:.78rem; }
+.report-table th {
+  background:var(--bg); font-size:.65rem; font-weight:800;
+  text-transform:uppercase; letter-spacing:.06em; color:var(--t3);
+  padding:10px 12px; text-align:left; border-bottom:1px solid var(--bdr);
+}
+.report-table td { padding:10px 12px; border-bottom:1px solid var(--bdr); vertical-align:middle; }
+.report-table tr:last-child td { border-bottom:none; }
+.report-table tbody tr:hover { background:var(--bg); }
+.report-filter-row { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.report-filter-row select {
+  padding:10px 13px; border-radius:10px; border:1.5px solid var(--bdr);
+  background:var(--card); color:var(--t1); font-family:inherit;
+  font-size:.82rem; outline:none; flex:1; min-width:130px;
 }
 
+@media(max-width:380px) {
+  .kt-val { font-size:1.1rem; }
+  .sc-info .sv { font-size:1.6rem; }
+  .btn { padding:12px 14px; }
+  .qbtn { width:44px; height:44px; }
+  .bni-ico { width:40px; height:30px; }
+}
 @media(min-width:640px) {
   .tab { padding:18px 16px; }
   .stage-list { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+  .leads-toolbar { flex-wrap:nowrap; }
 }
 @media(min-width:1024px) {
   .shell { flex-direction:row; }
@@ -510,7 +602,7 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
 </head>
 <body>
 
-<!-- MODAL: METAS INICIAIS (com inputs text+inputmode) -->
+<!-- MODAL: METAS INICIAIS -->
 <div class="mbg" id="metasModal">
   <div class="msheet">
     <div class="handle"></div>
@@ -525,19 +617,19 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
     </div>
     <div class="fg">
       <label>Leads → Visitas (%)</label>
-      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convLV" placeholder="Ex: 40" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" id="convLV" placeholder="Ex: 40" autocomplete="off">
     </div>
     <div class="fg">
       <label>Visitas → Docs. (%)</label>
-      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convVD" placeholder="Ex: 50" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" id="convVD" placeholder="Ex: 50" autocomplete="off">
     </div>
     <div class="fg">
       <label>Docs. → Aprovações (%)</label>
-      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convDA" placeholder="Ex: 80" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" id="convDA" placeholder="Ex: 80" autocomplete="off">
     </div>
     <div class="fg">
       <label>Aprovações → Vendas (%)</label>
-      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convAV" placeholder="Ex: 75" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" id="convAV" placeholder="Ex: 75" autocomplete="off">
     </div>
     <button class="btn btn-p" id="btnSalvar"><i class="fas fa-save"></i> Salvar e Iniciar</button>
   </div>
@@ -568,39 +660,132 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
     <div class="handle"></div>
     <div class="mtitle">⚙️ Configurações</div>
     <div class="msub">Backup, relatórios e ajuste de metas</div>
-
     <div class="slbl"><i class="fas fa-database"></i> Backup</div>
     <div class="cfg-gap">
       <button class="btn btn-g" id="btnExport"><i class="fas fa-download"></i> Exportar Backup (.json)</button>
       <button class="btn btn-g" id="btnImport"><i class="fas fa-upload"></i> Importar Backup</button>
       <input type="file" id="importFile" accept=".json" class="hidden">
     </div>
-
     <div class="slbl"><i class="fas fa-file-pdf"></i> Relatórios PDF</div>
     <div class="cfg-gap">
-      <button class="btn btn-g" id="btnPdfGeral"><i class="fas fa-file-alt"></i> Relatório Geral</button>
-      <button class="btn btn-g" id="btnPdfEtapas"><i class="fas fa-layer-group"></i> Relatórios por Etapa</button>
+      <button class="btn btn-g" id="btnPdfGeral"><i class="fas fa-file-alt"></i> Relatório Geral do Funil</button>
+      <button class="btn btn-g" id="btnPdfLeads"><i class="fas fa-users"></i> Relatório de Leads (PDF)</button>
     </div>
-
     <div class="slbl"><i class="fas fa-bullseye"></i> Ajuste de Meta</div>
     <div style="display:flex;gap:8px">
-      <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="editMetaLeads" placeholder="Nova meta de leads" autocomplete="off" style="flex:1">
+      <input class="fi" type="text" inputmode="numeric" id="editMetaLeads" placeholder="Nova meta de leads" autocomplete="off" style="flex:1">
       <button class="btn btn-ico" id="btnUpdateMeta"><i class="fas fa-check"></i></button>
     </div>
-
     <div class="slbl"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</div>
     <button class="btn btn-d" id="btnReset"><i class="fas fa-trash-alt"></i> Resetar Todos os Dados</button>
     <button class="btn btn-g" id="btnCloseCfg" style="margin-top:10px"><i class="fas fa-times"></i> Fechar</button>
   </div>
 </div>
 
+<!-- MODAL: CADASTRO/EDIÇÃO DE LEAD -->
+<div class="mbg hidden" id="leadModal">
+  <div class="msheet">
+    <div class="handle"></div>
+    <div class="mtitle" id="leadModalTitle">📋 Novo Lead</div>
+    <div class="msub">Campos com <span style="color:var(--err)">*</span> são obrigatórios</div>
+
+    <div class="fg">
+      <label>Nome Completo <span class="req">*</span></label>
+      <input class="fi" type="text" id="lNome" placeholder="Ex: João da Silva" autocomplete="off">
+    </div>
+    <div class="fg">
+      <label>WhatsApp / Telefone <span class="req">*</span></label>
+      <input class="fi" type="tel" inputmode="numeric" id="lTelefone" placeholder="Ex: 82912345678" autocomplete="off">
+      <div class="dup-warn" id="dupWarn"><i class="fas fa-exclamation-triangle"></i> <span id="dupWarnMsg"></span></div>
+      <div class="hint">Apenas números. Será verificado duplicidade.</div>
+    </div>
+    <div class="fg">
+      <label>E-mail <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <input class="fi" type="email" id="lEmail" placeholder="joao@email.com" autocomplete="off">
+    </div>
+    <div class="fg">
+      <label>Data de Aniversário <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <input class="fi" type="date" id="lAniversario" autocomplete="off">
+    </div>
+    <div class="fg">
+      <label>Renda Mensal (R$) <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <input class="fi" type="text" inputmode="numeric" id="lRenda" placeholder="Ex: 5000" autocomplete="off">
+    </div>
+    <div class="fg">
+      <label>Forma de Renda <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <select class="fi" id="lFormaRenda">
+        <option value="">Selecionar...</option>
+        <option value="CLT">CLT (Carteira Assinada)</option>
+        <option value="Autônomo">Autônomo</option>
+        <option value="Empresário">Empresário / MEI</option>
+        <option value="Servidor Público">Servidor Público</option>
+        <option value="Aposentado">Aposentado / Pensionista</option>
+        <option value="Profissional Liberal">Profissional Liberal</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Estado Civil <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <select class="fi" id="lEstadoCivil">
+        <option value="">Selecionar...</option>
+        <option value="Solteiro(a)">Solteiro(a)</option>
+        <option value="Casado(a)">Casado(a)</option>
+        <option value="Divorciado(a)">Divorciado(a)</option>
+        <option value="Viúvo(a)">Viúvo(a)</option>
+        <option value="União Estável">União Estável</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Imóvel de Interesse <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <select class="fi" id="lImovel">
+        <option value="">Selecionar...</option>
+        <option value="Apartamento Studio" data-valor="180000">Apartamento Studio (até R$ 180k)</option>
+        <option value="Apartamento 1 Quarto" data-valor="280000">Apartamento 1 Quarto (até R$ 280k)</option>
+        <option value="Apartamento 2 Quartos" data-valor="420000">Apartamento 2 Quartos (até R$ 420k)</option>
+        <option value="Apartamento 3 Quartos" data-valor="650000">Apartamento 3 Quartos (até R$ 650k)</option>
+        <option value="Casa de Condomínio" data-valor="800000">Casa de Condomínio (até R$ 800k)</option>
+        <option value="Casa Térrea" data-valor="350000">Casa Térrea (até R$ 350k)</option>
+        <option value="Terreno" data-valor="150000">Terreno (até R$ 150k)</option>
+        <option value="Comercial" data-valor="600000">Imóvel Comercial (até R$ 600k)</option>
+        <option value="Outro" data-valor="300000">Outro / A definir</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Etapa no Funil</label>
+      <select class="fi" id="lEtapa">
+        <option value="leads">Leads</option>
+        <option value="visitas">Visitas</option>
+        <option value="docs">Docs.</option>
+        <option value="aprovacoes">Aprovações</option>
+        <option value="vendas">Vendas</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Observações <span style="color:var(--t3);font-weight:500;text-transform:none;font-size:.7rem">(opcional)</span></label>
+      <textarea class="fi" id="lObs" rows="3" placeholder="Notas sobre o lead..." style="resize:vertical;min-height:80px"></textarea>
+    </div>
+    <input type="hidden" id="lEditId">
+    <button class="btn btn-p" id="btnSalvarLead"><i class="fas fa-save"></i> Salvar Lead</button>
+    <button class="btn btn-g" id="btnCancelarLead" style="margin-top:8px"><i class="fas fa-times"></i> Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL: DETALHE DO LEAD -->
+<div class="mbg hidden" id="leadDetailModal">
+  <div class="msheet">
+    <div class="handle"></div>
+    <div id="leadDetailContent"></div>
+    <button class="btn btn-g" id="btnCloseLeadDetail" style="margin-top:10px"><i class="fas fa-times"></i> Fechar</button>
+  </div>
+</div>
+
 <!-- APP SHELL -->
 <div class="shell hidden" id="appShell">
-
-  <!-- SIDE NAV (desktop) -->
   <nav class="sidenav" id="sidenav">
     <div class="sn-logo"><i class="fas fa-filter"></i></div>
     <button class="sni active" data-tab="funil"><i class="fas fa-filter"></i><span>Funil</span></button>
+    <button class="sni" data-tab="leads"><i class="fas fa-users"></i><span>Leads</span></button>
+    <button class="sni" data-tab="relatorio"><i class="fas fa-chart-bar"></i><span>Relatório</span></button>
     <button class="sni" data-tab="marketing"><i class="fas fa-bullhorn"></i><span>Estratégia</span></button>
     <button class="sni" data-tab="checklist"><i class="fas fa-tasks"></i><span>Checklist</span></button>
     <button class="sni" data-tab="analytics"><i class="fas fa-chart-line"></i><span>Análise</span></button>
@@ -611,8 +796,6 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
   </nav>
 
   <div class="main-body" id="mainBody">
-
-    <!-- TOP BAR com safe area -->
     <div class="topbar">
       <div class="logo">
         <div class="logo-icon"><i class="fas fa-filter"></i></div>
@@ -627,7 +810,6 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
       </div>
     </div>
 
-    <!-- PAGE AREA -->
     <div class="page" id="pageArea">
 
       <!-- TAB: FUNIL -->
@@ -651,10 +833,97 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
               <div class="sec"><i class="fas fa-calendar-alt"></i> Resumo Mensal</div>
               <div id="resMensal"></div>
             </div>
-            <div class="card">
-              <div class="sec"><i class="fas fa-calendar-week"></i> Esta Semana</div>
-              <div id="resSemanal"></div>
-            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: LEADS -->
+      <div class="tab" id="tab-leads">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;gap:10px">
+          <div class="sec" style="margin-bottom:0"><i class="fas fa-users"></i> Gestão de Leads</div>
+          <button class="btn btn-a btn-sm" id="btnNovoLead"><i class="fas fa-plus"></i> Novo Lead</button>
+        </div>
+        <div class="leads-toolbar">
+          <input type="search" class="leads-search" id="leadSearch" placeholder="🔍 Buscar por nome, telefone ou e-mail...">
+          <select class="filter-btn" id="leadFilterStage" style="min-width:130px;border-radius:12px;padding:11px 14px;font-family:inherit;outline:none;cursor:pointer">
+            <option value="">Todas as etapas</option>
+            <option value="leads">Leads</option>
+            <option value="visitas">Visitas</option>
+            <option value="docs">Docs.</option>
+            <option value="aprovacoes">Aprovações</option>
+            <option value="vendas">Vendas</option>
+          </select>
+        </div>
+        <div class="leads-count" id="leadsCount"></div>
+        <div id="leadsList"></div>
+      </div>
+
+      <!-- TAB: RELATÓRIO -->
+      <div class="tab" id="tab-relatorio">
+        <div class="sec" style="margin-bottom:13px"><i class="fas fa-chart-bar"></i> Relatório de Leads</div>
+
+        <!-- Potencial Financeiro -->
+        <div id="potencialCard"></div>
+
+        <!-- Filtros -->
+        <div class="report-filter-row">
+          <select id="rptStage">
+            <option value="">Todas as etapas</option>
+            <option value="leads">Leads</option>
+            <option value="visitas">Visitas</option>
+            <option value="docs">Docs.</option>
+            <option value="aprovacoes">Aprovações</option>
+            <option value="vendas">Vendas</option>
+          </select>
+          <select id="rptImovel">
+            <option value="">Todos os imóveis</option>
+            <option value="Apartamento Studio">Apto Studio</option>
+            <option value="Apartamento 1 Quarto">Apto 1 Quarto</option>
+            <option value="Apartamento 2 Quartos">Apto 2 Quartos</option>
+            <option value="Apartamento 3 Quartos">Apto 3 Quartos</option>
+            <option value="Casa de Condomínio">Casa Condomínio</option>
+            <option value="Casa Térrea">Casa Térrea</option>
+            <option value="Terreno">Terreno</option>
+            <option value="Comercial">Comercial</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <select id="rptFormaRenda">
+            <option value="">Todas as rendas</option>
+            <option value="CLT">CLT</option>
+            <option value="Autônomo">Autônomo</option>
+            <option value="Empresário">Empresário</option>
+            <option value="Servidor Público">Servidor Público</option>
+            <option value="Aposentado">Aposentado</option>
+            <option value="Profissional Liberal">Prof. Liberal</option>
+          </select>
+        </div>
+
+        <!-- Gráfico por Imóvel -->
+        <div class="chart-card" style="margin-bottom:14px">
+          <div class="ctitle"><i class="fas fa-building"></i> Potencial por Tipo de Imóvel</div>
+          <div id="imovelBreakdown"></div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="card">
+          <div class="sec"><i class="fas fa-list"></i> Leads Detalhados</div>
+          <div class="report-table-wrap">
+            <table class="report-table" id="reportTable">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Telefone</th>
+                  <th>Etapa</th>
+                  <th>Imóvel</th>
+                  <th>Val. Est.</th>
+                  <th>Renda</th>
+                </tr>
+              </thead>
+              <tbody id="reportBody"></tbody>
+            </table>
+          </div>
+          <div style="text-align:center;margin-top:10px">
+            <button class="btn btn-g btn-sm" id="btnExportLeadsPdf"><i class="fas fa-file-pdf"></i> Exportar Relatório PDF</button>
           </div>
         </div>
       </div>
@@ -703,18 +972,16 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
         </div>
       </div>
 
-    </div><!-- /page -->
-  </div><!-- /main-body -->
+    </div>
+  </div>
 
-  <!-- BOTTOM NAV -->
   <nav class="bnav" id="bnav">
     <button class="bni active" data-tab="funil"><div class="bni-ico"><i class="fas fa-filter"></i></div><span>Funil</span></button>
-    <button class="bni" data-tab="marketing"><div class="bni-ico"><i class="fas fa-bullhorn"></i></div><span>Estratégia</span></button>
-    <button class="bni" data-tab="checklist"><div class="bni-ico"><i class="fas fa-tasks"></i></div><span>Checklist</span></button>
+    <button class="bni" data-tab="leads"><div class="bni-ico"><i class="fas fa-users"></i></div><span>Leads</span></button>
+    <button class="bni" data-tab="relatorio"><div class="bni-ico"><i class="fas fa-chart-bar"></i></div><span>Relatório</span></button>
     <button class="bni" data-tab="analytics"><div class="bni-ico"><i class="fas fa-chart-line"></i></div><span>Análise</span></button>
   </nav>
-
-</div><!-- /shell -->
+</div>
 
 <div id="toast"></div>
 
@@ -722,7 +989,6 @@ button, .btn, .bni, .hbtn, .sni, .qbtn, .nbtn { touch-action: manipulation; curs
 document.addEventListener('DOMContentLoaded', () => {
   const { jsPDF } = window.jspdf;
 
-  // ── DATES ──
   const NOW = new Date();
   const Y = NOW.getFullYear(), Mo = NOW.getMonth();
   const TOT = new Date(Y, Mo+1, 0).getDate();
@@ -730,37 +996,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const WDS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const MNS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-  // ── STAGES ──
   const STAGES = [
-    { id:'leads',      name:'Leads',          icon:'fa-users',         color:'#2E4A31' },
-    { id:'visitas',    name:'Visitas',         icon:'fa-handshake',     color:'#3D6142' },
-    { id:'docs',       name:'Docs.',           icon:'fa-file-contract', color:'#B4724A' },
-    { id:'aprovacoes', name:'Aprovações',      icon:'fa-stamp',         color:'#A0824A' },
-    { id:'vendas',     name:'Vendas',          icon:'fa-key',           color:'#7A5238' }
+    { id:'leads',      name:'Leads',      icon:'fa-users',         color:'#2E4A31' },
+    { id:'visitas',    name:'Visitas',     icon:'fa-handshake',     color:'#3D6142' },
+    { id:'docs',       name:'Docs.',       icon:'fa-file-contract', color:'#B4724A' },
+    { id:'aprovacoes', name:'Aprovações',  icon:'fa-stamp',         color:'#A0824A' },
+    { id:'vendas',     name:'Vendas',      icon:'fa-key',           color:'#7A5238' }
   ];
 
-  // ── STRATEGY DATA ──
+  const STAGE_COLORS = ['#2E4A31','#3D6142','#B4724A','#A0824A','#7A5238'];
+  const AVATAR_COLORS = ['#2E4A31','#3D6142','#B4724A','#A0824A','#7A5238','#4A6E4C','#8B5E3C','#5A7A5C'];
+
+  // Valores estimados por tipo de imóvel
+  const IMOVEL_VALORES = {
+    'Apartamento Studio': 180000,
+    'Apartamento 1 Quarto': 280000,
+    'Apartamento 2 Quartos': 420000,
+    'Apartamento 3 Quartos': 650000,
+    'Casa de Condomínio': 800000,
+    'Casa Térrea': 350000,
+    'Terreno': 150000,
+    'Comercial': 600000,
+    'Outro': 300000,
+  };
+
+  // Comissão estimada (3%)
+  const COMISSAO_PCT = 0.03;
+
   const SD = {
     leads: {
       sub: 'Gere volume com qualidade',
       tips: [
-        { i:'fa-bullseye',   t:'Crie personas: renda, região, perfil familiar. Mais específico = prospecção mais eficaz.' },
-        { i:'fa-ad',         t:'Tráfego pago segmentado: raio de localização + faixa etária 28-50 anos para máximo ROI.' },
-        { i:'fa-share-alt',  t:'Peça indicações ativamente. Uma indicação vale 5× mais que um lead frio.' },
-        { i:'fa-phone-alt',  t:'Cadência diária: 20 ligações para base fria + 10 mensagens WhatsApp para indicações.' },
+        { i:'fa-bullseye', t:'Crie personas: renda, região, perfil familiar. Mais específico = prospecção mais eficaz.' },
+        { i:'fa-ad', t:'Tráfego pago segmentado: raio de localização + faixa etária 28-50 anos para máximo ROI.' },
+        { i:'fa-share-alt', t:'Peça indicações ativamente. Uma indicação vale 5× mais que um lead frio.' },
+        { i:'fa-phone-alt', t:'Cadência diária: 20 ligações para base fria + 10 mensagens WhatsApp para indicações.' },
         { i:'fa-map-marker-alt', t:'Prospecte bairro a bairro: parcerias com síndicos, panfletagem e eventos locais.' }
       ],
-      content: ['Reels imobiliários','Posts de mercado','Stories de imóveis','WhatsApp Business','Landing pages','Google Meu Negócio','Lives informativas'],
+      content: ['Reels imobiliários','Posts de mercado','Stories de imóveis','WhatsApp Business','Landing pages','Google Meu Negócio'],
       kpis: 'CPL (Custo por Lead), Taxa de resposta, % leads qualificados'
     },
     visitas: {
       sub: 'Converta leads em visitas presenciais',
       tips: [
-        { i:'fa-clock',          t:'Responda leads em até 5 min. Velocidade aumenta 9× a chance de agendar.' },
-        { i:'fa-video',          t:'Tour virtual antes da visita para pré-qualificar e economizar seu tempo.' },
+        { i:'fa-clock', t:'Responda leads em até 5 min. Velocidade aumenta 9× a chance de agendar.' },
+        { i:'fa-video', t:'Tour virtual antes da visita para pré-qualificar e economizar seu tempo.' },
         { i:'fa-calendar-check', t:'Confirme por 3 canais: WhatsApp, ligação e e-mail. Reduza no-shows em 60%.' },
-        { i:'fa-star',           t:'Apresentação profissional: fotos HDR, planta baixa e comparativo de preços.' },
-        { i:'fa-route',          t:'Agrupe visitas por região e período para maximizar seu dia.' }
+        { i:'fa-star', t:'Apresentação profissional: fotos HDR, planta baixa e comparativo de preços.' },
+        { i:'fa-route', t:'Agrupe visitas por região e período para maximizar seu dia.' }
       ],
       content: ['Tour virtual 360°','Fotos profissionais','Ficha técnica PDF','Vídeo do bairro','Comparativo de preços'],
       kpis: 'Taxa de agendamento, Taxa de presença, Tempo médio de agendamento'
@@ -769,9 +1052,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sub: 'Agilize análise documental e crédito',
       tips: [
         { i:'fa-list-check', t:'Envie checklist de documentos antes da visita. Clientes preparados fecham 40% mais rápido.' },
-        { i:'fa-handshake',  t:'Parcerias com 3+ correspondentes bancários para alternativas de financiamento.' },
-        { i:'fa-bolt',       t:'Pré-analise a capacidade de crédito antes de avançar. Foque em quem pode comprar.' },
-        { i:'fa-user-tie',   t:'Seja o elo entre cliente e banco: acompanhe diariamente e mantenha todos informados.' }
+        { i:'fa-handshake', t:'Parcerias com 3+ correspondentes bancários para alternativas de financiamento.' },
+        { i:'fa-bolt', t:'Pré-analise a capacidade de crédito antes de avançar. Foque em quem pode comprar.' },
+        { i:'fa-user-tie', t:'Seja o elo entre cliente e banco: acompanhe diariamente e mantenha todos informados.' }
       ],
       content: ['Checklist de docs','Guia de financiamento','Calculadora de parcela','Comparativo de bancos'],
       kpis: 'Tempo médio de análise, % documentação completa, % aprovação'
@@ -779,8 +1062,8 @@ document.addEventListener('DOMContentLoaded', () => {
     aprovacoes: {
       sub: 'Converta aprovações em contratos',
       tips: [
-        { i:'fa-fire',       t:'"Aprovação expira em X dias." Crie urgência real e ética para fechar.' },
-        { i:'fa-medal',      t:'Compartilhe depoimentos de clientes que já realizaram o sonho com você.' },
+        { i:'fa-fire', t:'"Aprovação expira em X dias." Crie urgência real e ética para fechar.' },
+        { i:'fa-medal', t:'Compartilhe depoimentos de clientes que já realizaram o sonho com você.' },
         { i:'fa-calculator', t:'Simulação detalhada: parcela, entrada, FGTS, benefícios tributários.' },
         { i:'fa-shield-alt', t:'Esclareça todas as dúvidas antes da assinatura. Clientes informados não desistem.' }
       ],
@@ -790,9 +1073,9 @@ document.addEventListener('DOMContentLoaded', () => {
     vendas: {
       sub: 'Feche vendas e gere indicações',
       tips: [
-        { i:'fa-trophy',    t:'Celebre cada venda nas redes (com autorização). Prova social gera leads organicamente.' },
-        { i:'fa-heart',     t:'Pós-venda ativo: ligue 30 dias após entrega e no aniversário da compra.' },
-        { i:'fa-comments',  t:'Peça avaliação no Google. 88% dos compradores confiam em avaliações online.' },
+        { i:'fa-trophy', t:'Celebre cada venda nas redes (com autorização). Prova social gera leads organicamente.' },
+        { i:'fa-heart', t:'Pós-venda ativo: ligue 30 dias após entrega e no aniversário da compra.' },
+        { i:'fa-comments', t:'Peça avaliação no Google. 88% dos compradores confiam em avaliações online.' },
         { i:'fa-users-cog', t:'Programa de indicação com bonificação. Ative sua carteira de clientes satisfeitos.' }
       ],
       content: ['Entrega de chaves','Case de sucesso','Reels de comemoração','Newsletter da carteira'],
@@ -800,28 +1083,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ── STATE ──
-  let data = { goals:null, conversions:null, funnel:{ leads:[], visitas:[], docs:[], aprovacoes:[], vendas:[] } };
+  // STATE
+  // leads agora são objetos completos com dados do cliente
+  // data.funnel[stage] = array de IDs de leads
+  // data.leadsDB = { id: leadObj }
+  let data = {
+    goals: null,
+    conversions: null,
+    funnel: { leads:[], visitas:[], docs:[], aprovacoes:[], vendas:[] },
+    leadsDB: {}
+  };
   let fChart = null, aChart = null;
-  let chkState = {};      // checklist progress (reset ao importar)
+  let chkState = {};
   let stratBuilt = false;
   let chkListenerActive = false;
 
   function $id(id) { return document.getElementById(id); }
-  function pct(v, mx) { return mx > 0 ? Math.min((v / mx) * 100, 100) : 0; }
+  function pct(v, mx) { return mx > 0 ? Math.min((v/mx)*100, 100) : 0; }
   function pcColor(p) { return p >= 100 ? 'var(--ok)' : p >= 70 ? 'var(--warn)' : 'var(--err)'; }
   function numFmt(n) { return isNaN(n) ? '0' : String(Math.round(n)); }
+  function moneyFmt(n) { return 'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+  function telFmt(t) {
+    const d = (t||'').replace(/\D/g,'');
+    if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+    if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+    return t;
+  }
+  function getInitials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+    return name[0].toUpperCase();
+  }
+  function avatarColor(name) {
+    let h = 0;
+    for (let c of (name||'')) h = ((h<<5)-h)+c.charCodeAt(0)|0;
+    return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+  }
 
-  // Atualiza data no topo
   $id('topDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]}`;
   $id('chkDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]} de ${Y}`;
 
-  function toast(msg) {
+  function toast(msg, type) {
     const t = $id('toast');
     t.textContent = msg;
+    t.style.background = type === 'err' ? 'var(--err)' : type === 'ok' ? 'var(--ok)' : 'var(--t1)';
     t.classList.add('show');
     clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+    t._timer = setTimeout(() => t.classList.remove('show'), 3500);
   }
 
   function lockScroll() { document.body.classList.add('modal-open'); }
@@ -830,10 +1139,36 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeModal(id) { $id(id).classList.add('hidden'); unlockScroll(); }
 
   // ── DATA PERSISTENCE ──
-  function saveData() { localStorage.setItem('funilProV3', JSON.stringify(data)); }
+  function saveData() { localStorage.setItem('funilProV4', JSON.stringify(data)); }
   function loadData() {
-    const s = localStorage.getItem('funilProV3');
-    if (s) { data = JSON.parse(s); return true; }
+    const s = localStorage.getItem('funilProV4');
+    if (s) {
+      const parsed = JSON.parse(s);
+      // Migração: se não tem leadsDB, criar
+      if (!parsed.leadsDB) parsed.leadsDB = {};
+      data = parsed;
+      return true;
+    }
+    // Tentar migrar dados do v3
+    const old = localStorage.getItem('funilProV3');
+    if (old) {
+      const op = JSON.parse(old);
+      if (op.goals && op.conversions && op.funnel) {
+        data.goals = op.goals;
+        data.conversions = op.conversions;
+        // Migrar itens antigos (sem dados) como leads genéricos
+        for (const sid of Object.keys(op.funnel)) {
+          op.funnel[sid].forEach(item => {
+            const id = 'migr_' + item.id;
+            data.leadsDB[id] = { id, nome:'Lead Migrado', telefone:'', etapa:sid, dataCadastro:item.date };
+            if (!data.funnel[sid]) data.funnel[sid] = [];
+            data.funnel[sid].push(id);
+          });
+        }
+        saveData();
+        return true;
+      }
+    }
     return false;
   }
   function calcGoals(lead) {
@@ -847,6 +1182,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // ── LEAD HELPERS ──
+  function allLeads() { return Object.values(data.leadsDB); }
+  function getLeadStage(leadId) {
+    for (const s of STAGES) {
+      if (data.funnel[s.id].includes(leadId)) return s.id;
+    }
+    return null;
+  }
+  function findDuplicatePhone(phone, excludeId) {
+    const clean = (phone||'').replace(/\D/g,'');
+    if (!clean) return null;
+    return allLeads().find(l => {
+      const lp = (l.telefone||'').replace(/\D/g,'');
+      return lp === clean && l.id !== excludeId;
+    }) || null;
+  }
+  function imovelValor(imovelName) {
+    return IMOVEL_VALORES[imovelName] || 0;
+  }
+  function calcPotencial(leads) {
+    return leads.reduce((acc, l) => acc + imovelValor(l.imovel), 0);
+  }
+
   // ── THEME ──
   function applyTheme(t) {
     document.body.classList.toggle('dark', t === 'dark');
@@ -857,8 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (aChart) renderAChart();
   }
   function toggleTheme() {
-    const isDark = document.body.classList.contains('dark');
-    const next = isDark ? 'light' : 'dark';
+    const next = document.body.classList.contains('dark') ? 'light' : 'dark';
     localStorage.setItem('imobTheme', next);
     applyTheme(next);
   }
@@ -874,6 +1231,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tab === 'analytics') renderAnalytics();
     if (tab === 'checklist') renderChecklist();
     if (tab === 'marketing') renderStrategy();
+    if (tab === 'leads') renderLeads();
+    if (tab === 'relatorio') renderRelatorio();
   }
   document.querySelectorAll('.bni, .sni').forEach(b => {
     b.addEventListener('click', () => switchTab(b.dataset.tab));
@@ -886,6 +1245,9 @@ document.addEventListener('DOMContentLoaded', () => {
   $id('cfgModal').addEventListener('click', e => { if (e.target === $id('cfgModal')) closeModal('cfgModal'); });
   $id('btnClosePerfModal').addEventListener('click', () => closeModal('perfModal'));
   $id('perfModal').addEventListener('click', e => { if (e.target === $id('perfModal')) closeModal('perfModal'); });
+  $id('btnCloseLeadDetail').addEventListener('click', () => closeModal('leadDetailModal'));
+  $id('leadDetailModal').addEventListener('click', e => { if (e.target === $id('leadDetailModal')) closeModal('leadDetailModal'); });
+  $id('leadModal').addEventListener('click', e => { if (e.target === $id('leadModal')) closeModal('leadModal'); });
 
   // ── INITIAL SETUP ──
   $id('btnSalvar').addEventListener('click', () => {
@@ -900,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     data.conversions = { lv:v.lv, vd:v.vd, da:v.da, av:v.av };
     calcGoals(v.leads);
     saveData();
-    toast('Metas salvas com sucesso! 🎯');
+    toast('Metas salvas! 🎯', 'ok');
     init();
   });
 
@@ -916,6 +1278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $id('btnReset').addEventListener('click', () => {
     if (confirm('Apagar TODOS os dados? Esta ação não pode ser desfeita.')) {
+      localStorage.removeItem('funilProV4');
       localStorage.removeItem('funilProV3');
       location.reload();
     }
@@ -938,8 +1301,9 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const imp = JSON.parse(ev.target.result);
         if (imp.goals && imp.conversions && imp.funnel) {
+          if (!imp.leadsDB) imp.leadsDB = {};
           data = imp;
-          chkState = {};                // ✅ reseta checklist ao importar
+          chkState = {};
           saveData();
           renderAll();
           toast('Backup restaurado!');
@@ -949,398 +1313,11 @@ document.addEventListener('DOMContentLoaded', () => {
     r.readAsText(f);
     $id('importFile').value = '';
   });
+
+  // ── PDF GERAL ──
   $id('btnPdfGeral').addEventListener('click', pdfGeral);
-  $id('btnPdfEtapas').addEventListener('click', pdfEtapas);
+  $id('btnPdfLeads').addEventListener('click', pdfLeadsReport);
 
-  // ── FUNNEL ACTIONS ──
-  $id('stageList').addEventListener('click', e => {
-    const card = e.target.closest('.sc'); if (!card) return;
-    const sid = card.dataset.stage;
-    const qIn = card.querySelector('.qin');
-    const qty = Math.max(parseInt(qIn?.value, 10) || 1, 1);
-    if (e.target.closest('.qbtn.add'))       addItems(sid, qty);
-    else if (e.target.closest('.qbtn.rem'))  removeItems(sid, qty);
-    else if (e.target.closest('.nbtn.prev') && !e.target.closest('.nbtn.prev').disabled) moveItem(sid, 'prev');
-    else if (e.target.closest('.nbtn.next') && !e.target.closest('.nbtn.next').disabled) moveItem(sid, 'next');
-  });
-
-  function addItems(sid, qty) {
-    for (let i = 0; i < qty; i++) data.funnel[sid].push({ id: Date.now() + i, date: new Date().toISOString() });
-    saveData();
-    toast(`+${qty} ${STAGES.find(s => s.id === sid).name}`);
-    renderAll();
-  }
-  function removeItems(sid, qty) {
-    if (data.funnel[sid].length < qty) { toast('Itens insuficientes para remover.'); return; }
-    for (let i = 0; i < qty; i++) data.funnel[sid].pop();
-    saveData();
-    toast(`−${qty} removido(s).`);
-    renderAll();
-  }
-  function moveItem(sid, dir) {
-    const idx = STAGES.findIndex(s => s.id === sid);
-    const tid = STAGES[idx + (dir === 'next' ? 1 : -1)].id;
-    if (!data.funnel[sid].length) { toast('Sem itens para mover.'); return; }
-    data.funnel[tid].push(data.funnel[sid].pop());
-    saveData();
-    toast(`Movido → ${STAGES.find(s => s.id === tid).name}`);
-    renderAll();
-  }
-
-  // ── RENDER FUNIL ──
-  function renderKpi() {
-    if (!data.goals) return;
-    const v = data.funnel.vendas.length, mv = data.goals.vendas;
-    const tend = PAST > 0 ? (v / PAST) * TOT : 0;
-    const efic = data.funnel.leads.length > 0 ? ((v / data.funnel.leads.length) * 100).toFixed(1) : '—';
-    const progMes = ((PAST / TOT) * 100).toFixed(0);
-    $id('kpiStrip').innerHTML = `
-      <div class="kpi-tile"><div class="kt-lbl">Mês</div><div class="kt-val">${progMes}%</div><div class="kt-sub">${PAST}/${TOT} dias</div></div>
-      <div class="kpi-tile"><div class="kt-lbl">Vendas</div><div class="kt-val">${v}</div><div class="kt-sub">Meta: ${Math.ceil(mv)}</div></div>
-      <div class="kpi-tile"><div class="kt-lbl">Tendência</div><div class="kt-val" style="color:${tend >= mv ? 'var(--ok)' : 'var(--warn)'}">${numFmt(tend)}</div><div class="kt-sub">${tend >= mv ? '✅ acima' : '⚠️ abaixo'}</div></div>
-      <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">Lead→Venda</div></div>`;
-  }
-
-  function renderStages() {
-    if (!data.goals) return;
-    const list = $id('stageList'); list.innerHTML = '';
-    STAGES.forEach((s, i) => {
-      const meta = data.goals[s.id];
-      const real = data.funnel[s.id].length;
-      const tend = PAST > 0 ? (real / PAST) * TOT : 0;
-      const metaDia = TOT > 0 ? meta / TOT : 0;
-      const pR = pct(real, meta), pT = pct(tend, meta);
-      const div = document.createElement('div');
-      div.className = 'sc'; div.dataset.stage = s.id;
-      div.innerHTML = `
-        <div class="sc-top">
-          <div class="sc-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
-          <div class="sc-info">
-            <div class="sn">${s.name}</div>
-            <div class="sv">${real}</div>
-            <div class="sm">Meta: ${Math.ceil(meta)} &nbsp;·&nbsp; Dia: ${metaDia.toFixed(1)}</div>
-          </div>
-          <div class="sc-pct">
-            <div class="spv" style="color:${pcColor(pR)}">${pR.toFixed(0)}%</div>
-            <div class="spl">realizado</div>
-          </div>
-        </div>
-        <div class="sc-bars">
-          <div class="br"><div class="br-row"><span>Realizado</span><span style="color:${pcColor(pR)}">${real} / ${Math.ceil(meta)}</span></div><div class="prog-track" style="height:7px"><div class="prog-fill" style="width:${pR}%;background:${pcColor(pR)}"></div></div></div>
-          <div class="br"><div class="br-row"><span>Tendência</span><span style="color:${pcColor(pT)}">${numFmt(tend)} (${pT.toFixed(0)}%)</span></div><div class="prog-track" style="height:5px"><div class="prog-fill" style="width:${pT}%;background:${pcColor(pT)};opacity:.6"></div></div></div>
-        </div>
-        <div class="sc-ctrl">
-          <div class="qty-row">
-            <button class="qbtn rem">−</button>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" class="qin" value="1" autocomplete="off">
-            <button class="qbtn add">+</button>
-          </div>
-          <div class="nav-row">
-            <button class="nbtn prev" ${i === 0 ? 'disabled' : ''}><i class="fas fa-arrow-left"></i> Voltar</button>
-            <button class="nbtn next" ${i === STAGES.length-1 ? 'disabled' : ''}>Avançar <i class="fas fa-arrow-right"></i></button>
-          </div>
-        </div>`;
-      list.appendChild(div);
-    });
-  }
-
-  function renderFChart() {
-    const canvas = $id('funnelChart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (fChart) fChart.destroy();
-    const dk = document.body.classList.contains('dark');
-    const tc = dk ? '#6A8A6C' : '#7A8A7C', gc = dk ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
-    fChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: STAGES.map(s => s.name),
-        datasets: [
-          { label:'Meta', data:STAGES.map(s => Math.ceil(data.goals[s.id])), backgroundColor:'rgba(196,114,74,.25)', borderColor:'#C4724A', borderWidth:1.5, borderRadius:5 },
-          { label:'Realizado', data:STAGES.map(s => data.funnel[s.id].length), backgroundColor:STAGES.map(s => s.color + 'CC'), borderRadius:5 }
-        ]
-      },
-      options: {
-        indexAxis:'y', responsive:true, maintainAspectRatio:true,
-        plugins:{ legend:{ labels:{ color:tc, font:{ size:10, family:'Plus Jakarta Sans' } } } },
-        scales:{
-          x:{ beginAtZero:true, grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } },
-          y:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:10 } } }
-        }
-      }
-    });
-  }
-
-  function renderSidebar() {
-    if (!data.goals) return;
-    $id('resMes').innerHTML = `
-      <div class="mrow"><span class="ml">Total de dias</span><span class="mv">${TOT}</span></div>
-      <div class="mrow"><span class="ml">Dias passados</span><span class="mv">${PAST}</span></div>
-      <div class="mrow"><span class="ml">Dias restantes</span><span class="mv">${LEFT}</span></div>
-      <div class="mrow"><span class="ml">Semana do mês</span><span class="mv">${Math.ceil(PAST/7)}ª</span></div>`;
-    $id('resMensal').innerHTML = STAGES.map(s => `<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${data.funnel[s.id].length}</span></div>`).join('');
-    const fd = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate() - NOW.getDay() + (NOW.getDay() === 0 ? -6 : 1));
-    fd.setHours(0,0,0,0);
-    const ld = new Date(fd); ld.setDate(ld.getDate()+6); ld.setHours(23,59,59,999);
-    $id('resSemanal').innerHTML = STAGES.map(s => {
-      const n = data.funnel[s.id].filter(it => { const d = new Date(it.date); return d >= fd && d <= ld; }).length;
-      return `<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${n}</span></div>`;
-    }).join('');
-  }
-
-  function renderFunil() { renderKpi(); renderStages(); renderFChart(); renderSidebar(); }
-
-  // ── RENDER STRATEGY ──
-  function renderStrategy() {
-    if (stratBuilt) return;
-    stratBuilt = true;
-    const c = $id('stratCards'); c.innerHTML = '';
-    STAGES.forEach((s, i) => {
-      const sd = SD[s.id];
-      const real = data.funnel[s.id].length;
-      const meta = data.goals ? Math.ceil(data.goals[s.id]) : '—';
-      const p = data.goals ? pct(real, data.goals[s.id]) : 0;
-      const bdg = p >= 100 ? `<span class="badge b-ok"><i class="fas fa-check-circle"></i> OK</span>` : p >= 70 ? `<span class="badge b-warn"><i class="fas fa-clock"></i> Ritmo</span>` : `<span class="badge b-err"><i class="fas fa-exclamation-circle"></i> Atenção</span>`;
-      const div = document.createElement('div');
-      div.className = 'ss' + (p < 70 ? ' open' : '');
-      div.innerHTML = `
-        <div class="ss-head">
-          <div class="ss-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
-          <div class="ss-info"><h3>${i+1}. ${s.name}</h3><p>${sd.sub}</p></div>
-          <div class="ss-right">${bdg}<div style="font-size:.66rem;color:var(--t3)">${real} / ${meta}</div><i class="fas fa-chevron-down ss-chev"></i></div>
-        </div>
-        <div class="ss-body"><div class="ss-inner">
-          <div class="slbl"><i class="fas fa-lightbulb"></i> Táticas</div>
-          <div class="tip-list">${sd.tips.map(t => `<div class="tip"><i class="fas ${t.i} ti"></i><span>${t.t}</span></div>`).join('')}</div>
-          <div class="slbl"><i class="fas fa-pencil-alt"></i> Ideias de Conteúdo</div>
-          <div class="chips">${sd.content.map(ch => `<span class="chip">${ch}</span>`).join('')}</div>
-          <div class="slbl"><i class="fas fa-tachometer-alt"></i> KPIs</div>
-          <div class="kbox">${sd.kpis}</div>
-        </div></div>`;
-      div.querySelector('.ss-head').addEventListener('click', () => div.classList.toggle('open'));
-      c.appendChild(div);
-    });
-  }
-
-  // ── RENDER CHECKLIST ──
-  function renderChecklist() {
-    if (!data.goals) return;
-    const groups = buildChecklist();
-    const grid = $id('chkGrid');
-    grid.innerHTML = '';
-
-    groups.forEach((g, gi) => {
-      const doneCount = g.items.filter((_, ii) => chkState[`${gi}-${ii}`]).length;
-      const div = document.createElement('div');
-      div.className = 'cg';
-      div.innerHTML = `
-        <div class="cg-head">
-          <div class="cg-ico" style="background:${g.color}"><i class="fas ${g.icon}"></i></div>
-          <div style="flex:1;min-width:0"><h4>${g.title}</h4><small>${g.sub}</small></div>
-          <div class="cg-ctr">${doneCount}/${g.items.length}</div>
-        </div>
-        <div class="cg-items">
-          ${g.items.map((it, ii) => {
-            const key = `${gi}-${ii}`;
-            const done = chkState[key] || false;
-            const priClass = it.pri === 'high' ? 'ph' : it.pri === 'mid' ? 'pm' : 'pl';
-            return `<div class="ci ${done ? 'done' : ''}" data-gi="${gi}" data-ii="${ii}"><div class="cb"></div><span class="ct">${it.txt}</span><div class="pdot ${priClass}"></div></div>`;
-          }).join('')}
-        </div>`;
-      grid.appendChild(div);
-    });
-
-    if (!chkListenerActive) {
-      chkListenerActive = true;
-      grid.addEventListener('click', e => {
-        const item = e.target.closest('.ci'); if (!item) return;
-        const gi = parseInt(item.dataset.gi, 10);
-        const ii = parseInt(item.dataset.ii, 10);
-        const key = `${gi}-${ii}`;
-        chkState[key] = !chkState[key];
-        item.classList.toggle('done', chkState[key]);
-        const grp = item.closest('.cg');
-        const allCI = grp.querySelectorAll('.ci');
-        const doneCI = grp.querySelectorAll('.ci.done').length;
-        grp.querySelector('.cg-ctr').textContent = `${doneCI}/${allCI.length}`;
-        updateChkProg();
-      });
-    }
-    updateChkProg();
-  }
-
-  function updateChkProg() {
-    const all = document.querySelectorAll('.ci');
-    const done = document.querySelectorAll('.ci.done').length;
-    const p = all.length > 0 ? Math.round((done / all.length) * 100) : 0;
-    $id('cpFill').style.width = p + '%';
-    $id('cpPct').textContent = p + '%';
-    $id('cpSub').textContent = `${done} de ${all.length} tarefas concluídas`;
-  }
-
-  function buildChecklist() {
-    if (!data.goals) return [];
-    const mDia  = data.goals.leads / TOT;
-    const mVis  = data.goals.visitas / TOT;
-    const lP  = pct(data.funnel.leads.length,      data.goals.leads);
-    const vP  = pct(data.funnel.visitas.length,     data.goals.visitas);
-    const dP  = pct(data.funnel.docs.length,        data.goals.docs);
-    const aP  = pct(data.funnel.aprovacoes.length,  data.goals.aprovacoes);
-    const sP  = pct(data.funnel.vendas.length,      data.goals.vendas);
-    const q   = Math.max(Math.ceil(mDia * 1.2), 10);
-    const vq  = Math.max(Math.ceil(mVis), 1);
-    return [
-      { title:'Prospecção & Leads', sub:`Meta: ~${q} leads hoje`, icon:'fa-users', color:'#2E4A31', items:[
-        { txt:`Enviar ${q * 2} mensagens no WhatsApp (base fria + indicações)`, pri:'high' },
-        { txt:`Realizar ${q} ligações de prospecção para base de contatos`, pri: lP < 60 ? 'high' : 'mid' },
-        { txt:'Publicar 1 conteúdo imobiliário (Reels, Story ou Post)', pri:'high' },
-        { txt:'Responder TODOS os leads recebidos em até 5 minutos', pri:'high' },
-        { txt:'Pedir 2 indicações para clientes da carteira ativa', pri: lP < 70 ? 'high' : 'mid' }
-      ]},
-      { title:'Agendamento & Visitas', sub:`Meta: ~${vq} visita(s) hoje`, icon:'fa-handshake', color:'#3D6142', items:[
-        { txt:`Confirmar ${vq} visita(s) por WhatsApp e ligação`, pri:'high' },
-        { txt:'Preparar apresentação: fotos, planta baixa, comparativo de preços', pri: vP < 70 ? 'high' : 'mid' },
-        { txt:'Follow-up com leads que não responderam nos últimos 2 dias', pri:'mid' },
-        { txt:'Oferecer tour virtual para 3 leads qualificados que não visitaram', pri: vP < 50 ? 'high' : 'low' }
-      ]},
-      { title:'Documentação & Crédito', sub:'Agilize processos em andamento', icon:'fa-file-contract', color:'#B4724A', items:[
-        { txt:'Enviar checklist de documentos para clientes na etapa de visitas', pri:'high' },
-        { txt:'Ligar para correspondente bancário: status dos processos abertos', pri: dP < 70 ? 'high' : 'mid' },
-        { txt:'Verificar pendências e acionar clientes com documentos faltantes', pri:'mid' },
-        { txt:'Enviar simulação financeira personalizada para 2 clientes qualificados', pri: dP < 50 ? 'high' : 'low' }
-      ]},
-      { title:'Aprovações & Fechamentos', sub:'Converter aprovações em contratos', icon:'fa-key', color:'#7A5238', items:[
-        { txt:'Verificar status de todos os processos de aprovação em aberto', pri:'high' },
-        { txt: aP < 70 ? 'Ligar para aprovados — criar urgência de fechamento' : 'Confirmar data de assinatura com clientes aprovados', pri: aP < 70 ? 'high' : 'mid' },
-        { txt:'Resolver pendências: documentos faltantes, assinaturas, certidões', pri:'mid' },
-        { txt: sP >= 100 ? 'Postar entrega de chaves nas redes (com autorização do cliente)' : 'Negociar condições com clientes que estão indecisos', pri:'mid' }
-      ]},
-      { title:'Marketing Digital', sub:'Presença consistente nas redes', icon:'fa-bullhorn', color:'#A0824A', items:[
-        { txt:'Verificar métricas: alcance, curtidas e DMs das redes sociais', pri:'mid' },
-        { txt:'Responder TODOS os comentários e mensagens recebidas', pri:'high' },
-        { txt:'Capturar conteúdo do dia: foto ou vídeo do trabalho ou imóvel', pri:'mid' },
-        { txt:'Planejar conteúdo de amanhã: formato, legenda e horário ideal', pri:'low' }
-      ]},
-      { title:'Análise & Planejamento', sub:'Reflexão e otimização contínua', icon:'fa-chart-line', color:'#3A6A42', items:[
-        { txt:'Atualizar o funil com leads, visitas e todos os avanços do dia', pri:'high' },
-        { txt:`Funil em ${sP.toFixed(0)}% da meta. ${sP < 70 ? 'Intensifique a prospecção!' : 'Mantenha o ritmo!'}`, pri:'mid' },
-        { txt:'Qual ação gerou mais resultado hoje? Repita amanhã.', pri:'mid' },
-        { txt:'Anotar 3 aprendizados e 3 prioridades para amanhã', pri:'low' }
-      ]}
-    ];
-  }
-
-  // ── RENDER ANALYTICS ──
-  function renderAnalytics() {
-    if (!data.goals) return;
-    const cr = {};
-    for (let i = 1; i < STAGES.length; i++) {
-      const f = data.funnel[STAGES[i-1].id].length;
-      const t = data.funnel[STAGES[i].id].length;
-      cr[`${STAGES[i-1].id}_${STAGES[i].id}`] = f > 0 ? ((t/f)*100).toFixed(1) : '—';
-    }
-    const v = data.funnel.vendas.length, l = data.funnel.leads.length;
-    const efic = l > 0 ? ((v/l)*100).toFixed(1) : '—';
-    const tend = PAST > 0 ? Math.round((v/PAST)*TOT) : 0;
-    $id('aKpi').innerHTML = `
-      <div class="kpi-tile"><div class="kt-lbl">L→V conv.</div><div class="kt-val">${cr.leads_visitas || '—'}%</div><div class="kt-sub">Agendamento</div></div>
-      <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">Lead→Venda</div></div>
-      <div class="kpi-tile"><div class="kt-lbl">Projeção</div><div class="kt-val" style="color:${tend >= data.goals.vendas ? 'var(--ok)' : 'var(--warn)'}">${tend}</div><div class="kt-sub">vendas/mês</div></div>
-      <div class="kpi-tile"><div class="kt-lbl">Dias rest.</div><div class="kt-val">${LEFT}</div><div class="kt-sub">para fechar</div></div>`;
-
-    const cf = $id('convFunnel'); cf.innerHTML = '';
-    STAGES.forEach((s, i) => {
-      const real = data.funnel[s.id].length, meta = data.goals[s.id];
-      const p = pct(real, meta).toFixed(0);
-      cf.innerHTML += `<div class="cstep"><div class="cs-ico2" style="background:${s.color}"><i class="fas ${s.icon}"></i></div><span class="cs-lbl">${s.name}</span><span class="cs-val" style="color:${pcColor(parseFloat(p))}">${real}/${Math.ceil(meta)}</span><span class="badge ${parseFloat(p)>=100?'b-ok':parseFloat(p)>=70?'b-warn':'b-err'}">${p}%</span></div>${i < STAGES.length-1 ? `<div style="text-align:center;font-size:.7rem;color:var(--t3);padding:2px 0"><i class="fas fa-arrow-down"></i> ${cr[STAGES[i].id+'_'+STAGES[i+1].id]||'—'}% conv.</div>` : ''}`;
-    });
-
-    renderAChart();
-
-    const dg = $id('stageDiag'); dg.innerHTML = '';
-    STAGES.forEach(s => {
-      const real = data.funnel[s.id].length, meta = Math.ceil(data.goals[s.id]);
-      const p = pct(real, data.goals[s.id]);
-      const falt = Math.max(meta - real, 0);
-      const pd = LEFT > 0 ? (falt / LEFT).toFixed(1) : '—';
-      const { ic, cl, lb } = p >= 100 ? { ic:'fa-check-circle', cl:'var(--ok)', lb:'Meta atingida' } : p >= 70 ? { ic:'fa-dot-circle', cl:'var(--warn)', lb:'Em ritmo' } : { ic:'fa-times-circle', cl:'var(--err)', lb:'Abaixo da meta' };
-      dg.innerHTML += `<div class="diag-i"><i class="fas ${ic}" style="color:${cl}"></i><div><div class="di-n">${s.name} — ${lb}</div><div class="di-s">Faltam ${falt} · Precisa: ${pd}/dia</div></div></div>`;
-    });
-
-    const ins = $id('autoInsights'); ins.innerHTML = '';
-    buildInsights().forEach(it => { ins.innerHTML += `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`; });
-  }
-
-  function renderAChart() {
-    const canvas = $id('analyticsChart'); if (!canvas) return;
-    if (aChart) aChart.destroy();
-    const dk = document.body.classList.contains('dark');
-    const tc = dk ? '#6A8A6C' : '#7A8A7C', gc = dk ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
-    aChart = new Chart(canvas.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: STAGES.map(s => s.name),
-        datasets: [
-          { label:'Meta', data:STAGES.map(s => Math.ceil(data.goals[s.id])), backgroundColor:'rgba(196,114,74,.25)', borderColor:'#C4724A', borderWidth:1.5, borderRadius:4 },
-          { label:'Realizado', data:STAGES.map(s => data.funnel[s.id].length), backgroundColor:STAGES.map(s => s.color+'CC'), borderRadius:4 }
-        ]
-      },
-      options: {
-        responsive:true, maintainAspectRatio:true,
-        plugins:{ legend:{ labels:{ color:tc, font:{ size:10, family:'Plus Jakarta Sans' } } } },
-        scales:{
-          x:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } },
-          y:{ beginAtZero:true, grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } }
-        }
-      }
-    });
-  }
-
-  function buildInsights() {
-    if (!data.goals) return [];
-    const out = [];
-    const v = data.funnel.vendas.length, mv = data.goals.vendas;
-    const tend = PAST > 0 ? (v / PAST) * TOT : 0;
-    if (tend >= mv) {
-      out.push({ ic:'fa-trophy', cl:'var(--ok)', txt:`🏆 Tendência de ${numFmt(tend)} vendas supera a meta de ${Math.ceil(mv)}. Continue!` });
-    } else {
-      const def = Math.ceil(mv) - v, pd = LEFT > 0 ? (def/LEFT).toFixed(1) : '—';
-      out.push({ ic:'fa-exclamation-triangle', cl:'var(--warn)', txt:`Precisa de ${def} venda(s) em ${LEFT} dias (${pd}/dia) para bater a meta.` });
-    }
-    const lP = pct(data.funnel.leads.length, data.goals.leads);
-    if (lP < 60) out.push({ ic:'fa-users', cl:'var(--err)', txt:'Captação de leads abaixo de 60% da meta. Intensifique prospecção e tráfego pago urgente.' });
-    const lvR = data.funnel.leads.length > 0 ? (data.funnel.visitas.length / data.funnel.leads.length * 100) : 0;
-    const lvM = data.conversions.lv * 100;
-    if (lvR < lvM * .7 && data.funnel.leads.length > 5)
-      out.push({ ic:'fa-handshake', cl:'var(--warn)', txt:`Conversão L→V (${lvR.toFixed(0)}%) abaixo da meta (${lvM.toFixed(0)}%). Melhore follow-up e abordagem.` });
-    if (data.funnel.aprovacoes.length > 0 && v === 0)
-      out.push({ ic:'fa-stamp', cl:'var(--warn)', txt:`Você tem ${data.funnel.aprovacoes.length} aprovação(ões) sem venda fechada. Converta agora!` });
-    const efic = data.funnel.leads.length > 0 ? (v / data.funnel.leads.length * 100) : 0;
-    if (efic > 10) out.push({ ic:'fa-chart-line', cl:'var(--ok)', txt:`Eficiência global de ${efic.toFixed(1)}% (L→V). Excelente! Média do mercado é 5-8%.` });
-    else if (data.funnel.leads.length > 10) out.push({ ic:'fa-filter', cl:'var(--t3)', txt:'Revise a qualidade dos leads. Menos leads qualificados vale mais que muitos leads frios.' });
-    return out.slice(0,5);
-  }
-
-  // ── PERFORMANCE MODAL ──
-  function showPerf() {
-    if (!data.goals || PAST === 0) return;
-    const v = data.funnel.vendas.length, mv = data.goals.vendas;
-    const tend = (v / PAST) * TOT;
-    const em = $id('pEmoji'), tt = $id('pTitle'), pm = $id('pMsg'), pt = $id('pTips'), ptc = $id('pTipsC');
-    if (tend >= mv) {
-      em.textContent = '🎉'; tt.textContent = 'Excelente Desempenho!'; tt.className = 'pt ok';
-      pm.textContent = `Tendência de ${numFmt(tend)} vendas supera a meta de ${Math.ceil(mv)}. Continue o ritmo!`;
-      pt.classList.add('hidden');
-    } else {
-      em.textContent = '⚡'; tt.textContent = 'Hora de Acelerar!'; tt.className = 'pt warn';
-      pm.textContent = `Tendência: ${numFmt(tend)} vendas | Meta: ${Math.ceil(mv)}. Veja as ações abaixo.`;
-      ptc.innerHTML = buildInsights().map(it => `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`).join('');
-      pt.classList.remove('hidden');
-    }
-    openModal('perfModal');
-  }
-
-  // ── PDF ──
   function pdfGeral() {
     const doc = new jsPDF();
     doc.setFontSize(18); doc.text('Relatório Geral — Funil Pro Corretor', 14, 22);
@@ -1355,37 +1332,770 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     doc.autoTable({ head:[['Etapa','Meta','Realizado','Tendência','% Atingido']], body:rows, startY:38, theme:'grid' });
     doc.save(`relatorio-funil-${new Date().toISOString().slice(0,10)}.pdf`);
-    toast('PDF gerado com sucesso!');
+    toast('PDF gerado!');
   }
-  function pdfEtapas() {
-    const doc = new jsPDF();
-    STAGES.forEach((s, i) => {
-      if (i > 0) doc.addPage();
-      doc.setFontSize(18); doc.text(`Etapa: ${s.name}`, 14, 22);
-      doc.setFontSize(11); doc.setTextColor(100);
-      doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 30);
-      const items = data.funnel[s.id];
-      if (items.length > 0) {
-        doc.autoTable({ head:[['ID','Data']], body:items.map(it => [it.id, new Date(it.date).toLocaleString('pt-BR')]), startY:40, theme:'striped' });
-      } else { doc.text('Nenhum item cadastrado nesta etapa.', 14, 46); }
+
+  function pdfLeadsReport() {
+    const doc = new jsPDF('l');
+    doc.setFontSize(18); doc.text('Relatório de Leads — Funil Pro Corretor', 14, 22);
+    doc.setFontSize(11); doc.setTextColor(100);
+    doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')} | Total: ${allLeads().length} leads`, 14, 30);
+    const total = calcPotencial(allLeads());
+    doc.text(`Potencial financeiro total: ${moneyFmt(total)} | Comissão estimada: ${moneyFmt(total*COMISSAO_PCT)}`, 14, 38);
+    const rows = allLeads().map(l => {
+      const stage = STAGES.find(s => data.funnel[s.id].includes(l.id));
+      const val = imovelValor(l.imovel);
+      return [
+        l.nome || '—',
+        telFmt(l.telefone) || '—',
+        l.email || '—',
+        stage?.name || '—',
+        l.imovel || '—',
+        val ? moneyFmt(val) : '—',
+        l.renda ? moneyFmt(l.renda) : '—',
+        l.formaRenda || '—',
+        l.estadoCivil || '—',
+        l.dataCadastro ? new Date(l.dataCadastro).toLocaleDateString('pt-BR') : '—'
+      ];
     });
-    doc.save(`etapas-funil-${new Date().toISOString().slice(0,10)}.pdf`);
-    toast('PDFs por etapa gerados!');
+    doc.autoTable({
+      head:[['Nome','Telefone','E-mail','Etapa','Imóvel','Val.Est.','Renda','F.Renda','Est.Civil','Cadastro']],
+      body: rows, startY:46, theme:'striped',
+      styles:{ fontSize:7 },
+      headStyles:{ fillColor:[46,74,49] }
+    });
+    doc.save(`leads-${new Date().toISOString().slice(0,10)}.pdf`);
+    toast('PDF de leads gerado!');
+  }
+
+  // ── LEAD MODAL ──
+  function openLeadModal(leadId) {
+    const isEdit = !!leadId;
+    $id('leadModalTitle').textContent = isEdit ? '✏️ Editar Lead' : '📋 Novo Lead';
+    $id('lEditId').value = leadId || '';
+    // Limpar campos
+    ['lNome','lTelefone','lEmail','lAniversario','lRenda','lObs'].forEach(f => $id(f).value = '');
+    $id('lFormaRenda').value = '';
+    $id('lEstadoCivil').value = '';
+    $id('lImovel').value = '';
+    $id('lEtapa').value = 'leads';
+    $id('dupWarn').style.display = 'none';
+
+    if (isEdit && data.leadsDB[leadId]) {
+      const l = data.leadsDB[leadId];
+      $id('lNome').value = l.nome || '';
+      $id('lTelefone').value = l.telefone || '';
+      $id('lEmail').value = l.email || '';
+      $id('lAniversario').value = l.aniversario || '';
+      $id('lRenda').value = l.renda || '';
+      $id('lFormaRenda').value = l.formaRenda || '';
+      $id('lEstadoCivil').value = l.estadoCivil || '';
+      $id('lImovel').value = l.imovel || '';
+      $id('lObs').value = l.obs || '';
+      // Detectar etapa atual
+      const stage = getLeadStage(leadId);
+      if (stage) $id('lEtapa').value = stage;
+    }
+    openModal('leadModal');
+  }
+
+  // Verificação em tempo real de duplicidade
+  $id('lTelefone').addEventListener('input', () => {
+    const phone = $id('lTelefone').value.replace(/\D/g,'');
+    const editId = $id('lEditId').value;
+    const dup = findDuplicatePhone(phone, editId);
+    const warn = $id('dupWarn');
+    if (dup && phone.length >= 8) {
+      $id('dupWarnMsg').textContent = `Este telefone já está cadastrado para: ${dup.nome}`;
+      warn.style.display = 'flex';
+    } else {
+      warn.style.display = 'none';
+    }
+  });
+
+  $id('btnNovoLead').addEventListener('click', () => openLeadModal(null));
+
+  $id('btnSalvarLead').addEventListener('click', () => {
+    const nome = $id('lNome').value.trim();
+    const tel = $id('lTelefone').value.replace(/\D/g,'');
+    const editId = $id('lEditId').value;
+
+    if (!nome) { toast('⚠️ Nome é obrigatório!', 'err'); $id('lNome').classList.add('error'); return; }
+    if (!tel) { toast('⚠️ Telefone é obrigatório!', 'err'); $id('lTelefone').classList.add('error'); return; }
+    $id('lNome').classList.remove('error');
+    $id('lTelefone').classList.remove('error');
+
+    // Verificar duplicidade
+    const dup = findDuplicatePhone(tel, editId);
+    if (dup && !editId) {
+      if (!confirm(`⚠️ Este telefone já está cadastrado para "${dup.nome}".\n\nDeseja cadastrar mesmo assim?`)) return;
+    }
+
+    const isEdit = !!editId;
+    const id = isEdit ? editId : 'lead_' + Date.now();
+    const novaEtapa = $id('lEtapa').value;
+
+    const leadObj = {
+      id,
+      nome,
+      telefone: tel,
+      email: $id('lEmail').value.trim(),
+      aniversario: $id('lAniversario').value,
+      renda: parseFloat($id('lRenda').value) || null,
+      formaRenda: $id('lFormaRenda').value,
+      estadoCivil: $id('lEstadoCivil').value,
+      imovel: $id('lImovel').value,
+      obs: $id('lObs').value.trim(),
+      dataCadastro: isEdit ? (data.leadsDB[editId]?.dataCadastro || new Date().toISOString()) : new Date().toISOString(),
+      dataAtualizacao: new Date().toISOString()
+    };
+
+    // Remover da etapa antiga (se editando)
+    if (isEdit) {
+      for (const s of STAGES) {
+        data.funnel[s.id] = data.funnel[s.id].filter(x => x !== id);
+      }
+    }
+
+    data.leadsDB[id] = leadObj;
+    if (!data.funnel[novaEtapa]) data.funnel[novaEtapa] = [];
+    data.funnel[novaEtapa].push(id);
+
+    saveData();
+    closeModal('leadModal');
+    toast(isEdit ? '✅ Lead atualizado!' : '✅ Lead cadastrado!', 'ok');
+    renderAll();
+    // Se na aba leads, rerender
+    const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-','');
+    if (activeTab === 'leads') renderLeads();
+    if (activeTab === 'relatorio') renderRelatorio();
+  });
+
+  $id('btnCancelarLead').addEventListener('click', () => closeModal('leadModal'));
+
+  // ── ALTERAR ETAPA DO LEAD (inline no card) ──
+  function changeLeadStage(leadId, newStage) {
+    if (!data.leadsDB[leadId]) return;
+    // Remover da etapa atual
+    for (const s of STAGES) {
+      data.funnel[s.id] = data.funnel[s.id].filter(x => x !== leadId);
+    }
+    if (!data.funnel[newStage]) data.funnel[newStage] = [];
+    data.funnel[newStage].push(leadId);
+    data.leadsDB[leadId].dataAtualizacao = new Date().toISOString();
+    saveData();
+    const stageName = STAGES.find(s => s.id === newStage)?.name;
+    toast(`✅ Lead movido para ${stageName}!`, 'ok');
+    renderAll();
+    renderLeads();
+    renderRelatorio();
+  }
+
+  // ── DELETE LEAD ──
+  function deleteLead(leadId) {
+    const lead = data.leadsDB[leadId];
+    if (!lead) return;
+    if (!confirm(`Remover o lead "${lead.nome}"? Esta ação não pode ser desfeita.`)) return;
+    for (const s of STAGES) {
+      data.funnel[s.id] = data.funnel[s.id].filter(x => x !== leadId);
+    }
+    delete data.leadsDB[leadId];
+    saveData();
+    toast('Lead removido.', 'err');
+    renderAll();
+    renderLeads();
+    renderRelatorio();
+  }
+
+  // ── SHOW LEAD DETAIL ──
+  function showLeadDetail(leadId) {
+    const l = data.leadsDB[leadId];
+    if (!l) return;
+    const stage = STAGES.find(s => data.funnel[s.id].includes(leadId));
+    const valor = imovelValor(l.imovel);
+    const comissao = valor * COMISSAO_PCT;
+    const aniv = l.aniversario ? new Date(l.aniversario + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+    const cad = l.dataCadastro ? new Date(l.dataCadastro).toLocaleString('pt-BR') : '—';
+
+    $id('leadDetailContent').innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:52px;height:52px;border-radius:14px;background:${avatarColor(l.nome)};display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;flex-shrink:0">${getInitials(l.nome)}</div>
+        <div>
+          <div style="font-size:1.1rem;font-weight:800">${l.nome}</div>
+          <div style="font-size:.8rem;color:var(--t3)">${telFmt(l.telefone)}</div>
+        </div>
+        <span class="badge b-info" style="margin-left:auto;background:${stage?.color || '#666'};color:#fff">${stage?.name || '—'}</span>
+      </div>
+      <div class="mrow"><span class="ml">E-mail</span><span class="mv">${l.email||'—'}</span></div>
+      <div class="mrow"><span class="ml">Aniversário</span><span class="mv">${aniv}</span></div>
+      <div class="mrow"><span class="ml">Estado Civil</span><span class="mv">${l.estadoCivil||'—'}</span></div>
+      <div class="mrow"><span class="ml">Forma de Renda</span><span class="mv">${l.formaRenda||'—'}</span></div>
+      <div class="mrow"><span class="ml">Renda Mensal</span><span class="mv">${l.renda ? moneyFmt(l.renda) : '—'}</span></div>
+      <div class="mrow"><span class="ml">Imóvel de Interesse</span><span class="mv">${l.imovel||'—'}</span></div>
+      ${valor ? `<div class="mrow"><span class="ml">Valor Estimado</span><span class="mv" style="color:var(--ok)">${moneyFmt(valor)}</span></div>` : ''}
+      ${valor ? `<div class="mrow"><span class="ml">Comissão Estimada (3%)</span><span class="mv" style="color:var(--a1)">${moneyFmt(comissao)}</span></div>` : ''}
+      ${l.obs ? `<div style="margin-top:12px"><div class="slbl"><i class="fas fa-sticky-note"></i> Observações</div><div class="kbox">${l.obs}</div></div>` : ''}
+      <div class="mrow" style="margin-top:8px"><span class="ml">Cadastrado em</span><span class="mv">${cad}</span></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        ${l.telefone ? `<a href="https://wa.me/55${l.telefone.replace(/\D/g,'')}" target="_blank" class="btn btn-a" style="flex:1;text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+        <button class="btn btn-g" style="flex:1" onclick="editLeadFromDetail('${leadId}')"><i class="fas fa-edit"></i> Editar</button>
+      </div>
+    `;
+    openModal('leadDetailModal');
+  }
+  // Expor ao window para uso inline
+  window.editLeadFromDetail = function(id) {
+    closeModal('leadDetailModal');
+    setTimeout(() => openLeadModal(id), 200);
+  };
+
+  // ── RENDER LEADS ──
+  function renderLeads() {
+    const search = ($id('leadSearch')?.value || '').toLowerCase();
+    const stageF = $id('leadFilterStage')?.value || '';
+    let leads = allLeads();
+
+    if (stageF) leads = leads.filter(l => data.funnel[stageF]?.includes(l.id));
+    if (search) leads = leads.filter(l =>
+      (l.nome||'').toLowerCase().includes(search) ||
+      (l.telefone||'').includes(search) ||
+      (l.email||'').toLowerCase().includes(search)
+    );
+
+    // Ordenar: mais recentes primeiro
+    leads.sort((a,b) => new Date(b.dataCadastro) - new Date(a.dataCadastro));
+
+    $id('leadsCount').textContent = `${leads.length} lead(s) encontrado(s)`;
+
+    if (!leads.length) {
+      $id('leadsList').innerHTML = `
+        <div class="leads-empty">
+          <div><i class="fas fa-users"></i></div>
+          <div style="font-size:.95rem;font-weight:700;margin-bottom:6px">${search || stageF ? 'Nenhum lead encontrado' : 'Nenhum lead cadastrado'}</div>
+          <div style="font-size:.8rem">${search || stageF ? 'Tente outros filtros.' : 'Clique em "+ Novo Lead" para começar!'}</div>
+        </div>`;
+      return;
+    }
+
+    $id('leadsList').innerHTML = leads.map(l => {
+      const stage = STAGES.find(s => data.funnel[s.id]?.includes(l.id));
+      const valor = imovelValor(l.imovel);
+      const tags = [];
+      if (l.imovel) tags.push(l.imovel);
+      if (l.estadoCivil) tags.push(l.estadoCivil);
+      if (l.formaRenda) tags.push(l.formaRenda);
+
+      return `
+      <div class="lead-card" data-id="${l.id}">
+        <div class="lead-card-top" onclick="window._showDetail('${l.id}')">
+          <div class="lead-avatar" style="background:${avatarColor(l.nome)}">${getInitials(l.nome)}</div>
+          <div class="lead-info">
+            <div class="lead-name">${l.nome}</div>
+            <div class="lead-phone"><i class="fas fa-phone" style="font-size:.65rem"></i> ${telFmt(l.telefone)}</div>
+            ${l.email ? `<div class="lead-email"><i class="fas fa-envelope" style="font-size:.62rem"></i> ${l.email}</div>` : ''}
+            ${valor ? `<div style="font-size:.72rem;color:var(--ok);font-weight:700;margin-top:2px"><i class="fas fa-home"></i> ${moneyFmt(valor)}</div>` : ''}
+          </div>
+          <span class="lead-stage-badge" style="background:${stage?.color || '#888'}">${stage?.name || '—'}</span>
+        </div>
+        ${tags.length ? `<div class="lead-tags">${tags.map(t=>`<span class="lead-tag">${t}</span>`).join('')}</div>` : ''}
+        <div class="lead-actions">
+          <select class="lead-stage-select" onchange="window._changeStage('${l.id}',this.value)">
+            ${STAGES.map(s => `<option value="${s.id}" ${s.id === stage?.id ? 'selected':''}>${s.name}</option>`).join('')}
+          </select>
+          ${l.telefone ? `<button class="lead-action-btn la-whats" onclick="window.open('https://wa.me/55${l.telefone.replace(/\D/g,'')}','_blank')" title="WhatsApp"><i class="fab fa-whatsapp"></i></button>` : ''}
+          <button class="lead-action-btn la-edit" onclick="window._editLead('${l.id}')" title="Editar"><i class="fas fa-edit"></i></button>
+          <button class="lead-action-btn la-delete" onclick="window._deleteLead('${l.id}')" title="Remover"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  window._showDetail = showLeadDetail;
+  window._changeStage = changeLeadStage;
+  window._editLead = openLeadModal;
+  window._deleteLead = deleteLead;
+
+  // Live search
+  $id('leadSearch').addEventListener('input', renderLeads);
+  $id('leadFilterStage').addEventListener('change', renderLeads);
+
+  // ── RENDER RELATORIO ──
+  function renderRelatorio() {
+    const stageF = $id('rptStage')?.value || '';
+    const imovelF = $id('rptImovel')?.value || '';
+    const rendaF = $id('rptFormaRenda')?.value || '';
+
+    let leads = allLeads();
+    if (stageF) leads = leads.filter(l => data.funnel[stageF]?.includes(l.id));
+    if (imovelF) leads = leads.filter(l => l.imovel === imovelF);
+    if (rendaF) leads = leads.filter(l => l.formaRenda === rendaF);
+
+    const totalPot = calcPotencial(leads);
+    const totalComissao = totalPot * COMISSAO_PCT;
+    const leadsComImovel = leads.filter(l => l.imovel);
+    const potVendas = leads.filter(l => data.funnel['vendas']?.includes(l.id));
+    const potVendasTotal = calcPotencial(potVendas);
+
+    // Potencial card
+    $id('potencialCard').innerHTML = `
+      <div class="potencial-card">
+        <div class="potencial-title"><i class="fas fa-dollar-sign"></i> Potencial Financeiro do Período</div>
+        <div class="potencial-val">${moneyFmt(totalPot)}</div>
+        <div class="potencial-sub">${leads.length} lead(s) com potencial estimado de fechamento</div>
+        <div class="potencial-grid">
+          <div class="potencial-item">
+            <div class="pi-lbl">Comissão Estimada (3%)</div>
+            <div class="pi-val">${moneyFmt(totalComissao)}</div>
+          </div>
+          <div class="potencial-item">
+            <div class="pi-lbl">Leads com Imóvel</div>
+            <div class="pi-val">${leadsComImovel.length}</div>
+          </div>
+          <div class="potencial-item">
+            <div class="pi-lbl">Já Vendidos (valor)</div>
+            <div class="pi-val">${moneyFmt(potVendasTotal)}</div>
+          </div>
+          <div class="potencial-item">
+            <div class="pi-lbl">Ticket Médio</div>
+            <div class="pi-val">${leadsComImovel.length ? moneyFmt(totalPot/leadsComImovel.length) : '—'}</div>
+          </div>
+        </div>
+      </div>`;
+
+    // Breakdown por imóvel
+    const byImovel = {};
+    leads.forEach(l => {
+      if (!l.imovel) return;
+      if (!byImovel[l.imovel]) byImovel[l.imovel] = { count:0, total:0 };
+      byImovel[l.imovel].count++;
+      byImovel[l.imovel].total += imovelValor(l.imovel);
+    });
+    const sorted = Object.entries(byImovel).sort((a,b) => b[1].total - a[1].total);
+    $id('imovelBreakdown').innerHTML = sorted.length
+      ? sorted.map(([name, info]) => `
+          <div class="imovel-bar">
+            <div class="ib-name">${name}</div>
+            <div class="ib-count">${info.count}x</div>
+            <div class="ib-val">${moneyFmt(info.total)}</div>
+          </div>`).join('')
+      : '<div style="color:var(--t3);font-size:.8rem;text-align:center;padding:16px">Nenhum lead com imóvel de interesse definido.</div>';
+
+    // Tabela
+    leads.sort((a,b) => new Date(b.dataCadastro)-new Date(a.dataCadastro));
+    $id('reportBody').innerHTML = leads.map(l => {
+      const stage = STAGES.find(s => data.funnel[s.id]?.includes(l.id));
+      const val = imovelValor(l.imovel);
+      return `<tr>
+        <td><b>${l.nome}</b></td>
+        <td>${telFmt(l.telefone)||'—'}</td>
+        <td><span class="badge b-info" style="background:${stage?.color||'#888'};color:#fff;font-size:.62rem">${stage?.name||'—'}</span></td>
+        <td>${l.imovel||'—'}</td>
+        <td style="color:var(--ok);font-weight:700">${val ? moneyFmt(val) : '—'}</td>
+        <td>${l.renda ? moneyFmt(l.renda) : '—'}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:20px">Nenhum lead encontrado</td></tr>';
+  }
+
+  // Filtros do relatório
+  ['rptStage','rptImovel','rptFormaRenda'].forEach(id => {
+    const el = $id(id);
+    if (el) el.addEventListener('change', renderRelatorio);
+  });
+  $id('btnExportLeadsPdf').addEventListener('click', pdfLeadsReport);
+
+  // ── RENDER FUNIL ──
+  function renderKpi() {
+    if (!data.goals) return;
+    const v = data.funnel.vendas.length, mv = data.goals.vendas;
+    const tend = PAST > 0 ? (v/PAST)*TOT : 0;
+    const efic = data.funnel.leads.length > 0 ? ((v/data.funnel.leads.length)*100).toFixed(1) : '—';
+    const progMes = ((PAST/TOT)*100).toFixed(0);
+    const totalLeads = allLeads().length;
+    $id('kpiStrip').innerHTML = `
+      <div class="kpi-tile"><div class="kt-lbl">Mês</div><div class="kt-val">${progMes}%</div><div class="kt-sub">${PAST}/${TOT} dias</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Leads</div><div class="kt-val">${totalLeads}</div><div class="kt-sub">cadastrados</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Vendas</div><div class="kt-val">${v}</div><div class="kt-sub">Meta: ${Math.ceil(mv)}</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Tendência</div><div class="kt-val" style="color:${tend>=mv?'var(--ok)':'var(--warn)'}">${numFmt(tend)}</div><div class="kt-sub">${tend>=mv?'✅ acima':'⚠️ abaixo'}</div></div>`;
+  }
+
+  function renderStages() {
+    if (!data.goals) return;
+    const NOW2 = new Date(); const WK = new Date(NOW2); WK.setDate(NOW2.getDate()-7);
+    $id('stageList').innerHTML = STAGES.map((s, si) => {
+      const items = data.funnel[s.id];
+      const real = items.length, meta = data.goals[s.id];
+      const p = pct(real, meta), pc = pcColor(p);
+      const tend = PAST > 0 ? Math.round((real/PAST)*TOT) : 0;
+      const sem = items.filter(id => {
+        const l = data.leadsDB[id];
+        if (!l) return false;
+        return new Date(l.dataAtualizacao||l.dataCadastro) >= WK;
+      }).length;
+      return `
+      <div class="sc" data-stage="${s.id}">
+        <div class="sc-top">
+          <div class="sc-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
+          <div class="sc-info">
+            <div class="sn">${s.name}</div>
+            <div class="sv" style="color:${pc}">${real}</div>
+            <div class="sm">Meta: ${Math.ceil(meta)} · Esta semana: ${sem}</div>
+          </div>
+          <div class="sc-pct">
+            <div class="spv" style="color:${pc}">${p.toFixed(0)}%</div>
+            <div class="spl">da meta</div>
+          </div>
+        </div>
+        <div class="sc-bars">
+          <div class="br">
+            <div class="br-row"><span>Meta</span><span>${Math.ceil(meta)}</span></div>
+            <div class="prog-track" style="height:7px"><div class="prog-fill" style="width:${p}%;background:${s.color}"></div></div>
+          </div>
+          <div class="br">
+            <div class="br-row"><span>Tendência</span><span style="color:${tend>=meta?'var(--ok)':'var(--warn)'}">${tend}</span></div>
+            <div class="prog-track" style="height:5px"><div class="prog-fill" style="width:${pct(tend,meta)}%;background:${tend>=meta?'var(--ok)':'var(--warn)'}"></div></div>
+          </div>
+        </div>
+        <div class="sc-ctrl">
+          <div class="qty-row">
+            <button class="qbtn rem" title="Remover">−</button>
+            <input class="qin" type="text" inputmode="numeric" value="1" min="1">
+            <button class="qbtn add" title="Adicionar">+</button>
+          </div>
+          <div class="nav-row">
+            <button class="nbtn prev" ${si===0?'disabled':''} title="Mover para etapa anterior"><i class="fas fa-arrow-left"></i> Anterior</button>
+            <button class="nbtn next" ${si===STAGES.length-1?'disabled':''} title="Mover para próxima etapa">Próxima <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Sidebar
+    const MES_LABELS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const mes = MNS[Mo];
+    $id('resMes').innerHTML = STAGES.map(s => {
+      const r = data.funnel[s.id].length, m = Math.ceil(data.goals[s.id]);
+      const p2 = pct(r, m);
+      return `<div class="mrow"><span class="ml">${s.name}</span><span class="mv" style="color:${pcColor(p2)}">${r}/${m}</span></div>`;
+    }).join('');
+    $id('resMensal').innerHTML = STAGES.map(s => {
+      const r = data.funnel[s.id].length, m = Math.ceil(data.goals[s.id]);
+      const p2 = pct(r, m);
+      return `<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${r} <span style="font-size:.65rem;color:${pcColor(p2)}">(${p2.toFixed(0)}%)</span></span></div>`;
+    }).join('');
+
+    renderFChart();
+  }
+
+  function renderFChart() {
+    const canvas = $id('funnelChart'); if (!canvas) return;
+    if (fChart) fChart.destroy();
+    const dk = document.body.classList.contains('dark');
+    const tc = dk ? '#6A8A6C' : '#7A8A7C', gc = dk ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+    fChart = new Chart(canvas.getContext('2d'), {
+      type:'bar',
+      data:{
+        labels: STAGES.map(s=>s.name),
+        datasets:[
+          { label:'Meta', data:STAGES.map(s=>Math.ceil(data.goals[s.id])), backgroundColor:'rgba(196,114,74,.25)', borderColor:'#C4724A', borderWidth:1.5, borderRadius:4 },
+          { label:'Realizado', data:STAGES.map(s=>data.funnel[s.id].length), backgroundColor:STAGES.map(s=>s.color+'CC'), borderRadius:4 }
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:true,
+        plugins:{ legend:{ labels:{ color:tc, font:{ size:10, family:'Plus Jakarta Sans' } } } },
+        scales:{
+          x:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } },
+          y:{ beginAtZero:true, grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } }
+        }
+      }
+    });
+  }
+
+  function renderFunil() { renderKpi(); renderStages(); }
+
+  // ── FUNNEL ACTIONS (add/remove/move sem lead) ──
+  $id('stageList').addEventListener('click', e => {
+    const card = e.target.closest('.sc'); if (!card) return;
+    const sid = card.dataset.stage;
+    const qIn = card.querySelector('.qin');
+    const qty = Math.max(parseInt(qIn?.value,10)||1,1);
+    if (e.target.closest('.qbtn.add')) addItems(sid, qty);
+    else if (e.target.closest('.qbtn.rem')) removeItems(sid, qty);
+    else if (e.target.closest('.nbtn.prev') && !e.target.closest('.nbtn.prev').disabled) moveItem(sid,'prev');
+    else if (e.target.closest('.nbtn.next') && !e.target.closest('.nbtn.next').disabled) moveItem(sid,'next');
+  });
+
+  function addItems(sid, qty) {
+    // Adicionar como leads genéricos (sem dados) para compatibilidade
+    for (let i = 0; i < qty; i++) {
+      const id = 'gen_' + Date.now() + '_' + i;
+      data.leadsDB[id] = { id, nome:'Lead #'+Object.keys(data.leadsDB).length, telefone:'', etapa:sid, dataCadastro:new Date().toISOString(), dataAtualizacao:new Date().toISOString() };
+      data.funnel[sid].push(id);
+    }
+    saveData();
+    toast(`+${qty} ${STAGES.find(s=>s.id===sid).name}`);
+    renderAll();
+  }
+  function removeItems(sid, qty) {
+    if (data.funnel[sid].length < qty) { toast('Itens insuficientes para remover.'); return; }
+    for (let i = 0; i < qty; i++) {
+      const id = data.funnel[sid].pop();
+      // Só deletar se for lead genérico
+      if (id && id.startsWith('gen_')) delete data.leadsDB[id];
+    }
+    saveData();
+    toast(`−${qty} removido(s).`);
+    renderAll();
+  }
+  function moveItem(sid, dir) {
+    const idx = STAGES.findIndex(s=>s.id===sid);
+    const tid = STAGES[idx+(dir==='next'?1:-1)].id;
+    if (!data.funnel[sid].length) { toast('Sem itens para mover.'); return; }
+    const id = data.funnel[sid].pop();
+    data.funnel[tid].push(id);
+    if (data.leadsDB[id]) {
+      data.leadsDB[id].etapa = tid;
+      data.leadsDB[id].dataAtualizacao = new Date().toISOString();
+    }
+    saveData();
+    toast(`Movido → ${STAGES.find(s=>s.id===tid).name}`);
+    renderAll();
+  }
+
+  // ── STRATEGY ──
+  let stratBuiltLocal = false;
+  function renderStrategy() {
+    if (stratBuiltLocal) return;
+    const c = $id('stratCards');
+    c.innerHTML = STAGES.map(s => {
+      const sd = SD[s.id];
+      return `
+      <div class="ss">
+        <div class="ss-head" onclick="this.parentElement.classList.toggle('open')">
+          <div class="ss-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
+          <div class="ss-info"><h3>${s.name}</h3><p>${sd.sub}</p></div>
+          <div class="ss-right">
+            <span class="badge b-ok">${data.funnel[s.id].length} leads</span>
+            <i class="fas fa-chevron-down ss-chev"></i>
+          </div>
+        </div>
+        <div class="ss-body">
+          <div class="ss-inner">
+            <div class="slbl"><i class="fas fa-lightbulb"></i> Táticas</div>
+            <div class="tip-list">${sd.tips.map(t=>`<div class="tip"><i class="fas ${t.i} ti"></i><span>${t.t}</span></div>`).join('')}</div>
+            <div class="slbl"><i class="fas fa-photo-video"></i> Conteúdos</div>
+            <div class="chips">${sd.content.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+            <div class="slbl"><i class="fas fa-chart-bar"></i> KPIs</div>
+            <div class="kbox">${sd.kpis}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    stratBuiltLocal = true;
+  }
+
+  // ── CHECKLIST ──
+  const CHECKLIST = [
+    { cat:'Prospecção', color:'#2E4A31', icon:'fa-search', items:[
+      { t:'Publicar conteúdo no Instagram/Facebook', p:'h' },
+      { t:'Enviar 10 WhatsApps para leads frios', p:'h' },
+      { t:'Ligar para 5 leads sem retorno', p:'h' },
+      { t:'Responder todos os comentários e DMs', p:'m' },
+      { t:'Pesquisar novos leads no LinkedIn', p:'l' }
+    ]},
+    { cat:'Atendimento', color:'#3D6142', icon:'fa-headset', items:[
+      { t:'Confirmar visitas agendadas para amanhã', p:'h' },
+      { t:'Enviar material de apoio para leads em negociação', p:'h' },
+      { t:'Atualizar status dos leads no funil', p:'h' },
+      { t:'Enviar follow-up para leads sem resposta há 3 dias', p:'m' }
+    ]},
+    { cat:'Financeiro', color:'#B4724A', icon:'fa-file-invoice-dollar', items:[
+      { t:'Verificar status de aprovações bancárias', p:'h' },
+      { t:'Simular financiamento para novos leads', p:'m' },
+      { t:'Enviar checklist de documentos pendentes', p:'m' },
+      { t:'Contatar correspondente bancário', p:'l' }
+    ]},
+    { cat:'Fechamento', color:'#7A5238', icon:'fa-handshake', items:[
+      { t:'Revisar propostas enviadas sem resposta', p:'h' },
+      { t:'Agendar reunião de fechamento', p:'h' },
+      { t:'Preparar simulação de parcelas personalizada', p:'m' },
+      { t:'Confirmar disponibilidade do imóvel', p:'l' }
+    ]}
+  ];
+
+  function renderChecklist() {
+    if (chkListenerActive) { updateChkProgress(); return; }
+    const today = new Date().toDateString();
+    if (!chkState.date || chkState.date !== today) chkState = { date:today };
+
+    $id('chkGrid').innerHTML = CHECKLIST.map((cat, ci) => `
+      <div class="cg">
+        <div class="cg-head">
+          <div class="cg-ico" style="background:${cat.color}"><i class="fas ${cat.icon}"></i></div>
+          <div><h4>${cat.cat}</h4><small>${cat.items.length} tarefas</small></div>
+          <div class="cg-ctr" id="ctr_${ci}">0/${cat.items.length}</div>
+        </div>
+        ${cat.items.map((it,ii) => {
+          const key = `${ci}_${ii}`;
+          const done = !!chkState[key];
+          const dotCl = it.p==='h'?'ph':it.p==='m'?'pm':'pl';
+          return `<div class="ci${done?' done':''}" data-key="${key}">
+            <div class="cb"></div>
+            <div class="ct">${it.t}</div>
+            <div class="pdot ${dotCl}"></div>
+          </div>`;
+        }).join('')}
+      </div>`).join('');
+
+    $id('chkGrid').addEventListener('click', e => {
+      const ci = e.target.closest('.ci'); if (!ci) return;
+      const key = ci.dataset.key;
+      chkState[key] = !chkState[key];
+      ci.classList.toggle('done', chkState[key]);
+      updateChkProgress();
+    });
+    chkListenerActive = true;
+    updateChkProgress();
+  }
+
+  function updateChkProgress() {
+    const total = CHECKLIST.reduce((a,c)=>a+c.items.length,0);
+    const done = Object.keys(chkState).filter(k=>k!=='date'&&chkState[k]).length;
+    const p = total > 0 ? (done/total*100).toFixed(0) : 0;
+    $id('cpFill').style.width = p+'%';
+    $id('cpPct').textContent = p+'%';
+    $id('cpSub').textContent = `${done} de ${total} tarefas concluídas`;
+    CHECKLIST.forEach((cat, ci) => {
+      const catDone = cat.items.filter((_,ii) => chkState[`${ci}_${ii}`]).length;
+      const el = $id(`ctr_${ci}`); if (el) el.textContent = `${catDone}/${cat.items.length}`;
+    });
+  }
+
+  // ── ANALYTICS ──
+  function renderAnalytics() {
+    if (!data.goals) return;
+    const cr = {};
+    for (let i = 1; i < STAGES.length; i++) {
+      const f = data.funnel[STAGES[i-1].id].length;
+      const t = data.funnel[STAGES[i].id].length;
+      cr[`${STAGES[i-1].id}_${STAGES[i].id}`] = f > 0 ? ((t/f)*100).toFixed(1) : '—';
+    }
+    const v = data.funnel.vendas.length, l = data.funnel.leads.length;
+    const efic = l > 0 ? ((v/l)*100).toFixed(1) : '—';
+    const tend = PAST > 0 ? Math.round((v/PAST)*TOT) : 0;
+    const totalPot = calcPotencial(allLeads());
+    $id('aKpi').innerHTML = `
+      <div class="kpi-tile"><div class="kt-lbl">L→V conv.</div><div class="kt-val">${cr.leads_visitas||'—'}%</div><div class="kt-sub">Agendamento</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">Lead→Venda</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Projeção</div><div class="kt-val" style="color:${tend>=data.goals.vendas?'var(--ok)':'var(--warn)'}">${tend}</div><div class="kt-sub">vendas/mês</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Potencial</div><div class="kt-val" style="font-size:.9rem;color:var(--ok)">${totalPot ? moneyFmt(totalPot).replace('R$ ','') : '—'}</div><div class="kt-sub">financeiro</div></div>`;
+
+    const cf = $id('convFunnel'); cf.innerHTML = '';
+    STAGES.forEach((s,i) => {
+      const real = data.funnel[s.id].length, meta = data.goals[s.id];
+      const p = pct(real,meta).toFixed(0);
+      cf.innerHTML += `<div class="cstep"><div class="cs-ico2" style="background:${s.color}"><i class="fas ${s.icon}"></i></div><span class="cs-lbl">${s.name}</span><span class="cs-val" style="color:${pcColor(parseFloat(p))}">${real}/${Math.ceil(meta)}</span><span class="badge ${parseFloat(p)>=100?'b-ok':parseFloat(p)>=70?'b-warn':'b-err'}">${p}%</span></div>${i<STAGES.length-1?`<div style="text-align:center;font-size:.7rem;color:var(--t3);padding:2px 0"><i class="fas fa-arrow-down"></i> ${cr[STAGES[i].id+'_'+STAGES[i+1].id]||'—'}% conv.</div>`:''}`;
+    });
+
+    renderAChart();
+
+    const dg = $id('stageDiag'); dg.innerHTML = '';
+    STAGES.forEach(s => {
+      const real = data.funnel[s.id].length, meta = Math.ceil(data.goals[s.id]);
+      const p = pct(real,data.goals[s.id]);
+      const falt = Math.max(meta-real,0);
+      const pd = LEFT > 0 ? (falt/LEFT).toFixed(1) : '—';
+      const {ic,cl,lb} = p>=100?{ic:'fa-check-circle',cl:'var(--ok)',lb:'Meta atingida'}:p>=70?{ic:'fa-dot-circle',cl:'var(--warn)',lb:'Em ritmo'}:{ic:'fa-times-circle',cl:'var(--err)',lb:'Abaixo da meta'};
+      dg.innerHTML += `<div class="diag-i"><i class="fas ${ic}" style="color:${cl}"></i><div><div class="di-n">${s.name} — ${lb}</div><div class="di-s">Faltam ${falt} · Precisa: ${pd}/dia</div></div></div>`;
+    });
+
+    const ins = $id('autoInsights'); ins.innerHTML = '';
+    buildInsights().forEach(it => { ins.innerHTML += `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`; });
+  }
+
+  function renderAChart() {
+    const canvas = $id('analyticsChart'); if (!canvas) return;
+    if (aChart) aChart.destroy();
+    const dk = document.body.classList.contains('dark');
+    const tc = dk?'#6A8A6C':'#7A8A7C', gc = dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+    aChart = new Chart(canvas.getContext('2d'),{
+      type:'bar',
+      data:{
+        labels:STAGES.map(s=>s.name),
+        datasets:[
+          { label:'Meta', data:STAGES.map(s=>Math.ceil(data.goals[s.id])), backgroundColor:'rgba(196,114,74,.25)', borderColor:'#C4724A', borderWidth:1.5, borderRadius:4 },
+          { label:'Realizado', data:STAGES.map(s=>data.funnel[s.id].length), backgroundColor:STAGES.map(s=>s.color+'CC'), borderRadius:4 }
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:true,
+        plugins:{ legend:{ labels:{ color:tc, font:{ size:10, family:'Plus Jakarta Sans' } } } },
+        scales:{
+          x:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } },
+          y:{ beginAtZero:true, grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } }
+        }
+      }
+    });
+  }
+
+  function buildInsights() {
+    if (!data.goals) return [];
+    const out = [];
+    const v = data.funnel.vendas.length, mv = data.goals.vendas;
+    const tend = PAST > 0 ? (v/PAST)*TOT : 0;
+    const totalLeads = allLeads().length;
+    const totalPot = calcPotencial(allLeads());
+
+    if (tend >= mv) {
+      out.push({ic:'fa-trophy',cl:'var(--ok)',txt:`🏆 Tendência de ${numFmt(tend)} vendas supera a meta de ${Math.ceil(mv)}. Continue!`});
+    } else {
+      const def = Math.ceil(mv)-v, pd = LEFT>0?(def/LEFT).toFixed(1):'—';
+      out.push({ic:'fa-exclamation-triangle',cl:'var(--warn)',txt:`Precisa de ${def} venda(s) em ${LEFT} dias (${pd}/dia) para bater a meta.`});
+    }
+    if (totalPot > 0) out.push({ic:'fa-dollar-sign',cl:'var(--ok)',txt:`Potencial financeiro total da carteira: ${moneyFmt(totalPot)}. Comissão estimada: ${moneyFmt(totalPot*COMISSAO_PCT)}.`});
+    const lP = pct(data.funnel.leads.length,data.goals.leads);
+    if (lP < 60) out.push({ic:'fa-users',cl:'var(--err)',txt:'Captação de leads abaixo de 60% da meta. Intensifique prospecção e tráfego pago urgente.'});
+    const leadsComDados = allLeads().filter(l=>l.imovel).length;
+    if (totalLeads > 0 && leadsComDados/totalLeads < 0.5) out.push({ic:'fa-info-circle',cl:'var(--warn)',txt:`${totalLeads-leadsComDados} lead(s) sem imóvel de interesse definido. Complete o cadastro para maximizar o potencial financeiro.`});
+    if (data.funnel.aprovacoes.length>0 && v===0) out.push({ic:'fa-stamp',cl:'var(--warn)',txt:`Você tem ${data.funnel.aprovacoes.length} aprovação(ões) sem venda fechada. Converta agora!`});
+    const efic = data.funnel.leads.length>0?(v/data.funnel.leads.length*100):0;
+    if (efic>10) out.push({ic:'fa-chart-line',cl:'var(--ok)',txt:`Eficiência global de ${efic.toFixed(1)}% (L→V). Excelente! Média do mercado é 5-8%.`});
+    return out.slice(0,5);
+  }
+
+  // ── PERFORMANCE MODAL ──
+  function showPerf() {
+    if (!data.goals || PAST===0) return;
+    const v = data.funnel.vendas.length, mv = data.goals.vendas;
+    const tend = (v/PAST)*TOT;
+    const em=$id('pEmoji'),tt=$id('pTitle'),pm=$id('pMsg'),pt=$id('pTips'),ptc=$id('pTipsC');
+    if (tend>=mv){
+      em.textContent='🎉'; tt.textContent='Excelente Desempenho!'; tt.className='pt ok';
+      pm.textContent=`Tendência de ${numFmt(tend)} vendas supera a meta de ${Math.ceil(mv)}. Continue o ritmo!`;
+      pt.classList.add('hidden');
+    } else {
+      em.textContent='⚡'; tt.textContent='Hora de Acelerar!'; tt.className='pt warn';
+      pm.textContent=`Tendência: ${numFmt(tend)} vendas | Meta: ${Math.ceil(mv)}. Veja as ações abaixo.`;
+      ptc.innerHTML=buildInsights().map(it=>`<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`).join('');
+      pt.classList.remove('hidden');
+    }
+    openModal('perfModal');
   }
 
   // ── RENDER ALL ──
   function renderAll() {
     renderFunil();
-    stratBuilt = false;
-    const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-', '');
-    if (activeTab === 'marketing') renderStrategy();
-    if (activeTab === 'checklist') renderChecklist();
-    if (activeTab === 'analytics') renderAnalytics();
+    stratBuiltLocal = false;
+    const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-','');
+    if (activeTab==='marketing') renderStrategy();
+    if (activeTab==='checklist') renderChecklist();
+    if (activeTab==='analytics') renderAnalytics();
+    if (activeTab==='leads') renderLeads();
+    if (activeTab==='relatorio') renderRelatorio();
   }
 
   // ── INIT ──
   function init() {
-    applyTheme(localStorage.getItem('imobTheme') || 'light');
+    applyTheme(localStorage.getItem('imobTheme')||'light');
     if (loadData() && data.goals) {
       closeModal('metasModal');
       $id('appShell').classList.remove('hidden');
