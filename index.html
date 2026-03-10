@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#2E4A31">
-<title>Funil Pro Corretor</title>
+<title>Funil Pro Corretor • mobile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
@@ -37,14 +36,10 @@ body.dark {
 *,*::before,*::after {
   box-sizing:border-box; margin:0; padding:0;
   -webkit-tap-highlight-color:transparent;
-  /* FIX: prevent text selection on long-press in mobile */
   -webkit-user-select:none; user-select:none;
 }
-/* Allow text selection only where it makes sense */
 p, span, div.ct, .kbox, .tip span { -webkit-user-select:text; user-select:text; }
-/* FIX: prevent iOS input zoom — ALL inputs/selects must be min 16px */
 input, select, textarea { font-size:16px !important; font-family:'Plus Jakarta Sans',sans-serif; }
-/* FIX: hide number input spinners (ugly on mobile) */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 input[type=number] { -moz-appearance:textfield; }
@@ -56,18 +51,23 @@ body {
   min-height:100dvh; overscroll-behavior:none;
   transition:background .3s,color .3s;
 }
-/* FIX: lock body scroll when modal is open */
 body.modal-open { overflow:hidden; touch-action:none; }
 
 /* ══ SHELL ══ */
 .shell { display:flex; flex-direction:column; height:100dvh; overflow:hidden; }
 
-/* ══ TOP BAR ══ */
+/* ══ TOP BAR — com suporte a notch ══ */
 .topbar {
-  background:var(--g1); padding:0 16px;
-  height:58px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:space-between;
-  box-shadow:0 2px 16px rgba(0,0,0,.22); z-index:50; position:relative;
+  background:var(--g1);
+  padding: env(safe-area-inset-top) 16px 0;
+  min-height: calc(58px + env(safe-area-inset-top));
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 2px 16px rgba(0,0,0,.22);
+  z-index:50;
+  position:relative;
 }
 .logo { display:flex; align-items:center; gap:10px; }
 .logo-icon {
@@ -91,7 +91,6 @@ body.modal-open { overflow:hidden; touch-action:none; }
 .page {
   flex:1; overflow-y:auto; overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
-  /* FIX: extra bottom pad for bottom nav + safe area */
   padding-bottom:calc(var(--bnav-h) + var(--safe-b) + 10px);
 }
 .tab { display:none; padding:14px 13px; animation:fadeUp .22s ease; }
@@ -133,12 +132,8 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
   margin-bottom:11px; display:flex; align-items:center; gap:7px;
 }
 .sec i { color:var(--p2); }
-
-/* Progress */
 .prog-track { background:var(--bdr); border-radius:99px; overflow:hidden; }
 .prog-fill { height:100%; border-radius:99px; transition:width .55s cubic-bezier(.4,0,.2,1); }
-
-/* Badge */
 .badge {
   display:inline-flex; align-items:center; gap:4px;
   padding:3px 8px; border-radius:99px; font-size:.62rem; font-weight:700;
@@ -146,8 +141,6 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 .b-ok { background:rgba(46,125,66,.12); color:var(--ok); }
 .b-warn { background:rgba(184,112,32,.12); color:var(--warn); }
 .b-err { background:rgba(184,48,48,.12); color:var(--err); }
-
-/* Metric row */
 .mrow {
   display:flex; justify-content:space-between; align-items:center;
   padding:8px 0; border-bottom:1px solid var(--bdr); font-size:.82rem;
@@ -155,14 +148,11 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 .mrow:last-child { border-bottom:none; }
 .mrow .ml { color:var(--t3); font-weight:500; }
 .mrow .mv { font-weight:700; background:var(--bg); padding:2px 8px; border-radius:6px; font-size:.78rem; }
-
-/* Buttons */
 .btn {
   display:inline-flex; align-items:center; justify-content:center;
   gap:7px; border:none; border-radius:12px;
   font-family:inherit; font-weight:700; cursor:pointer;
   transition:transform .12s, opacity .15s;
-  /* FIX: prevent text selection */
   -webkit-user-select:none; user-select:none;
 }
 .btn:active { transform:scale(.95); opacity:.88; }
@@ -171,34 +161,29 @@ body.dark .bni.active .bni-ico { background:rgba(91,148,99,.15); }
 .btn-d { background:var(--err); color:#fff; padding:14px 18px; font-size:.9rem; width:100%; }
 .btn-ico { width:48px; height:48px; border-radius:12px; padding:0; background:var(--g1); color:#fff; flex-shrink:0; }
 
-/* Form */
+/* Form fields — todos com text + inputmode */
 .fg { margin-bottom:13px; }
 .fg label { display:block; font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); margin-bottom:6px; }
-/* FIX: font-size:16px via the global rule above prevents iOS auto-zoom */
 .fi {
   width:100%; background:var(--bg); border:1.5px solid var(--bdr);
   color:var(--t1); border-radius:12px; padding:14px;
   transition:border-color .2s; outline:none;
-  /* font-size is 16px from global rule */
+  font-size:16px !important;
 }
 .fi:focus { border-color:var(--p2); }
 
-/* Chip */
 .chip {
   display:inline-flex; padding:5px 11px; border-radius:99px;
   background:rgba(46,74,49,.08); color:var(--p2);
   font-size:.7rem; font-weight:700; border:1px solid rgba(46,74,49,.14);
 }
 body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2); }
-
-/* Section label */
 .slbl {
   font-size:.65rem; font-weight:800; text-transform:uppercase;
   letter-spacing:.07em; color:var(--t3); margin:14px 0 7px;
   display:flex; align-items:center; gap:5px;
 }
 .slbl i { color:var(--p2); }
-
 .hidden { display:none !important; }
 
 /* ══ TOAST ══ */
@@ -216,19 +201,17 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 #toast.show { opacity:1; visibility:visible; transform:translate(-50%,0); }
 
-/* ══ MODALS ══ */
+/* ══ MODAIS ══ */
 .mbg {
   position:fixed; inset:0; z-index:500;
   background:rgba(0,0,0,.6); backdrop-filter:blur(8px);
   display:flex; align-items:flex-end; justify-content:center;
-  /* FIX: prevent scroll-behind on iOS */
   overflow:hidden;
 }
 .msheet {
   background:var(--card);
   border-radius:24px 24px 0 0;
   width:100%; max-width:600px;
-  /* FIX: max-height with dvh to avoid keyboard overlap */
   max-height:88dvh; overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   padding:6px 18px;
@@ -242,7 +225,6 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .cfg-gap { display:flex; flex-direction:column; gap:9px; }
 
 /* ══ KPI STRIP ══ */
-/* FIX: 2×2 on tiny screens, 4 cols at 400px+ */
 .kpi-strip {
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -285,33 +267,27 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .br-row { display:flex; justify-content:space-between; font-size:.68rem; margin-bottom:4px; }
 .br-row span:first-child { color:var(--t3); }
 .br-row span:last-child { font-weight:700; }
-
-/* Stage controls */
 .sc-ctrl {
   padding:12px 14px 14px; border-top:1px solid var(--bdr);
   background:var(--bg); display:flex; flex-direction:column; gap:9px;
 }
 .qty-row { display:flex; align-items:center; gap:8px; }
 .qbtn {
-  /* FIX: 48px touch target minimum */
   width:48px; height:48px; border-radius:12px; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   background:var(--g1); color:#fff; font-size:1.4rem; font-weight:700;
   border:none; transition:transform .12s, opacity .12s;
 }
 .qbtn:active { transform:scale(.88); opacity:.85; }
-/* FIX: quantity input — type=text with inputmode for reliable integer keyboard on iOS */
 .qin {
   flex:1; text-align:center; background:var(--card);
   border:1.5px solid var(--bdr); color:var(--t1);
   border-radius:10px; padding:12px 4px;
-  /* font-size 16px from global rule */
-  font-weight:700;
+  font-weight:700; font-size:16px !important;
 }
 .nav-row { display:flex; gap:8px; }
 .nbtn {
   flex:1; display:flex; align-items:center; justify-content:center; gap:5px;
-  /* FIX: min 48px height for touch target */
   padding:13px 6px; border-radius:11px;
   background:var(--g2); color:#fff; font-size:.78rem; font-weight:700;
   border:none; transition:opacity .2s, transform .12s;
@@ -319,7 +295,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .nbtn:active { transform:scale(.96); }
 .nbtn:disabled { opacity:.22; pointer-events:none; }
 
-/* Funnel layout */
+/* ══ FUNNEL LAYOUT ══ */
 .fl-main { display:flex; flex-direction:column; gap:12px; }
 .sidebar-cards { display:flex; flex-direction:column; gap:11px; }
 .chart-card {
@@ -336,9 +312,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 }
 .ss-head {
   padding:14px; display:flex; align-items:center; gap:11px;
-  cursor:pointer;
-  /* FIX: min 56px touch target */
-  min-height:56px;
+  cursor:pointer; min-height:56px;
 }
 .ss-ico {
   width:44px; height:44px; border-radius:12px; flex-shrink:0;
@@ -359,7 +333,6 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   display:flex; gap:9px; align-items:flex-start;
   padding:10px 12px; background:var(--bg); border-radius:10px;
   font-size:.8rem; line-height:1.5;
-  /* FIX: allow text selection in tips */
   -webkit-user-select:text; user-select:text;
 }
 .tip .ti { color:var(--a1); font-size:.85rem; flex-shrink:0; margin-top:2px; }
@@ -382,10 +355,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .cp-row .prog-fill { background:#fff; }
 .cp-pct { font-size:.8rem; font-weight:800; white-space:nowrap; }
 .chk-sub { font-size:.7rem; margin-top:5px; opacity:.72; }
-
-/* Checklist grid */
 .chk-grid-wrap { display:flex; flex-direction:column; gap:11px; }
-
 .cg {
   background:var(--card); border:1px solid var(--bdr);
   border-radius:14px; box-shadow:0 2px 10px var(--shd); overflow:hidden;
@@ -403,13 +373,10 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   background:var(--bg); border-radius:99px; padding:3px 10px;
   font-size:.72rem; font-weight:700; color:var(--t3);
 }
-/* FIX: checklist items as divs (not labels) to avoid iOS label issues */
 .ci {
   display:flex; align-items:flex-start; gap:12px;
   padding:12px 13px; cursor:pointer; border-bottom:1px solid var(--bdr);
-  transition:background .12s;
-  /* FIX: min touch target 48px */
-  min-height:48px;
+  transition:background .12s; min-height:48px;
 }
 .ci:last-child { border-bottom:none; }
 .ci:active { background:var(--bg); }
@@ -427,7 +394,6 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .ph { background:var(--err); } .pm { background:var(--warn); } .pl { background:var(--ok); }
 
 /* ══ ANALYTICS ══ */
-/* FIX: proper class-based layout (no inline style override) */
 .analytics-wrap { display:flex; flex-direction:column; gap:13px; }
 .insight {
   display:flex; gap:10px; align-items:flex-start;
@@ -459,28 +425,20 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 .pmsg { font-size:.83rem; color:var(--t3); margin-bottom:16px; -webkit-user-select:text; user-select:text; }
 .ptlbl { font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); text-align:left; margin-bottom:7px; }
 
-/* ══ SIDE NAV (desktop only, hidden by default) ══ */
+/* ══ SIDE NAV (desktop) ══ */
 .sidenav { display:none; }
 
-/* ══════════════════════
-   BREAKPOINTS
-══════════════════════ */
-
-/* Tablet 640px */
+/* ══ BREAKPOINTS ══ */
 @media(min-width:640px) {
   .tab { padding:18px 16px; }
-  .topbar { padding:0 22px; }
   .stage-list { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
 }
-
-/* Desktop 1024px — sidebar replaces bottom nav */
 @media(min-width:1024px) {
   .shell { flex-direction:row; }
   .bnav { display:none; }
   .page { padding-bottom:0; }
   .tab { padding:22px 26px; }
   .topbar { padding:12px 26px; height:auto; }
-
   .sidenav {
     display:flex !important; flex-direction:column;
     width:68px; background:var(--g1); align-items:center;
@@ -505,16 +463,11 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   .sni:not(.active):hover { background:rgba(255,255,255,.1); color:rgba(255,255,255,.85); }
   .sn-bottom { margin-top:auto; display:flex; flex-direction:column; gap:8px; align-items:center; padding-bottom:14px; }
   .main-body { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-
   .fl-main { display:grid; grid-template-columns:1fr 290px; gap:18px; align-items:start; }
   .sidebar-cards { position:sticky; top:8px; }
-
-  /* FIX: use CSS class only, no inline style override */
   .analytics-wrap { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .chk-grid-wrap { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
 }
-
-/* Wide desktop 1280px */
 @media(min-width:1280px) {
   .sidenav { width:184px; }
   .sni { width:100%; flex-direction:row; gap:9px; padding:10px 14px; border-radius:10px; font-size:.72rem; }
@@ -527,9 +480,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 </head>
 <body>
 
-<!-- ═══════════════════════════
-     MODAL: METAS INICIAIS
-═══════════════════════════ -->
+<!-- MODAL: METAS INICIAIS (com inputs text+inputmode) -->
 <div class="mbg" id="metasModal">
   <div class="msheet">
     <div class="handle"></div>
@@ -540,31 +491,29 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
     </div>
     <div class="fg">
       <label>Meta Mensal de Leads</label>
-      <input class="fi" type="number" id="metaLeads" placeholder="Ex: 100" min="1" inputmode="numeric" autocomplete="off">
+      <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="metaLeads" placeholder="Ex: 100" autocomplete="off">
     </div>
     <div class="fg">
       <label>Leads → Visitas (%)</label>
-      <input class="fi" type="number" id="convLV" placeholder="Ex: 40" min="0" max="100" inputmode="decimal" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convLV" placeholder="Ex: 40" autocomplete="off">
     </div>
     <div class="fg">
       <label>Visitas → Docs. (%)</label>
-      <input class="fi" type="number" id="convVD" placeholder="Ex: 50" min="0" max="100" inputmode="decimal" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convVD" placeholder="Ex: 50" autocomplete="off">
     </div>
     <div class="fg">
       <label>Docs. → Aprovações (%)</label>
-      <input class="fi" type="number" id="convDA" placeholder="Ex: 80" min="0" max="100" inputmode="decimal" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convDA" placeholder="Ex: 80" autocomplete="off">
     </div>
     <div class="fg">
       <label>Aprovações → Vendas (%)</label>
-      <input class="fi" type="number" id="convAV" placeholder="Ex: 75" min="0" max="100" inputmode="decimal" autocomplete="off">
+      <input class="fi" type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="convAV" placeholder="Ex: 75" autocomplete="off">
     </div>
     <button class="btn btn-p" id="btnSalvar"><i class="fas fa-save"></i> Salvar e Iniciar</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════
-     MODAL: PERFORMANCE
-═══════════════════════════ -->
+<!-- MODAL: PERFORMANCE -->
 <div class="mbg hidden" id="perfModal">
   <div class="msheet">
     <div class="handle"></div>
@@ -583,9 +532,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   </div>
 </div>
 
-<!-- ═══════════════════════════
-     MODAL: CONFIGURAÇÕES
-═══════════════════════════ -->
+<!-- MODAL: CONFIGURAÇÕES -->
 <div class="mbg hidden" id="cfgModal">
   <div class="msheet">
     <div class="handle"></div>
@@ -607,7 +554,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 
     <div class="slbl"><i class="fas fa-bullseye"></i> Ajuste de Meta</div>
     <div style="display:flex;gap:8px">
-      <input class="fi" type="number" id="editMetaLeads" placeholder="Nova meta de leads" inputmode="numeric" autocomplete="off" style="flex:1">
+      <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="editMetaLeads" placeholder="Nova meta de leads" autocomplete="off" style="flex:1">
       <button class="btn btn-ico" id="btnUpdateMeta"><i class="fas fa-check"></i></button>
     </div>
 
@@ -617,12 +564,10 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
   </div>
 </div>
 
-<!-- ═══════════════════════════
-     APP SHELL
-═══════════════════════════ -->
+<!-- APP SHELL -->
 <div class="shell hidden" id="appShell">
 
-  <!-- SIDE NAV (desktop only) -->
+  <!-- SIDE NAV (desktop) -->
   <nav class="sidenav" id="sidenav">
     <div class="sn-logo"><i class="fas fa-filter"></i></div>
     <button class="sni active" data-tab="funil"><i class="fas fa-filter"></i><span>Funil</span></button>
@@ -637,7 +582,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
 
   <div class="main-body" id="mainBody">
 
-    <!-- TOP BAR -->
+    <!-- TOP BAR com safe area -->
     <div class="topbar">
       <div class="logo">
         <div class="logo-icon"><i class="fas fa-filter"></i></div>
@@ -655,7 +600,7 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
     <!-- PAGE AREA -->
     <div class="page" id="pageArea">
 
-      <!-- ─── TAB: FUNIL ─── -->
+      <!-- TAB: FUNIL -->
       <div class="tab active" id="tab-funil">
         <div class="kpi-strip" id="kpiStrip"></div>
         <div class="fl-main">
@@ -684,13 +629,13 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
         </div>
       </div>
 
-      <!-- ─── TAB: ESTRATÉGIA ─── -->
+      <!-- TAB: ESTRATÉGIA -->
       <div class="tab" id="tab-marketing">
         <div class="sec" style="margin-bottom:13px"><i class="fas fa-bullhorn"></i> Estratégia por Etapa</div>
         <div id="stratCards"></div>
       </div>
 
-      <!-- ─── TAB: CHECKLIST ─── -->
+      <!-- TAB: CHECKLIST -->
       <div class="tab" id="tab-checklist">
         <div class="chk-hdr">
           <div class="dlbl" id="chkDate"></div>
@@ -701,15 +646,13 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
           </div>
           <div class="chk-sub" id="cpSub">0 de 0 tarefas concluídas</div>
         </div>
-        <!-- FIX: no inline style — layout controlled by CSS class + media query -->
         <div id="chkGrid" class="chk-grid-wrap"></div>
       </div>
 
-      <!-- ─── TAB: ANÁLISE ─── -->
+      <!-- TAB: ANÁLISE -->
       <div class="tab" id="tab-analytics">
         <div class="sec" style="margin-bottom:13px"><i class="fas fa-chart-line"></i> Análise Detalhada</div>
         <div class="kpi-strip" id="aKpi" style="margin-bottom:14px"></div>
-        <!-- FIX: no inline style — layout controlled by CSS class + media query -->
         <div class="analytics-wrap">
           <div class="chart-card">
             <div class="ctitle"><i class="fas fa-funnel-dollar"></i> Funil de Conversão</div>
@@ -733,38 +676,23 @@ body.dark .chip { background:rgba(91,148,99,.1); border-color:rgba(91,148,99,.2)
     </div><!-- /page -->
   </div><!-- /main-body -->
 
-  <!-- BOTTOM NAV (mobile/tablet) -->
+  <!-- BOTTOM NAV -->
   <nav class="bnav" id="bnav">
-    <button class="bni active" data-tab="funil">
-      <div class="bni-ico"><i class="fas fa-filter"></i></div>
-      <span>Funil</span>
-    </button>
-    <button class="bni" data-tab="marketing">
-      <div class="bni-ico"><i class="fas fa-bullhorn"></i></div>
-      <span>Estratégia</span>
-    </button>
-    <button class="bni" data-tab="checklist">
-      <div class="bni-ico"><i class="fas fa-tasks"></i></div>
-      <span>Checklist</span>
-    </button>
-    <button class="bni" data-tab="analytics">
-      <div class="bni-ico"><i class="fas fa-chart-line"></i></div>
-      <span>Análise</span>
-    </button>
+    <button class="bni active" data-tab="funil"><div class="bni-ico"><i class="fas fa-filter"></i></div><span>Funil</span></button>
+    <button class="bni" data-tab="marketing"><div class="bni-ico"><i class="fas fa-bullhorn"></i></div><span>Estratégia</span></button>
+    <button class="bni" data-tab="checklist"><div class="bni-ico"><i class="fas fa-tasks"></i></div><span>Checklist</span></button>
+    <button class="bni" data-tab="analytics"><div class="bni-ico"><i class="fas fa-chart-line"></i></div><span>Análise</span></button>
   </nav>
 
 </div><!-- /shell -->
 
 <div id="toast"></div>
 
-<!-- ═══════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════ -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const { jsPDF } = window.jspdf;
 
-  /* ── DATES ── */
+  // ── DATES ──
   const NOW = new Date();
   const Y = NOW.getFullYear(), Mo = NOW.getMonth();
   const TOT = new Date(Y, Mo+1, 0).getDate();
@@ -774,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $id('topDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]}`;
   $id('chkDate').textContent = `${WDS[NOW.getDay()]}, ${PAST} de ${MNS[Mo]} de ${Y}`;
 
-  /* ── STAGES ── */
+  // ── STAGES ──
   const STAGES = [
     { id:'leads',      name:'Leads',          icon:'fa-users',         color:'#2E4A31' },
     { id:'visitas',    name:'Visitas',         icon:'fa-handshake',     color:'#3D6142' },
@@ -783,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id:'vendas',     name:'Vendas',          icon:'fa-key',           color:'#7A5238' }
   ];
 
-  /* ── STRATEGY DATA ── */
+  // ── STRATEGY DATA ──
   const SD = {
     leads: {
       sub: 'Gere volume com qualidade',
@@ -844,15 +772,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* ── STATE ── */
+  // ── STATE ──
   let data = { goals:null, conversions:null, funnel:{ leads:[], visitas:[], docs:[], aprovacoes:[], vendas:[] } };
   let fChart = null, aChart = null;
-  let chkState = {};   // persists across tab switches
+  let chkState = {};      // checklist progress (reset ao importar)
   let stratBuilt = false;
-  // FIX: track if checklist event listener has been attached (avoid duplicates)
   let chkListenerActive = false;
 
-  /* ── HELPERS ── */
   function $id(id) { return document.getElementById(id); }
   function pct(v, mx) { return mx > 0 ? Math.min((v / mx) * 100, 100) : 0; }
   function pcColor(p) { return p >= 100 ? 'var(--ok)' : p >= 70 ? 'var(--warn)' : 'var(--err)'; }
@@ -866,14 +792,12 @@ document.addEventListener('DOMContentLoaded', () => {
     t._timer = setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // FIX: body scroll lock when modal open
   function lockScroll() { document.body.classList.add('modal-open'); }
   function unlockScroll() { document.body.classList.remove('modal-open'); }
-
   function openModal(id) { $id(id).classList.remove('hidden'); lockScroll(); }
   function closeModal(id) { $id(id).classList.add('hidden'); unlockScroll(); }
 
-  /* ── DATA ── */
+  // ── DATA PERSISTENCE ──
   function saveData() { localStorage.setItem('funilProV3', JSON.stringify(data)); }
   function loadData() {
     const s = localStorage.getItem('funilProV3');
@@ -891,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  /* ── THEME ── */
+  // ── THEME ──
   function applyTheme(t) {
     document.body.classList.toggle('dark', t === 'dark');
     const ico = t === 'dark' ? 'fa-sun' : 'fa-moon';
@@ -909,7 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $id('themeBtn').addEventListener('click', toggleTheme);
   const tsBtn = $id('themeSide'); if (tsBtn) tsBtn.addEventListener('click', toggleTheme);
 
-  /* ── TABS ── */
+  // ── TABS ──
   function switchTab(tab) {
     document.querySelectorAll('.tab').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.bni, .sni').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
@@ -923,8 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
     b.addEventListener('click', () => switchTab(b.dataset.tab));
   });
 
-  /* ── MODAL EVENTS ── */
-  // FIX: use openModal/closeModal everywhere for consistent scroll-lock
+  // ── MODAL EVENTS ──
   $id('cfgBtn').addEventListener('click', () => openModal('cfgModal'));
   const csBtn = $id('cfgSide'); if (csBtn) csBtn.addEventListener('click', () => openModal('cfgModal'));
   $id('btnCloseCfg').addEventListener('click', () => closeModal('cfgModal'));
@@ -932,7 +855,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $id('btnClosePerfModal').addEventListener('click', () => closeModal('perfModal'));
   $id('perfModal').addEventListener('click', e => { if (e.target === $id('perfModal')) closeModal('perfModal'); });
 
-  /* ── INITIAL SETUP ── */
+  // ── INITIAL SETUP ──
   $id('btnSalvar').addEventListener('click', () => {
     const v = {
       leads: parseFloat($id('metaLeads').value),
@@ -966,7 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ── BACKUP ── */
+  // ── BACKUP ──
   $id('btnExport').addEventListener('click', () => {
     const b = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
     const a = document.createElement('a');
@@ -983,7 +906,11 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const imp = JSON.parse(ev.target.result);
         if (imp.goals && imp.conversions && imp.funnel) {
-          data = imp; saveData(); renderAll(); toast('Backup restaurado!');
+          data = imp;
+          chkState = {};                // ✅ reseta checklist ao importar
+          saveData();
+          renderAll();
+          toast('Backup restaurado!');
         } else throw new Error('Estrutura inválida');
       } catch(err) { alert('Erro ao importar: ' + err.message); }
     };
@@ -993,12 +920,11 @@ document.addEventListener('DOMContentLoaded', () => {
   $id('btnPdfGeral').addEventListener('click', pdfGeral);
   $id('btnPdfEtapas').addEventListener('click', pdfEtapas);
 
-  /* ── FUNNEL ACTIONS ── */
+  // ── FUNNEL ACTIONS ──
   $id('stageList').addEventListener('click', e => {
     const card = e.target.closest('.sc'); if (!card) return;
     const sid = card.dataset.stage;
     const qIn = card.querySelector('.qin');
-    // FIX: use parseInt with base 10; type=text so just parseInt
     const qty = Math.max(parseInt(qIn?.value, 10) || 1, 1);
     if (e.target.closest('.qbtn.add'))       addItems(sid, qty);
     else if (e.target.closest('.qbtn.rem'))  removeItems(sid, qty);
@@ -1029,9 +955,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAll();
   }
 
-  /* ═══════════════════════════════════
-     RENDER: FUNIL TAB
-  ═══════════════════════════════════ */
+  // ── RENDER FUNIL ──
   function renderKpi() {
     if (!data.goals) return;
     const v = data.funnel.vendas.length, mv = data.goals.vendas;
@@ -1039,26 +963,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const efic = data.funnel.leads.length > 0 ? ((v / data.funnel.leads.length) * 100).toFixed(1) : '—';
     const progMes = ((PAST / TOT) * 100).toFixed(0);
     $id('kpiStrip').innerHTML = `
-      <div class="kpi-tile">
-        <div class="kt-lbl">Mês</div>
-        <div class="kt-val">${progMes}%</div>
-        <div class="kt-sub">${PAST}/${TOT} dias</div>
-      </div>
-      <div class="kpi-tile">
-        <div class="kt-lbl">Vendas</div>
-        <div class="kt-val">${v}</div>
-        <div class="kt-sub">Meta: ${Math.ceil(mv)}</div>
-      </div>
-      <div class="kpi-tile">
-        <div class="kt-lbl">Tendência</div>
-        <div class="kt-val" style="color:${tend >= mv ? 'var(--ok)' : 'var(--warn)'}">${numFmt(tend)}</div>
-        <div class="kt-sub">${tend >= mv ? '✅ acima' : '⚠️ abaixo'}</div>
-      </div>
-      <div class="kpi-tile">
-        <div class="kt-lbl">Eficiência</div>
-        <div class="kt-val">${efic}%</div>
-        <div class="kt-sub">Lead→Venda</div>
-      </div>`;
+      <div class="kpi-tile"><div class="kt-lbl">Mês</div><div class="kt-val">${progMes}%</div><div class="kt-sub">${PAST}/${TOT} dias</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Vendas</div><div class="kt-val">${v}</div><div class="kt-sub">Meta: ${Math.ceil(mv)}</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Tendência</div><div class="kt-val" style="color:${tend >= mv ? 'var(--ok)' : 'var(--warn)'}">${numFmt(tend)}</div><div class="kt-sub">${tend >= mv ? '✅ acima' : '⚠️ abaixo'}</div></div>
+      <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">Lead→Venda</div></div>`;
   }
 
   function renderStages() {
@@ -1070,7 +978,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const tend = PAST > 0 ? (real / PAST) * TOT : 0;
       const metaDia = TOT > 0 ? meta / TOT : 0;
       const pR = pct(real, meta), pT = pct(tend, meta);
-
       const div = document.createElement('div');
       div.className = 'sc'; div.dataset.stage = s.id;
       div.innerHTML = `
@@ -1087,39 +994,18 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         <div class="sc-bars">
-          <div class="br">
-            <div class="br-row">
-              <span>Realizado</span>
-              <span style="color:${pcColor(pR)}">${real} / ${Math.ceil(meta)}</span>
-            </div>
-            <div class="prog-track" style="height:7px">
-              <div class="prog-fill" style="width:${pR}%;background:${pcColor(pR)}"></div>
-            </div>
-          </div>
-          <div class="br">
-            <div class="br-row">
-              <span>Tendência</span>
-              <span style="color:${pcColor(pT)}">${numFmt(tend)} (${pT.toFixed(0)}%)</span>
-            </div>
-            <div class="prog-track" style="height:5px">
-              <div class="prog-fill" style="width:${pT}%;background:${pcColor(pT)};opacity:.6"></div>
-            </div>
-          </div>
+          <div class="br"><div class="br-row"><span>Realizado</span><span style="color:${pcColor(pR)}">${real} / ${Math.ceil(meta)}</span></div><div class="prog-track" style="height:7px"><div class="prog-fill" style="width:${pR}%;background:${pcColor(pR)}"></div></div></div>
+          <div class="br"><div class="br-row"><span>Tendência</span><span style="color:${pcColor(pT)}">${numFmt(tend)} (${pT.toFixed(0)}%)</span></div><div class="prog-track" style="height:5px"><div class="prog-fill" style="width:${pT}%;background:${pcColor(pT)};opacity:.6"></div></div></div>
         </div>
         <div class="sc-ctrl">
           <div class="qty-row">
-            <button class="qbtn rem" aria-label="Remover">−</button>
-            <!-- FIX: type=text + inputmode=numeric for reliable integer keyboard on iOS -->
-            <input type="text" inputmode="numeric" pattern="[0-9]*" class="qin" value="1" aria-label="Quantidade" autocomplete="off">
-            <button class="qbtn add" aria-label="Adicionar">+</button>
+            <button class="qbtn rem">−</button>
+            <input type="text" inputmode="numeric" pattern="[0-9]*" class="qin" value="1" autocomplete="off">
+            <button class="qbtn add">+</button>
           </div>
           <div class="nav-row">
-            <button class="nbtn prev" ${i === 0 ? 'disabled' : ''} aria-label="Voltar etapa">
-              <i class="fas fa-arrow-left"></i> Voltar
-            </button>
-            <button class="nbtn next" ${i === STAGES.length-1 ? 'disabled' : ''} aria-label="Avançar etapa">
-              Avançar <i class="fas fa-arrow-right"></i>
-            </button>
+            <button class="nbtn prev" ${i === 0 ? 'disabled' : ''}><i class="fas fa-arrow-left"></i> Voltar</button>
+            <button class="nbtn next" ${i === STAGES.length-1 ? 'disabled' : ''}>Avançar <i class="fas fa-arrow-right"></i></button>
           </div>
         </div>`;
       list.appendChild(div);
@@ -1159,9 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="mrow"><span class="ml">Dias passados</span><span class="mv">${PAST}</span></div>
       <div class="mrow"><span class="ml">Dias restantes</span><span class="mv">${LEFT}</span></div>
       <div class="mrow"><span class="ml">Semana do mês</span><span class="mv">${Math.ceil(PAST/7)}ª</span></div>`;
-    $id('resMensal').innerHTML = STAGES.map(s =>
-      `<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${data.funnel[s.id].length}</span></div>`
-    ).join('');
+    $id('resMensal').innerHTML = STAGES.map(s => `<div class="mrow"><span class="ml">${s.name}</span><span class="mv">${data.funnel[s.id].length}</span></div>`).join('');
     const fd = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate() - NOW.getDay() + (NOW.getDay() === 0 ? -6 : 1));
     fd.setHours(0,0,0,0);
     const ld = new Date(fd); ld.setDate(ld.getDate()+6); ld.setHours(23,59,59,999);
@@ -1173,9 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderFunil() { renderKpi(); renderStages(); renderFChart(); renderSidebar(); }
 
-  /* ═══════════════════════════════════
-     RENDER: STRATEGY
-  ═══════════════════════════════════ */
+  // ── RENDER STRATEGY ──
   function renderStrategy() {
     if (stratBuilt) return;
     stratBuilt = true;
@@ -1185,47 +1067,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const real = data.funnel[s.id].length;
       const meta = data.goals ? Math.ceil(data.goals[s.id]) : '—';
       const p = data.goals ? pct(real, data.goals[s.id]) : 0;
-      const bdg = p >= 100
-        ? `<span class="badge b-ok"><i class="fas fa-check-circle"></i> OK</span>`
-        : p >= 70
-        ? `<span class="badge b-warn"><i class="fas fa-clock"></i> Ritmo</span>`
-        : `<span class="badge b-err"><i class="fas fa-exclamation-circle"></i> Atenção</span>`;
-
+      const bdg = p >= 100 ? `<span class="badge b-ok"><i class="fas fa-check-circle"></i> OK</span>` : p >= 70 ? `<span class="badge b-warn"><i class="fas fa-clock"></i> Ritmo</span>` : `<span class="badge b-err"><i class="fas fa-exclamation-circle"></i> Atenção</span>`;
       const div = document.createElement('div');
       div.className = 'ss' + (p < 70 ? ' open' : '');
       div.innerHTML = `
         <div class="ss-head">
           <div class="ss-ico" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
-          <div class="ss-info">
-            <h3>${i+1}. ${s.name}</h3>
-            <p>${sd.sub}</p>
-          </div>
-          <div class="ss-right">
-            ${bdg}
-            <div style="font-size:.66rem;color:var(--t3)">${real} / ${meta}</div>
-            <i class="fas fa-chevron-down ss-chev"></i>
-          </div>
+          <div class="ss-info"><h3>${i+1}. ${s.name}</h3><p>${sd.sub}</p></div>
+          <div class="ss-right">${bdg}<div style="font-size:.66rem;color:var(--t3)">${real} / ${meta}</div><i class="fas fa-chevron-down ss-chev"></i></div>
         </div>
-        <div class="ss-body">
-          <div class="ss-inner">
-            <div class="slbl"><i class="fas fa-lightbulb"></i> Táticas e Estratégias</div>
-            <div class="tip-list">
-              ${sd.tips.map(t => `<div class="tip"><i class="fas ${t.i} ti"></i><span>${t.t}</span></div>`).join('')}
-            </div>
-            <div class="slbl"><i class="fas fa-pencil-alt"></i> Ideias de Conteúdo</div>
-            <div class="chips">${sd.content.map(ch => `<span class="chip">${ch}</span>`).join('')}</div>
-            <div class="slbl"><i class="fas fa-tachometer-alt"></i> KPIs para Monitorar</div>
-            <div class="kbox">${sd.kpis}</div>
-          </div>
-        </div>`;
+        <div class="ss-body"><div class="ss-inner">
+          <div class="slbl"><i class="fas fa-lightbulb"></i> Táticas</div>
+          <div class="tip-list">${sd.tips.map(t => `<div class="tip"><i class="fas ${t.i} ti"></i><span>${t.t}</span></div>`).join('')}</div>
+          <div class="slbl"><i class="fas fa-pencil-alt"></i> Ideias de Conteúdo</div>
+          <div class="chips">${sd.content.map(ch => `<span class="chip">${ch}</span>`).join('')}</div>
+          <div class="slbl"><i class="fas fa-tachometer-alt"></i> KPIs</div>
+          <div class="kbox">${sd.kpis}</div>
+        </div></div>`;
       div.querySelector('.ss-head').addEventListener('click', () => div.classList.toggle('open'));
       c.appendChild(div);
     });
   }
 
-  /* ═══════════════════════════════════
-     RENDER: CHECKLIST
-  ═══════════════════════════════════ */
+  // ── RENDER CHECKLIST ──
   function renderChecklist() {
     if (!data.goals) return;
     const groups = buildChecklist();
@@ -1239,10 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       div.innerHTML = `
         <div class="cg-head">
           <div class="cg-ico" style="background:${g.color}"><i class="fas ${g.icon}"></i></div>
-          <div style="flex:1;min-width:0">
-            <h4>${g.title}</h4>
-            <small>${g.sub}</small>
-          </div>
+          <div style="flex:1;min-width:0"><h4>${g.title}</h4><small>${g.sub}</small></div>
           <div class="cg-ctr">${doneCount}/${g.items.length}</div>
         </div>
         <div class="cg-items">
@@ -1250,18 +1111,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = `${gi}-${ii}`;
             const done = chkState[key] || false;
             const priClass = it.pri === 'high' ? 'ph' : it.pri === 'mid' ? 'pm' : 'pl';
-            // FIX: use div instead of label, data-gi and data-ii for lookup
-            return `<div class="ci ${done ? 'done' : ''}" data-gi="${gi}" data-ii="${ii}">
-              <div class="cb"></div>
-              <span class="ct">${it.txt}</span>
-              <div class="pdot ${priClass}"></div>
-            </div>`;
+            return `<div class="ci ${done ? 'done' : ''}" data-gi="${gi}" data-ii="${ii}"><div class="cb"></div><span class="ct">${it.txt}</span><div class="pdot ${priClass}"></div></div>`;
           }).join('')}
         </div>`;
       grid.appendChild(div);
     });
 
-    // FIX: attach listener ONCE using a flag, delegate from grid parent
     if (!chkListenerActive) {
       chkListenerActive = true;
       grid.addEventListener('click', e => {
@@ -1271,7 +1126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const key = `${gi}-${ii}`;
         chkState[key] = !chkState[key];
         item.classList.toggle('done', chkState[key]);
-        // update group counter
         const grp = item.closest('.cg');
         const allCI = grp.querySelectorAll('.ci');
         const doneCI = grp.querySelectorAll('.ci.done').length;
@@ -1302,80 +1156,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const sP  = pct(data.funnel.vendas.length,      data.goals.vendas);
     const q   = Math.max(Math.ceil(mDia * 1.2), 10);
     const vq  = Math.max(Math.ceil(mVis), 1);
-
-    // FIX: template literals fixed — no single-quotes inside attribute strings
     return [
-      {
-        title:'Prospecção & Leads', sub:`Meta: ~${q} leads hoje`,
-        icon:'fa-users', color:'#2E4A31',
-        items:[
-          { txt:`Enviar ${q * 2} mensagens no WhatsApp (base fria + indicações)`, pri:'high' },
-          { txt:`Realizar ${q} ligações de prospecção para base de contatos`, pri: lP < 60 ? 'high' : 'mid' },
-          { txt:'Publicar 1 conteúdo imobiliário (Reels, Story ou Post)', pri:'high' },
-          { txt:'Responder TODOS os leads recebidos em até 5 minutos', pri:'high' },
-          { txt:'Pedir 2 indicações para clientes da carteira ativa', pri: lP < 70 ? 'high' : 'mid' }
-        ]
-      },
-      {
-        title:'Agendamento & Visitas', sub:`Meta: ~${vq} visita(s) hoje`,
-        icon:'fa-handshake', color:'#3D6142',
-        items:[
-          { txt:`Confirmar ${vq} visita(s) por WhatsApp e ligação`, pri:'high' },
-          { txt:'Preparar apresentação: fotos, planta baixa, comparativo de preços', pri: vP < 70 ? 'high' : 'mid' },
-          { txt:'Follow-up com leads que não responderam nos últimos 2 dias', pri:'mid' },
-          { txt:'Oferecer tour virtual para 3 leads qualificados que não visitaram', pri: vP < 50 ? 'high' : 'low' }
-        ]
-      },
-      {
-        title:'Documentação & Crédito', sub:'Agilize processos em andamento',
-        icon:'fa-file-contract', color:'#B4724A',
-        items:[
-          { txt:'Enviar checklist de documentos para clientes na etapa de visitas', pri:'high' },
-          { txt:'Ligar para correspondente bancário: status dos processos abertos', pri: dP < 70 ? 'high' : 'mid' },
-          { txt:'Verificar pendências e acionar clientes com documentos faltantes', pri:'mid' },
-          { txt:'Enviar simulação financeira personalizada para 2 clientes qualificados', pri: dP < 50 ? 'high' : 'low' }
-        ]
-      },
-      {
-        title:'Aprovações & Fechamentos', sub:'Converter aprovações em contratos',
-        icon:'fa-key', color:'#7A5238',
-        items:[
-          { txt:'Verificar status de todos os processos de aprovação em aberto', pri:'high' },
-          { txt: aP < 70 ? 'Ligar para aprovados — criar urgência de fechamento' : 'Confirmar data de assinatura com clientes aprovados', pri: aP < 70 ? 'high' : 'mid' },
-          { txt:'Resolver pendências: documentos faltantes, assinaturas, certidões', pri:'mid' },
-          { txt: sP >= 100 ? 'Postar entrega de chaves nas redes (com autorização do cliente)' : 'Negociar condições com clientes que estão indecisos', pri:'mid' }
-        ]
-      },
-      {
-        title:'Marketing Digital', sub:'Presença consistente nas redes',
-        icon:'fa-bullhorn', color:'#A0824A',
-        items:[
-          { txt:'Verificar métricas: alcance, curtidas e DMs das redes sociais', pri:'mid' },
-          { txt:'Responder TODOS os comentários e mensagens recebidas', pri:'high' },
-          { txt:'Capturar conteúdo do dia: foto ou vídeo do trabalho ou imóvel', pri:'mid' },
-          { txt:'Planejar conteúdo de amanhã: formato, legenda e horário ideal', pri:'low' }
-        ]
-      },
-      {
-        title:'Análise & Planejamento', sub:'Reflexão e otimização contínua',
-        icon:'fa-chart-line', color:'#3A6A42',
-        items:[
-          { txt:'Atualizar o funil com leads, visitas e todos os avanços do dia', pri:'high' },
-          { txt:`Funil em ${sP.toFixed(0)}% da meta. ${sP < 70 ? 'Intensifique a prospecção!' : 'Mantenha o ritmo!'}`, pri:'mid' },
-          { txt:'Qual ação gerou mais resultado hoje? Repita amanhã.', pri:'mid' },
-          { txt:'Anotar 3 aprendizados e 3 prioridades para amanhã', pri:'low' }
-        ]
-      }
+      { title:'Prospecção & Leads', sub:`Meta: ~${q} leads hoje`, icon:'fa-users', color:'#2E4A31', items:[
+        { txt:`Enviar ${q * 2} mensagens no WhatsApp (base fria + indicações)`, pri:'high' },
+        { txt:`Realizar ${q} ligações de prospecção para base de contatos`, pri: lP < 60 ? 'high' : 'mid' },
+        { txt:'Publicar 1 conteúdo imobiliário (Reels, Story ou Post)', pri:'high' },
+        { txt:'Responder TODOS os leads recebidos em até 5 minutos', pri:'high' },
+        { txt:'Pedir 2 indicações para clientes da carteira ativa', pri: lP < 70 ? 'high' : 'mid' }
+      ]},
+      { title:'Agendamento & Visitas', sub:`Meta: ~${vq} visita(s) hoje`, icon:'fa-handshake', color:'#3D6142', items:[
+        { txt:`Confirmar ${vq} visita(s) por WhatsApp e ligação`, pri:'high' },
+        { txt:'Preparar apresentação: fotos, planta baixa, comparativo de preços', pri: vP < 70 ? 'high' : 'mid' },
+        { txt:'Follow-up com leads que não responderam nos últimos 2 dias', pri:'mid' },
+        { txt:'Oferecer tour virtual para 3 leads qualificados que não visitaram', pri: vP < 50 ? 'high' : 'low' }
+      ]},
+      { title:'Documentação & Crédito', sub:'Agilize processos em andamento', icon:'fa-file-contract', color:'#B4724A', items:[
+        { txt:'Enviar checklist de documentos para clientes na etapa de visitas', pri:'high' },
+        { txt:'Ligar para correspondente bancário: status dos processos abertos', pri: dP < 70 ? 'high' : 'mid' },
+        { txt:'Verificar pendências e acionar clientes com documentos faltantes', pri:'mid' },
+        { txt:'Enviar simulação financeira personalizada para 2 clientes qualificados', pri: dP < 50 ? 'high' : 'low' }
+      ]},
+      { title:'Aprovações & Fechamentos', sub:'Converter aprovações em contratos', icon:'fa-key', color:'#7A5238', items:[
+        { txt:'Verificar status de todos os processos de aprovação em aberto', pri:'high' },
+        { txt: aP < 70 ? 'Ligar para aprovados — criar urgência de fechamento' : 'Confirmar data de assinatura com clientes aprovados', pri: aP < 70 ? 'high' : 'mid' },
+        { txt:'Resolver pendências: documentos faltantes, assinaturas, certidões', pri:'mid' },
+        { txt: sP >= 100 ? 'Postar entrega de chaves nas redes (com autorização do cliente)' : 'Negociar condições com clientes que estão indecisos', pri:'mid' }
+      ]},
+      { title:'Marketing Digital', sub:'Presença consistente nas redes', icon:'fa-bullhorn', color:'#A0824A', items:[
+        { txt:'Verificar métricas: alcance, curtidas e DMs das redes sociais', pri:'mid' },
+        { txt:'Responder TODOS os comentários e mensagens recebidas', pri:'high' },
+        { txt:'Capturar conteúdo do dia: foto ou vídeo do trabalho ou imóvel', pri:'mid' },
+        { txt:'Planejar conteúdo de amanhã: formato, legenda e horário ideal', pri:'low' }
+      ]},
+      { title:'Análise & Planejamento', sub:'Reflexão e otimização contínua', icon:'fa-chart-line', color:'#3A6A42', items:[
+        { txt:'Atualizar o funil com leads, visitas e todos os avanços do dia', pri:'high' },
+        { txt:`Funil em ${sP.toFixed(0)}% da meta. ${sP < 70 ? 'Intensifique a prospecção!' : 'Mantenha o ritmo!'}`, pri:'mid' },
+        { txt:'Qual ação gerou mais resultado hoje? Repita amanhã.', pri:'mid' },
+        { txt:'Anotar 3 aprendizados e 3 prioridades para amanhã', pri:'low' }
+      ]}
     ];
   }
 
-  /* ═══════════════════════════════════
-     RENDER: ANALYTICS
-  ═══════════════════════════════════ */
+  // ── RENDER ANALYTICS ──
   function renderAnalytics() {
     if (!data.goals) return;
-
-    // Conversion rates
     const cr = {};
     for (let i = 1; i < STAGES.length; i++) {
       const f = data.funnel[STAGES[i-1].id].length;
@@ -1385,57 +1209,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const v = data.funnel.vendas.length, l = data.funnel.leads.length;
     const efic = l > 0 ? ((v/l)*100).toFixed(1) : '—';
     const tend = PAST > 0 ? Math.round((v/PAST)*TOT) : 0;
-
     $id('aKpi').innerHTML = `
       <div class="kpi-tile"><div class="kt-lbl">L→V conv.</div><div class="kt-val">${cr.leads_visitas || '—'}%</div><div class="kt-sub">Agendamento</div></div>
       <div class="kpi-tile"><div class="kt-lbl">Eficiência</div><div class="kt-val">${efic}%</div><div class="kt-sub">Lead→Venda</div></div>
       <div class="kpi-tile"><div class="kt-lbl">Projeção</div><div class="kt-val" style="color:${tend >= data.goals.vendas ? 'var(--ok)' : 'var(--warn)'}">${tend}</div><div class="kt-sub">vendas/mês</div></div>
       <div class="kpi-tile"><div class="kt-lbl">Dias rest.</div><div class="kt-val">${LEFT}</div><div class="kt-sub">para fechar</div></div>`;
 
-    // Conversion funnel steps
     const cf = $id('convFunnel'); cf.innerHTML = '';
     STAGES.forEach((s, i) => {
       const real = data.funnel[s.id].length, meta = data.goals[s.id];
       const p = pct(real, meta).toFixed(0);
-      cf.innerHTML += `
-        <div class="cstep">
-          <div class="cs-ico2" style="background:${s.color}"><i class="fas ${s.icon}"></i></div>
-          <span class="cs-lbl">${s.name}</span>
-          <span class="cs-val" style="color:${pcColor(parseFloat(p))}">${real}/${Math.ceil(meta)}</span>
-          <span class="badge ${parseFloat(p)>=100?'b-ok':parseFloat(p)>=70?'b-warn':'b-err'}">${p}%</span>
-        </div>
-        ${i < STAGES.length-1 ? `<div style="text-align:center;font-size:.7rem;color:var(--t3);padding:2px 0"><i class="fas fa-arrow-down"></i> ${cr[STAGES[i].id+'_'+STAGES[i+1].id]||'—'}% conv.</div>` : ''}`;
+      cf.innerHTML += `<div class="cstep"><div class="cs-ico2" style="background:${s.color}"><i class="fas ${s.icon}"></i></div><span class="cs-lbl">${s.name}</span><span class="cs-val" style="color:${pcColor(parseFloat(p))}">${real}/${Math.ceil(meta)}</span><span class="badge ${parseFloat(p)>=100?'b-ok':parseFloat(p)>=70?'b-warn':'b-err'}">${p}%</span></div>${i < STAGES.length-1 ? `<div style="text-align:center;font-size:.7rem;color:var(--t3);padding:2px 0"><i class="fas fa-arrow-down"></i> ${cr[STAGES[i].id+'_'+STAGES[i+1].id]||'—'}% conv.</div>` : ''}`;
     });
 
     renderAChart();
 
-    // Stage diagnostic
     const dg = $id('stageDiag'); dg.innerHTML = '';
     STAGES.forEach(s => {
       const real = data.funnel[s.id].length, meta = Math.ceil(data.goals[s.id]);
       const p = pct(real, data.goals[s.id]);
       const falt = Math.max(meta - real, 0);
       const pd = LEFT > 0 ? (falt / LEFT).toFixed(1) : '—';
-      const { ic, cl, lb } = p >= 100
-        ? { ic:'fa-check-circle', cl:'var(--ok)',   lb:'Meta atingida' }
-        : p >= 70
-        ? { ic:'fa-dot-circle',   cl:'var(--warn)', lb:'Em ritmo' }
-        : { ic:'fa-times-circle', cl:'var(--err)',  lb:'Abaixo da meta' };
-      dg.innerHTML += `
-        <div class="diag-i">
-          <i class="fas ${ic}" style="color:${cl}"></i>
-          <div>
-            <div class="di-n">${s.name} — ${lb}</div>
-            <div class="di-s">Faltam ${falt} · Precisa: ${pd}/dia</div>
-          </div>
-        </div>`;
+      const { ic, cl, lb } = p >= 100 ? { ic:'fa-check-circle', cl:'var(--ok)', lb:'Meta atingida' } : p >= 70 ? { ic:'fa-dot-circle', cl:'var(--warn)', lb:'Em ritmo' } : { ic:'fa-times-circle', cl:'var(--err)', lb:'Abaixo da meta' };
+      dg.innerHTML += `<div class="diag-i"><i class="fas ${ic}" style="color:${cl}"></i><div><div class="di-n">${s.name} — ${lb}</div><div class="di-s">Faltam ${falt} · Precisa: ${pd}/dia</div></div></div>`;
     });
 
-    // Auto insights
     const ins = $id('autoInsights'); ins.innerHTML = '';
-    buildInsights().forEach(it => {
-      ins.innerHTML += `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`;
-    });
+    buildInsights().forEach(it => { ins.innerHTML += `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`; });
   }
 
   function renderAChart() {
@@ -1468,7 +1268,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const out = [];
     const v = data.funnel.vendas.length, mv = data.goals.vendas;
     const tend = PAST > 0 ? (v / PAST) * TOT : 0;
-
     if (tend >= mv) {
       out.push({ ic:'fa-trophy', cl:'var(--ok)', txt:`🏆 Tendência de ${numFmt(tend)} vendas supera a meta de ${Math.ceil(mv)}. Continue!` });
     } else {
@@ -1477,25 +1276,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const lP = pct(data.funnel.leads.length, data.goals.leads);
     if (lP < 60) out.push({ ic:'fa-users', cl:'var(--err)', txt:'Captação de leads abaixo de 60% da meta. Intensifique prospecção e tráfego pago urgente.' });
-
     const lvR = data.funnel.leads.length > 0 ? (data.funnel.visitas.length / data.funnel.leads.length * 100) : 0;
     const lvM = data.conversions.lv * 100;
     if (lvR < lvM * .7 && data.funnel.leads.length > 5)
       out.push({ ic:'fa-handshake', cl:'var(--warn)', txt:`Conversão L→V (${lvR.toFixed(0)}%) abaixo da meta (${lvM.toFixed(0)}%). Melhore follow-up e abordagem.` });
-
     if (data.funnel.aprovacoes.length > 0 && v === 0)
       out.push({ ic:'fa-stamp', cl:'var(--warn)', txt:`Você tem ${data.funnel.aprovacoes.length} aprovação(ões) sem venda fechada. Converta agora!` });
-
     const efic = data.funnel.leads.length > 0 ? (v / data.funnel.leads.length * 100) : 0;
     if (efic > 10) out.push({ ic:'fa-chart-line', cl:'var(--ok)', txt:`Eficiência global de ${efic.toFixed(1)}% (L→V). Excelente! Média do mercado é 5-8%.` });
     else if (data.funnel.leads.length > 10) out.push({ ic:'fa-filter', cl:'var(--t3)', txt:'Revise a qualidade dos leads. Menos leads qualificados vale mais que muitos leads frios.' });
-
-    return out.slice(0, 5);
+    return out.slice(0,5);
   }
 
-  /* ═══════════════════════════════════
-     PERFORMANCE MODAL
-  ═══════════════════════════════════ */
+  // ── PERFORMANCE MODAL ──
   function showPerf() {
     if (!data.goals || PAST === 0) return;
     const v = data.funnel.vendas.length, mv = data.goals.vendas;
@@ -1508,17 +1301,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       em.textContent = '⚡'; tt.textContent = 'Hora de Acelerar!'; tt.className = 'pt warn';
       pm.textContent = `Tendência: ${numFmt(tend)} vendas | Meta: ${Math.ceil(mv)}. Veja as ações abaixo.`;
-      ptc.innerHTML = buildInsights().map(it =>
-        `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`
-      ).join('');
+      ptc.innerHTML = buildInsights().map(it => `<div class="insight"><i class="fas ${it.ic}" style="color:${it.cl}"></i><span>${it.txt}</span></div>`).join('');
       pt.classList.remove('hidden');
     }
     openModal('perfModal');
   }
 
-  /* ═══════════════════════════════════
-     PDF
-  ═══════════════════════════════════ */
+  // ── PDF ──
   function pdfGeral() {
     const doc = new jsPDF();
     doc.setFontSize(18); doc.text('Relatório Geral — Funil Pro Corretor', 14, 22);
@@ -1551,27 +1340,26 @@ document.addEventListener('DOMContentLoaded', () => {
     toast('PDFs por etapa gerados!');
   }
 
-  /* ═══════════════════════════════════
-     RENDER ALL & INIT
-  ═══════════════════════════════════ */
+  // ── RENDER ALL ──
   function renderAll() {
     renderFunil();
-    stratBuilt = false; // allow strategy to re-render with fresh data
+    stratBuilt = false;
     const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-', '');
     if (activeTab === 'marketing') renderStrategy();
     if (activeTab === 'checklist') renderChecklist();
     if (activeTab === 'analytics') renderAnalytics();
   }
 
+  // ── INIT ──
   function init() {
     applyTheme(localStorage.getItem('imobTheme') || 'light');
     if (loadData() && data.goals) {
-      closeModal('metasModal'); // also unlocks scroll
+      closeModal('metasModal');
       $id('appShell').classList.remove('hidden');
       renderAll();
       setTimeout(showPerf, 900);
     } else {
-      openModal('metasModal'); // locks scroll
+      openModal('metasModal');
       $id('appShell').classList.add('hidden');
     }
   }
